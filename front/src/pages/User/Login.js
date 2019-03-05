@@ -43,6 +43,8 @@ class LoginPage extends Component {
     const { type } = this.state;
     if (!err) {
       const { dispatch } = this.props;
+      console.log("ssss");
+      console.log(values);
       dispatch({
         type: 'login/login',
         payload: {

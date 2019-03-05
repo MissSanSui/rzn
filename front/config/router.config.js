@@ -265,6 +265,19 @@ export default [
           },
         ],
       },
+      // 系统配置页面
+      {
+        name: 'sys',
+        icon: 'sys',
+        path: '/sys',
+        routes: [
+          {
+            path: '/sys/users',
+            name: 'usersManage',
+            component: './Sys/Users/UsersManage',
+          }
+        ],
+      },
       {
         component: '404',
       },

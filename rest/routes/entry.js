@@ -39,27 +39,12 @@ let
 //登录
 router.post('/login',function(req, res) {
   const { password, userName, type } = req.body;
-  if (password === 'ant.design' && userName === 'admin') {
+  res.cookie('userName', userName);
     res.send({
       status: 'ok',
       type,
       currentAuthority: 'admin',
     });
-    return;
-  }
-  if (password === 'ant.design' && userName === 'user') {
-    res.send({
-      status: 'ok',
-      type,
-      currentAuthority: 'user',
-    });
-    return;
-  }
-  res.send({
-    status: 'error',
-    type,
-    currentAuthority: 'guest',
-  });
 
 });
 
