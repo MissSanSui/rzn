@@ -19,194 +19,51 @@ export default [
     path: '/',
     component: '../layouts/BasicLayout',
     Routes: ['src/pages/Authorized'],
-    authority: ['admin', 'user'],
     routes: [
-      // dashboard
-      { path: '/', redirect: '/dashboard/analysis' },
+      // 系统配置页面
       {
-        path: '/dashboard',
-        name: 'dashboard',
-        icon: 'dashboard',
+        name: 'sys',
+        icon: 'sys',
+        path: '/sys',
+        authority: ['admin', 'sys'],
         routes: [
           {
-            path: '/dashboard/analysis',
-            name: 'analysis',
-            component: './Dashboard/Analysis',
-          },
-          {
-            path: '/dashboard/monitor',
-            name: 'monitor',
-            component: './Dashboard/Monitor',
-          },
-          {
-            path: '/dashboard/workplace',
-            name: 'workplace',
-            component: './Dashboard/Workplace',
-          },
+            path: '/sys/users',
+            name: 'usersManage',
+            component: './Sys/Users/UsersManage',
+          }
         ],
       },
-      // forms
+      // 用户信息管理
       {
-        path: '/form',
-        icon: 'form',
-        name: 'form',
-        routes: [
-          {
-            path: '/form/basic-form',
-            name: 'basicform',
-            component: './Forms/BasicForm',
-          },
-          {
-            path: '/form/step-form',
-            name: 'stepform',
-            component: './Forms/StepForm',
-            hideChildrenInMenu: true,
-            routes: [
-              {
-                path: '/form/step-form',
-                redirect: '/form/step-form/info',
-              },
-              {
-                path: '/form/step-form/info',
-                name: 'info',
-                component: './Forms/StepForm/Step1',
-              },
-              {
-                path: '/form/step-form/confirm',
-                name: 'confirm',
-                component: './Forms/StepForm/Step2',
-              },
-              {
-                path: '/form/step-form/result',
-                name: 'result',
-                component: './Forms/StepForm/Step3',
-              },
-            ],
-          },
-          {
-            path: '/form/advanced-form',
-            name: 'advancedform',
-            authority: ['admin'],
-            component: './Forms/AdvancedForm',
-          },
-        ],
+        name: 'userManage',
+        icon: 'userManage',
+        path: '/user-manage',
+        component: './UserManage/UserManage',
+        Routes: ['src/pages/Authorized'],
+        authority: ['admin', 'sys'],
+        // routes: [
+        //   {
+        //     path: '/user-manage/addUser',
+        //     name: 'addUser',
+        //     component: './UserManage/Adduser',
+        //   }
+        // ],
       },
-      // list
+      // 聊天室界面
+      
       {
-        path: '/list',
-        icon: 'table',
-        name: 'list',
-        routes: [
-          {
-            path: '/list/table-list',
-            name: 'searchtable',
-            component: './List/TableList',
-          },
-          {
-            path: '/list/basic-list',
-            name: 'basiclist',
-            component: './List/BasicList',
-          },
-          {
-            path: '/list/card-list',
-            name: 'cardlist',
-            component: './List/CardList',
-          },
-          {
-            path: '/list/search',
-            name: 'searchlist',
-            component: './List/List',
-            routes: [
-              {
-                path: '/list/search',
-                redirect: '/list/search/articles',
-              },
-              {
-                path: '/list/search/articles',
-                name: 'articles',
-                component: './List/Articles',
-              },
-              {
-                path: '/list/search/projects',
-                name: 'projects',
-                component: './List/Projects',
-              },
-              {
-                path: '/list/search/applications',
-                name: 'applications',
-                component: './List/Applications',
-              },
-            ],
-          },
-        ],
+        name: 'chatroom',
+        icon: 'video-camera',
+        path: '/chat-room',
+        component: './Chatroom/Chatroom',
       },
       {
-        path: '/profile',
-        name: 'profile',
-        icon: 'profile',
-        routes: [
-          // profile
-          {
-            path: '/profile/basic',
-            name: 'basic',
-            component: './Profile/BasicProfile',
-          },
-          {
-            path: '/profile/basic/:id',
-            name: 'basic',
-            hideInMenu: true,
-            component: './Profile/BasicProfile',
-          },
-          {
-            path: '/profile/advanced',
-            name: 'advanced',
-            authority: ['admin'],
-            component: './Profile/AdvancedProfile',
-          },
-        ],
-      },
-      {
-        name: 'result',
-        icon: 'check-circle-o',
-        path: '/result',
-        routes: [
-          // result
-          {
-            path: '/result/success',
-            name: 'success',
-            component: './Result/Success',
-          },
-          { path: '/result/fail', name: 'fail', component: './Result/Error' },
-        ],
-      },
-      {
-        name: 'exception',
-        icon: 'warning',
-        path: '/exception',
-        routes: [
-          // exception
-          {
-            path: '/exception/403',
-            name: 'not-permission',
-            component: './Exception/403',
-          },
-          {
-            path: '/exception/404',
-            name: 'not-find',
-            component: './Exception/404',
-          },
-          {
-            path: '/exception/500',
-            name: 'server-error',
-            component: './Exception/500',
-          },
-          {
-            path: '/exception/trigger',
-            name: 'trigger',
-            hideInMenu: true,
-            component: './Exception/TriggerException',
-          },
-        ],
+        name: 'joinroom',
+        icon: 'video-camera',
+        path: '/join-room',
+        authority: ['admin', 'sys', 'teacher', 'student'],
+        component: './Chatroom/Joinroom',
       },
       {
         name: 'account',
@@ -263,19 +120,6 @@ export default [
               },
             ],
           },
-        ],
-      },
-      // 系统配置页面
-      {
-        name: 'sys',
-        icon: 'sys',
-        path: '/sys',
-        routes: [
-          {
-            path: '/sys/users',
-            name: 'usersManage',
-            component: './Sys/Users/UsersManage',
-          }
         ],
       },
       {

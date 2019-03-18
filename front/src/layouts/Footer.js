@@ -8,27 +8,15 @@ const FooterView = () => (
     <GlobalFooter
       links={[
         {
-          key: 'Pro 首页',
-          title: 'Pro 首页',
-          href: 'https://pro.ant.design',
+          key: '万卷书教育 首页',
+          title: '万卷书教育 首页',
+          href: 'wjspt.com',
           blankTarget: true,
-        },
-        {
-          key: 'github',
-          title: <Icon type="github" />,
-          href: 'https://github.com/ant-design/ant-design-pro',
-          blankTarget: true,
-        },
-        {
-          key: 'Ant Design',
-          title: 'Ant Design',
-          href: 'https://ant.design',
-          blankTarget: true,
-        },
+        }
       ]}
       copyright={
         <Fragment>
-          Copyright <Icon type="copyright" /> 2018 蚂蚁金服体验技术部出品
+          Copyright <Icon type="copyright" /> 2019 河北万卷书教育科技有限公司
         </Fragment>
       }
     />

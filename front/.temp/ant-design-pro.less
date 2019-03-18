@@ -2333,6 +2333,78 @@ font.weak {
 }
 
 /* 
+  Convert to from  src/pages/Chatroom/Chatroom.less
+ */
+
+.antd-pro-pages-chatroom-chatroom-coverCardList {
+  margin-bottom: -24px;
+
+  .antd-pro-pages-chatroom-chatroom-card {
+    .ant-card-meta-title {
+      margin-bottom: 4px;
+      & > a {
+        display: inline-block;
+        max-width: 100%;
+        color: @heading-color;
+      }
+    }
+    .ant-card-meta-description {
+      height: 44px;
+      overflow: hidden;
+      line-height: 22px;
+    }
+
+    &:hover {
+      .ant-card-meta-title > a {
+        color: @primary-color;
+      }
+    }
+  }
+
+  .antd-pro-pages-chatroom-chatroom-cardItemContent {
+    display: flex;
+    height: 20px;
+    margin-top: 16px;
+    margin-bottom: -4px;
+    line-height: 20px;
+    & > span {
+      flex: 1;
+      color: @text-color-secondary;
+      font-size: 12px;
+    }
+    .antd-pro-pages-chatroom-chatroom-avatarList {
+      flex: 0 1 auto;
+    }
+  }
+  .antd-pro-pages-chatroom-chatroom-cardList {
+    margin-top: 24px;
+  }
+  .ant-list .ant-list-item-content-single {
+    max-width: 100%;
+  }
+}
+
+/* 
+  Convert to from  src/pages/Chatroom/Joinroom.less
+ */
+
+.antd-pro-pages-chatroom-joinroom-svg-whiteboard {
+  height: 100%;
+}
+
+.antd-pro-pages-chatroom-joinroom-whiteboard-pencil {
+  height: 100%;
+}
+
+.antd-pro-pages-chatroom-joinroom-svg-background-pencil {
+  height: 100%;
+}
+
+.antd-pro-pages-chatroom-joinroom-svg-background {
+  height: 100% !important;
+}
+
+/* 
   Convert to from  src/pages/Dashboard/Analysis.less
  */
 
@@ -3690,6 +3762,75 @@ a.antd-pro-pages-list-articles-listItemMetaTitle {
     a + a {
       margin-left: 8px;
     }
+  }
+}
+
+/* 
+  Convert to from  src/pages/UserManage/Adduser.less
+ */
+
+.antd-pro-pages-user-manage-adduser-svg-whiteboard {
+  height: 100%;
+}
+
+.antd-pro-pages-user-manage-adduser-whiteboard-pencil {
+  height: 100%;
+}
+
+.antd-pro-pages-user-manage-adduser-svg-background-pencil {
+  height: 100%;
+}
+
+.antd-pro-pages-user-manage-adduser-svg-background {
+  height: 100% !important;
+}
+
+/* 
+  Convert to from  src/pages/UserManage/UserManage.less
+ */
+
+.antd-pro-pages-user-manage-user-manage-tableList {
+  .antd-pro-pages-user-manage-user-manage-tableListOperator {
+    margin-bottom: 16px;
+    button {
+      margin-right: 8px;
+    }
+  }
+}
+
+.antd-pro-pages-user-manage-user-manage-tableListForm {
+  .ant-form-item {
+    display: flex;
+    margin-right: 0;
+    margin-bottom: 24px;
+    > .ant-form-item-label {
+      width: auto;
+      padding-right: 8px;
+      line-height: 32px;
+    }
+    .ant-form-item-control {
+      line-height: 32px;
+    }
+  }
+  .ant-form-item-control-wrapper {
+    flex: 1;
+  }
+  .antd-pro-pages-user-manage-user-manage-submitButtons {
+    display: block;
+    margin-bottom: 24px;
+    white-space: nowrap;
+  }
+}
+
+@media screen and (max-width: @screen-lg) {
+  .tableListForm :global(.ant-form-item) {
+    margin-right: 24px;
+  }
+}
+
+@media screen and (max-width: @screen-md) {
+  .tableListForm :global(.ant-form-item) {
+    margin-right: 8px;
   }
 }
 

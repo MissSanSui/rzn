@@ -7,27 +7,41 @@
 var app = require('../app');
 var debug = require('debug')('jy:server');
 var http = require('http');
+var https = require('https');
+var fs = require('fs');
+var path = require('path');
 
-/**
- * Get port from environment and store in Express.
- */
+//根据项目的路径导入生成的证书文件
+var privateKey  = fs.readFileSync(path.join(__dirname, '../certificate/private.pem'), 'utf8');
+var certificate = fs.readFileSync(path.join(__dirname, '../certificate/csr.crt'), 'utf8');
+var credentials = {key: privateKey, cert: certificate};
 
-var port = normalizePort(process.env.PORT || '3000');
-app.set('port', port);
+var httpServer = http.createServer(app);
+var httpsServer = https.createServer(credentials, app);
 
-/**
- * Create HTTP server.
- */
+//可以分别设置http、https的访问端口号
+var PORT = 3000;
+var SSLPORT = 3001;
 
-var server = http.createServer(app);
+//创建http服务器
+httpServer.listen(PORT, function() {
+  console.log('HTTP Server is running on: http://localhost:%s', PORT);
+});
 
-/**
- * Listen on provided port, on all network interfaces.
- */
+//创建https服务器
+httpsServer.listen(SSLPORT, function() {
+  console.log('HTTPS Server is running on: https://localhost:%s', SSLPORT);
+});
 
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
+//可以根据请求判断是http还是https
+app.get('/', function (req, res) {
+  if(req.protocol === 'https') {
+    res.status(200).send('This is https visit!');
+  }
+  else {
+    res.status(200).send('This is http visit!');
+  }
+});
 
 /**
  * Normalize a port into a number, string, or false.
@@ -82,7 +96,7 @@ function onError(error) {
  */
 
 function onListening() {
-  var addr = server.address();
+  var addr = httpServer.address();
   var bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;

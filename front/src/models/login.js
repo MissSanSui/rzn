@@ -20,11 +20,12 @@ export default {
         payload: response,
       });
       // Login successfully
-      if (response.status === 'ok') {
+      if (response.status === 'suc') {
         reloadAuthorized();
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
         let { redirect } = params;
+        console.log(params);
         if (redirect) {
           const redirectUrlParams = new URL(redirect);
           if (redirectUrlParams.origin === urlParams.origin) {
@@ -67,6 +68,7 @@ export default {
 
   reducers: {
     changeLoginStatus(state, { payload }) {
+      console.log(payload);
       setAuthority(payload.currentAuthority);
       return {
         ...state,

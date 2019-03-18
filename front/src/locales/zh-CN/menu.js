@@ -39,6 +39,11 @@ export default {
   'menu.account.trigger': '触发报错',
   'menu.account.logout': '退出登录',
   'menu.sys': '系统管理',
+  'menu.chatroom': '直播间',
+  'menu.joinroom': '加入直播间',
+  'menu.view': '课堂',
   'menu.sys.usersManage': '用户管理',
+  'menu.userManage': '用户管理',
+  'menu.userManage.addUser': '新增用户',
   
 };

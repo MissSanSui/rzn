@@ -1,6 +1,29 @@
 import { stringify } from 'qs';
 import request from '@/utils/request';
 
+export async function fakeAccountLogin(params) {
+  // return request('/api/login/account', {
+  return request('/api/entry/login', {
+    method: 'POST',
+    body: params,
+  });
+}
+
+export async function addUser(params) {
+  return request('/api/userManage/addUser', {
+    method: 'POST',
+    body: params,
+  });
+}
+
+export async function queryUsers(params) {
+  console.log(params);
+  return request('/api/userManage/queryUsers', {
+    method: 'POST',
+    body: params,
+  });
+}
+
 export async function queryProjectNotice() {
   return request('/api/project/notice');
 }
@@ -103,20 +126,6 @@ export async function updateFakeList(params) {
   });
 }
 
-export async function fakeAccountLogin(params) {
-  return request('/rest/entry/login', {
-    method: 'POST',
-    body: params,
-  });
-}
-
-export async function addAccountUser(params) {
-  console.log(params);
-  return request('/rest/sys/addUser', {
-    method: 'POST',
-    body: params,
-  });
-}
 
 export async function fakeRegister(params) {
   return request('/api/register', {

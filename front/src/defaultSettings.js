@@ -22,14 +22,14 @@ module.exports =
   "navTheme": "light",
   "primaryColor": "#2F54EB",
   "layout": "topmenu",
-  "contentWidth": "Fluid",
+  "contentWidth": "Fixed",
   "fixedHeader": false,
   "autoHideHeader": false,
   "fixSiderbar": false,
   "menu": {
     "disableLocal": false
   },
-  "title": "Ant Design Pro",
+  "title": "万卷书教育平台",
   "pwa": true,
   "iconfontUrl": "",
   "collapse": true

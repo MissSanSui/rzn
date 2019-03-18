@@ -169,7 +169,7 @@ class BasicLayout extends React.Component {
               {children}
             </Authorized>
           </Content>
-          <Footer />
+          <Content />
         </Layout>
       </Layout>
     );
@@ -184,7 +184,7 @@ class BasicLayout extends React.Component {
             )}
           </ContainerQuery>
         </DocumentTitle>
-        <Suspense fallback={<PageLoading />}>{this.renderSettingDrawer()}</Suspense>
+        {/* <Suspense fallback={<PageLoading />}>{this.renderSettingDrawer()}</Suspense> */}
       </React.Fragment>
     );
   }

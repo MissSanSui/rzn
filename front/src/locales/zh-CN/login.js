@@ -35,4 +35,9 @@ export default {
   'validation.date.required': '请选择起止日期',
   'validation.goal.required': '请输入目标描述',
   'validation.standard.required': '请输入衡量标准',
+  'validation.account.required': '请输入登录名',
+  'validation.passwd.required': '请输入密码',
+  'validation.passwdSub.required': '请再次输入密码',
+  'validation.role.required': '请输入角色',
+  'validation.name.required': '请输入用户名',
 };

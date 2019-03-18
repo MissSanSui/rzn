@@ -21,4 +21,4 @@ app.model({ namespace: 'menu', ...(require('/Users/sam/rzn/front/src/models/menu
 app.model({ namespace: 'project', ...(require('/Users/sam/rzn/front/src/models/project.js').default) });
 app.model({ namespace: 'setting', ...(require('/Users/sam/rzn/front/src/models/setting.js').default) });
 app.model({ namespace: 'user', ...(require('/Users/sam/rzn/front/src/models/user.js').default) });
-app.model({ namespace: 'usersManage', ...(require('/Users/sam/rzn/front/src/models/usersManage.js').default) });
+app.model({ namespace: 'usermanage', ...(require('/Users/sam/rzn/front/src/models/usermanage.js').default) });

@@ -59,6 +59,7 @@ if (APP_TYPE === 'site') {
 }
 
 export default {
+  history: 'hash', // 默认是 browser
   // add for transfer to umi
   plugins,
   define: {
