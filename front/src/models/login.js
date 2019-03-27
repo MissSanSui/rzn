@@ -20,7 +20,8 @@ export default {
         payload: response,
       });
       // Login successfully
-      if (response.status === 'suc') {
+      console.log("response===", response)
+      if (response.status === 'ok') {
         reloadAuthorized();
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
@@ -35,9 +36,11 @@ export default {
             }
           } else {
             window.location.href = redirect;
+            console.log("redirect===", redirect)
             return;
           }
         }
+        console.log("redirect=/==/")
         yield put(routerRedux.replace(redirect || '/'));
       }
     },
@@ -67,8 +70,9 @@ export default {
   },
 
   reducers: {
-    changeLoginStatus(state, { payload }) {
-      console.log(payload);
+    changeLoginStatus(state, {payload}) {
+      console.log("payload==",payload);
+      console.log("payload.currentAuthority==",payload.currentAuthority);
       setAuthority(payload.currentAuthority);
       return {
         ...state,

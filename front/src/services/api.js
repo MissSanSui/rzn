@@ -1,9 +1,28 @@
 import { stringify } from 'qs';
 import request from '@/utils/request';
+const { NODE_ENV, APP_TYPE, TEST } = process.env;
 
+const backendAddr = (() => {
+  const env = NODE_ENV
+  console.log(env)
+  switch (env) {
+    case 'dev': return {
+      sample: 'https://dev.p2shop.com.cn/sample',
+    };
+    case 'qa': return {
+      sample: 'https://qa.p2shop.com.cn/sample',
+    };
+    case 'production': return {
+      sample: 'https://gateway.p2shop.com.cn/sample',
+    };
+    default: return {
+      sample: 'http://localhost:8000',
+    };
+  }
+})();
 export async function fakeAccountLogin(params) {
-  // return request('/api/login/account', {
-  return request('/api/entry/login', {
+  return request('/api/login/account', {
+  // return request('api/entry/login', {
     method: 'POST',
     body: params,
   });
@@ -90,7 +109,7 @@ export async function queryAdvancedProfile() {
 }
 
 export async function queryFakeList(params) {
-  return request(`/api/fake_list?${stringify(params)}`);
+  return request(backendAddr.sample+`/api/fake_list?${stringify(params)}`);
 }
 
 export async function removeFakeList(params) {

@@ -9,6 +9,17 @@ import stylesProjects from './Joinroom.less';
   list,
 }))
 class Center extends PureComponent {
+
+  componentDidMount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'list/fetch',
+      payload: {
+        count: 8,
+      },
+    });
+  }
+
   render() {
     const {
       list: { list },
