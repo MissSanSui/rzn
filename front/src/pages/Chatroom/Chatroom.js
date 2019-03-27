@@ -3,7 +3,7 @@ import { List, Card } from 'antd';
 import moment from 'moment';
 import { connect } from 'dva';
 import AvatarList from '@/components/AvatarList';
-import stylesProjects from './Joinroom.less';
+import stylesProjects from './Chatroom.less';
 
 @connect(({ list }) => ({
   list,
@@ -19,7 +19,6 @@ class Center extends PureComponent {
       },
     });
   }
-
   render() {
     const {
       list: { list },
@@ -28,19 +27,19 @@ class Center extends PureComponent {
       <List
         className={stylesProjects.coverCardList}
         rowKey="id"
-        grid={{ gutter: 24, xxl: 3, xl: 2, lg: 2, md: 2, sm: 2, xs: 1 }}
+        grid={{ gutter: 24, xxl: 4, xl: 4, lg: 3, md: 3, sm: 2, xs: 1 }}
         dataSource={list}
         renderItem={item => (
           <List.Item>
             <Card
               className={stylesProjects.card}
               hoverable
-              cover={<img alt={item.title} src={item.cover} />}
+              cover={<img alt={item.room_introduce} src={item.room_background} />}
             >
-              <Card.Meta title={<a>{item.title}</a>} description={item.subDescription} />
+              <Card.Meta title={<a>{item.room_introduce}</a>}/>
               <div className={stylesProjects.cardItemContent}>
                 <span>{moment(item.updatedAt).fromNow()}</span>
-                <div className={stylesProjects.avatarList}>
+                {/* <div className={stylesProjects.avatarList}>
                   <AvatarList size="mini">
                     {item.members.map(member => (
                       <AvatarList.Item
@@ -50,7 +49,7 @@ class Center extends PureComponent {
                       />
                     ))}
                   </AvatarList>
-                </div>
+                </div> */}
               </div>
             </Card>
           </List.Item>
