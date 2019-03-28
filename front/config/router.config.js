@@ -21,6 +21,7 @@ export default [
     Routes: ['src/pages/Authorized'],
     routes: [
       // 系统配置页面
+      { path: '/', redirect: '/user-manage', authority: ['admin', 'user','guest'] },
       {
         name: 'sys',
         icon: 'sys',
@@ -41,7 +42,7 @@ export default [
         path: '/user-manage',
         component: './UserManage/UserManage',
         Routes: ['src/pages/Authorized'],
-        authority: ['admin', 'sys'],
+        authority: ['admin', 'sys','guest'],
         // routes: [
         //   {
         //     path: '/user-manage/addUser',

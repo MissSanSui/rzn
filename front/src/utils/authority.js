@@ -10,11 +10,9 @@ export function getAuthority(str) {
   } catch (e) {
     authority = authorityString;
   }
-  console.log(authority);
   if (typeof authority === 'string') {
     return [authority];
   }
-  console.log(authority || ['guest']);
   return authority || ['guest'];
 }
 

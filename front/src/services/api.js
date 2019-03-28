@@ -36,11 +36,7 @@ export async function addUser(params) {
 }
 
 export async function queryUsers(params) {
-  console.log(params);
-  return request('/api/userManage/queryUsers', {
-    method: 'POST',
-    body: params,
-  });
+  return request('/api/userManage/queryUsers?${stringify(params)}')
 }
 
 export async function queryProjectNotice() {

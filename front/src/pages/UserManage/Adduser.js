@@ -3,19 +3,7 @@ import ReactDOM from "react-dom";
 import styles from './Adduser.less';
 import { connect } from 'dva';
 import { formatMessage, FormattedMessage } from 'umi/locale';
-import {
-  Form,
-  Input,
-  DatePicker,
-  Select,
-  Button,
-  Card,
-  InputNumber,
-  Radio,
-  Icon,
-  Tooltip,
-} from 'antd';
-import PageHeaderWrapper from '@/components/PageHeaderWrapper';
+import { Form, Input, DatePicker, Select, Button, Card, InputNumber, Radio, Icon, Modal, Tooltip, message, } from 'antd';
 import formsStyles from '../Forms/style.less';
 
 const FormItem = Form.Item;
@@ -45,7 +33,28 @@ class AddUser extends PureComponent {
       }
     });
   };
-
+  handleUpdate = fields => {
+    const { dispatch } = this.props;
+    const { formValues } = this.state;
+    dispatch({
+      type: 'userManage/update',
+      payload: {
+        query: formValues,
+        body: {
+          name: fields.name,
+          desc: fields.desc,
+          key: fields.key,
+        },
+      },
+    });
+    message.success('配置成功');
+    this.handleUpdateModalVisible();
+  };
+  handleModalVisible = flag => {
+    this.setState({
+      modalVisible: !!flag,
+    });
+  };
   state = {
     size: 'default',
   };
@@ -59,19 +68,38 @@ class AddUser extends PureComponent {
       room: null
     }
   }
-  
 
+  handleAdd = fields => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'userManage/add',
+      payload: {
+        desc: fields.desc,
+      },
+    });
+
+    message.success('添加成功');
+    this.handleModalVisible();
+  };
+  okHandle = () => {
+    const { form } = this.props
+    form.validateFields((err, fieldsValue) => {
+      if (err) return;
+      form.resetFields();
+      this.handleAdd(fieldsValue);
+    });
+  };
   render() {
-
-
-
     const { size } = this.state;
-
-    const { submitting } = this.props;
+    const { submitting, modalVisible, onCancel, type } = this.props;
     const {
       form: { getFieldDecorator, getFieldValue },
+      modifyUser
     } = this.props;
-
+    let title = "添加用户"
+    if(type!="add"){
+      title = "修改用户"
+    }
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
@@ -84,35 +112,26 @@ class AddUser extends PureComponent {
       },
     };
 
-    const submitFormLayout = {
-      wrapperCol: {
-        xs: { span: 24, offset: 0 },
-        sm: { span: 10, offset: 7 },
-      },
-    };
-
     const Option = Select.Option;
     const children = [];
-for (let i = 10; i < 36; i++) {
-  children.push(<Option key={i.toString(36) + i}>{i.toString(36) + i}</Option>);
-}
+    for (let i = 10; i < 36; i++) {
+      children.push(<Option key={i.toString(36) + i}>{i.toString(36) + i}</Option>);
+    }
 
     function handleChange(value) {
       console.log(`selected ${value}`);
     }
 
-    function handleBlur() {
-      console.log('blur');
-    }
-
-    function handleFocus() {
-      console.log('focus');
-    }
-
     return (
-      <PageHeaderWrapper>
+      <Modal
+        destroyOnClose
+        title={title}
+        visible={modalVisible}
+        onOk={this.okHandle}
+        onCancel={this.props.onCancel}
+      >
         <Card bordered={false}>
-        <Form onSubmit={this.handleSubmit} hideRequiredMark style={{ marginTop: 8 }}>
+          <Form onSubmit={this.handleSubmit} hideRequiredMark style={{ marginTop: 8 }}>
             {/* 登录名 */}
             <FormItem {...formItemLayout} label={<FormattedMessage id="form.account" />}>
               {getFieldDecorator('account', {
@@ -171,27 +190,25 @@ for (let i = 10; i < 36; i++) {
                   },
                 ],
               })(<Select
-                  showSearch
-                  style={{ width: 200 }}
-                  placeholder="请选择角色"
-                  optionFilterProp="children"
-                  onChange={handleChange}
-                  onFocus={handleFocus}
-                  onBlur={handleBlur}
-                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                >
-                  <Option value="STU">学生</Option>
-                  <Option value="TEA">教师</Option>
-                  <Option value="PAR">家长</Option>
-                  <Option value="SYS">负责人</Option>
-                  <Option value="LEA">管理员</Option>
-                </Select>)}
+                showSearch
+                style={{ width: 200 }}
+                placeholder="请选择角色"
+                optionFilterProp="children"
+                onChange={handleChange}
+                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+              >
+                <Option value="STU">学生</Option>
+                <Option value="TEA">教师</Option>
+                <Option value="PAR">家长</Option>
+                <Option value="SYS">负责人</Option>
+                <Option value="LEA">管理员</Option>
+              </Select>)}
             </FormItem>
 
             {/* 报名老师 */}
             <FormItem {...formItemLayout} label={<FormattedMessage id="form.teachers" />}>
-              
-                <Select
+
+              <Select
                 mode="multiple"
                 size={size}
                 placeholder="请选择老师"
@@ -201,23 +218,11 @@ for (let i = 10; i < 36; i++) {
               >
                 {children}
               </Select>
-              
-            </FormItem>
 
-            
-            <FormItem {...submitFormLayout} style={{ marginTop: 32 }}>
-              <Button type="primary" htmlType="submit" loading={submitting}>
-                <FormattedMessage id="form.submit" />
-              </Button>
-              <Button style={{ marginLeft: 8 }}>
-                <FormattedMessage id="form.save" />
-              </Button>
             </FormItem>
           </Form>
         </Card>
-
-
-      </PageHeaderWrapper>
+      </Modal>
     )
   }
 }

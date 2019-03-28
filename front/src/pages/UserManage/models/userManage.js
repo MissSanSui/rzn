@@ -12,16 +12,21 @@ export default {
 
   effects: {
     *fetch({ payload }, { call, put }) {
-      const response = yield call(queryUsers, payload);
+      console.log("queryUsers fetch==")
+      let response = yield call(queryUsers, payload);
+      var result = {}
+      result.list = response
+      console.log("queryUsers  result===",result)
       yield put({
-        type: 'query',
-        payload: response,
+        type: 'save',
+        payload: result,
       });
     },
   },
 
   reducers: {
     save(state, action) {
+      console.log("action==",action)
       return {
         ...state,
         data: action.payload,

@@ -110,7 +110,23 @@ function fakeList(count) {
 
   return list;
 }
-
+const roleList =[
+  "STU","TEA","ASS","PAR","PRE","SYS"
+]
+function getUsers(req, res){
+  console.log("getUsers req===",req)
+  let list=[]
+  for (let i = 0; i < 8; i += 1) {
+    list.push({
+      id: i,
+      account: "white_id"+i % 8,
+      name: "name"+i % 8,
+      role:roleList[i % 8],
+      telephone: "telephone"+i % 8,
+    });
+  }
+  return res.json(list);
+}
 let sourceData;
 
 function getFakeList(req, res) {
@@ -335,4 +351,5 @@ export default {
   'GET /api/fake_list': getFakeList,
   'POST /api/fake_list': postFakeList,
   'GET /api/captcha': getFakeCaptcha,
+  'GET /api/userManage/queryUsers': getUsers,
 };
