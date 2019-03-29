@@ -26,7 +26,7 @@ export default [
         name: 'sys',
         icon: 'sys',
         path: '/sys',
-        authority: ['admin', 'sys'],
+        authority: ['admin', 'sys',],
         routes: [
           {
             path: '/sys/users',
@@ -42,7 +42,7 @@ export default [
         path: '/user-manage',
         component: './UserManage/UserManage',
         Routes: ['src/pages/Authorized'],
-        authority: ['admin', 'sys','guest'],
+        authority: ['admin', 'sys',],
         // routes: [
         //   {
         //     path: '/user-manage/addUser',

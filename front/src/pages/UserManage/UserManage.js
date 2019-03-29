@@ -48,7 +48,7 @@ class UserManage extends PureComponent {
   state = {
     modalVisible: false,
     formValues: {},
-    modalType:"add"
+    modalType: "add"
   };
 
 
@@ -110,11 +110,12 @@ class UserManage extends PureComponent {
     });
   };
 
-  handleModalVisible = (flag,modalType,user) => {
+  handleModalVisible = (flag, modalType, user) => {
+    console.log("handleModalVisible   user===",user)
     this.setState({
       modalVisible: !!flag,
       modalType,
-      modifyUser:user
+      modifyUser: user
     });
   };
 
@@ -125,12 +126,12 @@ class UserManage extends PureComponent {
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
-          <Col md={8} sm={24}>
+          <Col md={6} sm={24}>
             <FormItem label="用户名">
               {getFieldDecorator('name')(<Input placeholder="请输入用户名" />)}
             </FormItem>
           </Col>
-          <Col md={8} sm={24}>
+          <Col md={6} sm={24}>
             <FormItem label="角色">
               {getFieldDecorator('roles')(
                 <Select placeholder="请选择" style={{ width: '100%' }}>
@@ -143,7 +144,20 @@ class UserManage extends PureComponent {
               )}
             </FormItem>
           </Col>
-          <Col md={8} sm={24}>
+          <Col md={6} sm={24}>
+            <FormItem label="关注点">
+              {getFieldDecorator('focus')(
+                <Select placeholder="请选择" style={{ width: '100%' }}>
+                  <Option value="STU">学生</Option>
+                  <Option value="TEA">教师</Option>
+                  <Option value="PAR">家长</Option>
+                  <Option value="SYS">负责人</Option>
+                  <Option value="LEA">管理员</Option>
+                </Select>
+              )}
+            </FormItem>
+          </Col>
+          <Col md={6} sm={24}>
             <span className={styles.submitButtons}>
               <Button type="primary" htmlType="submit">
                 查询
@@ -161,18 +175,48 @@ class UserManage extends PureComponent {
       dataIndex: 'name',
     },
     {
-      title: '角色',
-      dataIndex: 'role',
+      title: '用户名',
+      dataIndex: 'account',
     },
     {
-      title: '选择老师',
-      dataIndex: 'teachers',
+      title: '角色',
+      dataIndex: 'role',
+      render: (text) => {
+        let roleName = ""
+        switch (text) {
+          case "STU":
+            roleName = "学生"
+            break;
+            case "TEA":
+            roleName = "教师"
+            break;
+            case "ASS":
+            roleName = "助教"
+            break;
+            case "PAR":
+            roleName = "家长"
+            break;
+            case "PRE":
+            roleName = "准学生"
+            break;
+            case "SYS":
+            roleName = "超级管理员"
+            break;
+          default:
+            break;
+        }
+        return roleName
+      }
+    },
+    {
+      title: '联系电话',
+      dataIndex: 'telephone',
     },
     {
       title: '操作',
       render: (text, record) => (
         <Fragment>
-          <a onClick={() => this.handleModalVisible(true,'modify',record)}>更新</a>
+          <a onClick={() => this.handleModalVisible(true, 'modify', record)}>更新</a>
         </Fragment>
       ),
     },
@@ -183,15 +227,15 @@ class UserManage extends PureComponent {
       loading,
     } = this.props;
     // 数据来源
-    const {  modalVisible, modalType,modifyUser, } = this.state;
-  
+    const { modalVisible, modalType, modifyUser, } = this.state;
+
     return (
       <PageHeaderWrapper title="查询用户">
         <Card bordered={false}>
           <div className={styles.tableList}>
             <div className={styles.tableListForm}>{this.renderSimpleForm()}</div>
             <div className={styles.tableListOperator}>
-              <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true,'add')}>
+              <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true, 'add')}>
                 新建
               </Button>
             </div>
@@ -206,7 +250,8 @@ class UserManage extends PureComponent {
             />
           </div>
         </Card>
-        <AddUser modalVisible={modalVisible} onCancel={()=>this.handleModalVisible(false)} type={modalType} modifyUser={modifyUser}/>
+        <AddUser modalVisible={modalVisible} onCancel={() => this.handleModalVisible(false)} 
+        type={modalType} modifyUser={modifyUser} />
       </PageHeaderWrapper>
     );
   }

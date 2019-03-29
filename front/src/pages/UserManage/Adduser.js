@@ -92,9 +92,13 @@ class AddUser extends PureComponent {
   render() {
     const { size } = this.state;
     const { submitting, modalVisible, onCancel, type } = this.props;
+    let modifyUser = this.props.modifyUser||{}
+    if (type=="add"){
+      modifyUser={}
+    }
+    console.log("this.props.modifyUser===",this.props.modifyUser)
     const {
       form: { getFieldDecorator, getFieldValue },
-      modifyUser
     } = this.props;
     let title = "添加用户"
     if(type!="add"){
@@ -132,9 +136,23 @@ class AddUser extends PureComponent {
       >
         <Card bordered={false}>
           <Form onSubmit={this.handleSubmit} hideRequiredMark style={{ marginTop: 8 }}>
+
+           {/* 姓名 */}
+           <FormItem {...formItemLayout} label={<FormattedMessage id="form.name" />}>
+              {getFieldDecorator('name', {
+                initialValue:modifyUser.name,
+                rules: [
+                  {
+                    required: true,
+                    message: formatMessage({ id: 'validation.name.required' }),
+                  },
+                ],
+              })(<Input placeholder={formatMessage({ id: 'form.name' })} />)}
+            </FormItem>
             {/* 登录名 */}
             <FormItem {...formItemLayout} label={<FormattedMessage id="form.account" />}>
               {getFieldDecorator('account', {
+                initialValue:modifyUser.account,
                 rules: [
                   {
                     required: true,
@@ -147,6 +165,7 @@ class AddUser extends PureComponent {
             {/* 密码 */}
             <FormItem {...formItemLayout} label={<FormattedMessage id="form.passwd" />}>
               {getFieldDecorator('passwd', {
+                initialValue:modifyUser.password,
                 rules: [
                   {
                     required: true,
@@ -159,6 +178,7 @@ class AddUser extends PureComponent {
             {/* 确认密码 */}
             <FormItem {...formItemLayout} label={<FormattedMessage id="form.passwdSub" />}>
               {getFieldDecorator('passwdSub', {
+                initialValue:modifyUser.password,
                 rules: [
                   {
                     required: true,
@@ -168,21 +188,10 @@ class AddUser extends PureComponent {
               })(<Input placeholder={formatMessage({ id: 'form.passwdSub' })} />)}
             </FormItem>
 
-            {/* 姓名 */}
-            <FormItem {...formItemLayout} label={<FormattedMessage id="form.name" />}>
-              {getFieldDecorator('name', {
-                rules: [
-                  {
-                    required: true,
-                    message: formatMessage({ id: 'validation.name.required' }),
-                  },
-                ],
-              })(<Input placeholder={formatMessage({ id: 'form.name' })} />)}
-            </FormItem>
-
             {/* 角色 */}
             <FormItem {...formItemLayout} label={<FormattedMessage id="form.role" />}>
               {getFieldDecorator('role', {
+                initialValue:modifyUser.role,
                 rules: [
                   {
                     required: true,
@@ -200,6 +209,7 @@ class AddUser extends PureComponent {
                 <Option value="STU">学生</Option>
                 <Option value="TEA">教师</Option>
                 <Option value="PAR">家长</Option>
+                <Option value="ASS">助教</Option>
                 <Option value="SYS">负责人</Option>
                 <Option value="LEA">管理员</Option>
               </Select>)}

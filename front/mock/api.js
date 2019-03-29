@@ -121,7 +121,7 @@ function getUsers(req, res){
       id: i,
       account: "white_id"+i % 8,
       name: "name"+i % 8,
-      role:roleList[i % 8],
+      role:roleList[i % 6],
       telephone: "telephone"+i % 8,
     });
   }
