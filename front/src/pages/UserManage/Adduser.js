@@ -92,16 +92,16 @@ class AddUser extends PureComponent {
   render() {
     const { size } = this.state;
     const { submitting, modalVisible, onCancel, type } = this.props;
-    let modifyUser = this.props.modifyUser||{}
-    if (type=="add"){
-      modifyUser={}
+    let modifyUser = this.props.modifyUser || {}
+    if (type == "add") {
+      modifyUser = {}
     }
-    console.log("this.props.modifyUser===",this.props.modifyUser)
+    console.log("this.props.modifyUser===", this.props.modifyUser)
     const {
       form: { getFieldDecorator, getFieldValue },
     } = this.props;
     let title = "添加用户"
-    if(type!="add"){
+    if (type != "add") {
       title = "修改用户"
     }
     const formItemLayout = {
@@ -134,13 +134,12 @@ class AddUser extends PureComponent {
         onOk={this.okHandle}
         onCancel={this.props.onCancel}
       >
-        <Card bordered={false}>
-          <Form onSubmit={this.handleSubmit} hideRequiredMark style={{ marginTop: 8 }}>
+          <Form onSubmit={this.handleSubmit} hideRequiredMark={false} style={{ marginTop: 8 }}>
 
-           {/* 姓名 */}
-           <FormItem {...formItemLayout} label={<FormattedMessage id="form.name" />}>
+            {/* 姓名 */}
+            <FormItem {...formItemLayout} label={<FormattedMessage id="form.name" />}>
               {getFieldDecorator('name', {
-                initialValue:modifyUser.name,
+                initialValue: modifyUser.name,
                 rules: [
                   {
                     required: true,
@@ -152,7 +151,7 @@ class AddUser extends PureComponent {
             {/* 登录名 */}
             <FormItem {...formItemLayout} label={<FormattedMessage id="form.account" />}>
               {getFieldDecorator('account', {
-                initialValue:modifyUser.account,
+                initialValue: modifyUser.account,
                 rules: [
                   {
                     required: true,
@@ -165,7 +164,7 @@ class AddUser extends PureComponent {
             {/* 密码 */}
             <FormItem {...formItemLayout} label={<FormattedMessage id="form.passwd" />}>
               {getFieldDecorator('passwd', {
-                initialValue:modifyUser.password,
+                initialValue: modifyUser.password,
                 rules: [
                   {
                     required: true,
@@ -175,23 +174,10 @@ class AddUser extends PureComponent {
               })(<Input placeholder={formatMessage({ id: 'form.passwd' })} />)}
             </FormItem>
 
-            {/* 确认密码 */}
-            <FormItem {...formItemLayout} label={<FormattedMessage id="form.passwdSub" />}>
-              {getFieldDecorator('passwdSub', {
-                initialValue:modifyUser.password,
-                rules: [
-                  {
-                    required: true,
-                    message: formatMessage({ id: 'validation.passwdSub.required' }),
-                  },
-                ],
-              })(<Input placeholder={formatMessage({ id: 'form.passwdSub' })} />)}
-            </FormItem>
-
             {/* 角色 */}
             <FormItem {...formItemLayout} label={<FormattedMessage id="form.role" />}>
               {getFieldDecorator('role', {
-                initialValue:modifyUser.role,
+                initialValue: modifyUser.role,
                 rules: [
                   {
                     required: true,
@@ -214,10 +200,63 @@ class AddUser extends PureComponent {
                 <Option value="LEA">管理员</Option>
               </Select>)}
             </FormItem>
-
+            <FormItem {...formItemLayout} label="联系电话">
+              {getFieldDecorator('telephone', {
+                initialValue: modifyUser.telephone,
+                rules: [
+                  {
+                    required: true,
+                    message: "请输入联系电话",
+                  },
+                ],
+              })(<Input placeholder="联系电话" />)}
+            </FormItem>
+            <FormItem {...formItemLayout} label="省份">
+              {getFieldDecorator('province', {
+                initialValue: modifyUser.province,
+                rules: [
+                  {
+                    required: false,
+                    message: "请输入省份",
+                  },
+                ],
+              })(<Input placeholder="省份" />)}
+            </FormItem>
+            <FormItem {...formItemLayout} label="城市">
+              {getFieldDecorator('city', {
+                initialValue: modifyUser.city,
+                rules: [
+                  {
+                    required: false,
+                    message: "请输入城市",
+                  },
+                ],
+              })(<Input placeholder="城市" />)}
+            </FormItem>
+            <FormItem {...formItemLayout} label="兴趣">
+              {getFieldDecorator('interests', {
+                initialValue: modifyUser.interests,
+                rules: [
+                  {
+                    required: false,
+                    message: "请输入兴趣",
+                  },
+                ],
+              })(<Input placeholder="兴趣" />)}
+            </FormItem>
+            <FormItem {...formItemLayout} label="擅长">
+              {getFieldDecorator('good', {
+                initialValue: modifyUser.good,
+                rules: [
+                  {
+                    required: false,
+                    message: "请输入擅长",
+                  },
+                ],
+              })(<Input placeholder="擅长" />)}
+            </FormItem>
             {/* 报名老师 */}
             <FormItem {...formItemLayout} label={<FormattedMessage id="form.teachers" />}>
-
               <Select
                 mode="multiple"
                 size={size}
@@ -228,10 +267,8 @@ class AddUser extends PureComponent {
               >
                 {children}
               </Select>
-
             </FormItem>
           </Form>
-        </Card>
       </Modal>
     )
   }

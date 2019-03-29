@@ -171,12 +171,20 @@ class UserManage extends PureComponent {
 
   columns = [
     {
+      title: '用户ID',
+      dataIndex: 'id',
+    },
+    {
       title: '姓名',
       dataIndex: 'name',
     },
     {
-      title: '用户名',
+      title: '登录名',
       dataIndex: 'account',
+    },
+    {
+      title: '密码',
+      dataIndex: 'password',
     },
     {
       title: '角色',
@@ -211,6 +219,30 @@ class UserManage extends PureComponent {
     {
       title: '联系电话',
       dataIndex: 'telephone',
+    },
+    {
+      title: '省份',
+      dataIndex: 'province',
+    },
+    {
+      title: '城市',
+      dataIndex: 'city',
+    },
+    {
+      title: '地址',
+      dataIndex: 'address',
+    },
+    {
+      title: '兴趣',
+      dataIndex: 'interests',
+    },
+    {
+      title: '擅长',
+      dataIndex: 'good',
+    },
+    {
+      title: '关注房间',
+      dataIndex: 'focus',
     },
     {
       title: '操作',
