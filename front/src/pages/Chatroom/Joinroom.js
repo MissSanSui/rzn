@@ -24,6 +24,7 @@ const whiteImg = [
     },
 ];
 
+
 class Chatroom extends PureComponent {
     constructor(props) {
         super(props);
