@@ -62,7 +62,7 @@ export default [
         name: 'joinroom',
         icon: 'video-camera',
         path: '/join-room',
-        authority: ['admin', 'sys', 'teacher', 'student'],
+        // authority: ['admin', 'sys', 'teacher', 'student'],
         component: './Chatroom/Joinroom',
       },
       {
