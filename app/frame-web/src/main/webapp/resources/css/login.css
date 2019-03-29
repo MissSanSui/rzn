@@ -1,0 +1,42 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	/* background: #444 url(../images/bg.png) */
+}
+
+.loginBox {
+	width: 450px;
+	height: 360px;
+	padding: 0 60px;
+	border: 1px solid #fff;
+	color: #000;
+	margin-top: 100px;
+	border-radius: 8px;
+	background: white;
+	box-shadow: 0 0 15px #222;
+	background: -moz-linear-gradient(top, #fff, #efefef 8%);
+	background: -webkit-gradient(linear, 0 0, 0 100%, from(#f6f6f6), to(#f4f4f4));
+	font: 11px/1.5em 'Microsoft YaHei';
+	position: absolute;
+	left: 50%;
+	top: 45%;
+	margin-left: -210px;
+	/* margin-top: -115px; */
+}
+
+.inputWidth{
+	width : 90%; 
+	padding-left: 40px;
+}
+
+.form-control-feedback{
+   left:0 ;
+}
+
+.errorMessage{
+	color: red;
+	margin-left:30px; 
+}

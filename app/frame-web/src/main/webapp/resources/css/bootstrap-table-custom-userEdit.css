@@ -1,0 +1,17 @@
+
+.bootstrap-table.table:not(.table-condensed), .bootstrap-table .table:not(.table-condensed) > tbody > tr > th, .bootstrap-table .table:not(.table-condensed) > tfoot > tr > th, .bootstrap-table .table:not(.table-condensed) > thead > tr > td, .bootstrap-table .table:not(.table-condensed) > tbody > tr > td, .bootstrap-table .table:not(.table-condensed) > tfoot > tr > td {
+ 	
+ 	
+}
+.fixed-table-container{
+	height:210px!important;
+	border-bottom: 0px solid #ddd;
+} 
+.table>thead>tr, .table>tbody>tr, .table>tfoot>tr {
+	vertical-align:middle;
+}
+
+
+.table>thead>tr>th, .table>tbody>tr>th, .table>tfoot>tr>th, .table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td {
+	vertical-align:middle;
+}

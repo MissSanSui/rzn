@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.frame.kernel.dic.dao.DictionaryDao">
+	
+	<select id="getDictionaryByDicId" parameterType="int" resultType="dictionary">
+		SELECT * FROM frame_dic WHERE dic_id = #{value}
+	</select>
+	
+	<select id="getDictionaryList" resultType="dictionary">
+		SELECT * FROM frame_dic where 1=1
+			<if test="dic_code != null and dic_code != '' ">
+				and dic_code = #{dic_code} 
+			</if>
+			<if test="dic_name != null and dic_name != '' ">
+				and dic_name = #{dic_name} 
+			</if>
+		ORDER BY ${sortName} ${sortOrder}
+		limit #{startInt},#{limitInt}
+	</select>
+
+	<select id="getDictionaryListCount" resultType="int">
+		SELECT count(*) FROM frame_dic where 1=1
+			<if test="dic_code != null  and dic_code != '' ">
+				and dic_code = #{dic_code} 
+			</if>
+			<if test="dic_name != null  and dic_name != '' ">
+				and dic_name = #{dic_name} 
+			</if>
+	</select>
+	<insert id="saveDictionaryInfo" parameterType="dictionary">
+		
+		<selectKey keyProperty="dic_id" order="BEFORE" resultType="java.lang.Integer">
+			  SELECT nextval_sequence('frame_dic');
+		</selectKey>
+		insert into frame_dic(dic_id,dic_code,dic_name,dic_desc,attribute1,attribute2,attribute3,attribute4,attribute5,created_date,created_by,last_updated_date,last_updated_by)
+		 value(#{dic_id},#{dic_code},#{dic_name},#{dic_desc},#{attribute1},#{attribute2},#{attribute3},#{attribute4},#{attribute5},#{created_date},#{created_by},#{last_updated_date},#{last_updated_by})
+	</insert>
+	<update id="updateDictionaryInfo" parameterType="dictionary">
+		update frame_dic set dic_code=#{dic_code},dic_name=#{dic_name},dic_desc=#{dic_desc},last_updated_date=#{last_updated_date},last_updated_by=#{last_updated_by}
+		 where dic_id=#{dic_id}
+	</update>
+	<select id="dictionaryValid" parameterType="string" resultType="int">
+		SELECT count(*) FROM frame_dic WHERE dic_code = #{value}
+	</select>
+	<select id="dictionaryValidById"  resultType="int">
+		SELECT count(*) FROM frame_dic WHERE dic_code = #{dic_code_a} and dic_id =#{dic_id}
+	</select>
+	<select id="getDictionaryItem" parameterType="string" resultType="dictionaryItem">
+		SELECT a.* 
+			FROM frame_dic_item a ,frame_dic b
+			where a.dic_id = b.dic_id
+			and  b.dic_code = #{dictionaryCode}
+			and  a.enable_flag = 'Y'
+	</select>
+	 <select id="getSquenceNum" resultType="int">
+		SELECT nextval_sequence(#{dicSequence});
+	</select>
+</mapper>
+
+

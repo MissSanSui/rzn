@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace命名空间，作用就是对sql进行分类化管理，理解sql隔离 注意：使用mapper代理方法开发，namespace有特殊重要的作用，namespace等于mapper接口地址 -->
+<mapper namespace="com.frame.kernel.menu.dao.MenuDao">
+
+	<!-- 在 映射文件中配置很多sql语句 -->
+	<!-- 需求：通过id查询用户表的记录 -->
+	<!-- 通过 select执行数据库查询 id：标识 映射文件中的 sql 将sql语句封装到mappedStatement对象中，所以将id称为statement的id 
+		parameterType：指定输入 参数的类型，这里指定int型 #{}表示一个占位符号 #{id}：其中的id表示接收输入 的参数，参数名称就是id，如果输入 
+		参数是简单类型，#{}中的参数名可以任意，可以value或其它名称 resultType：指定sql输出结果 的所映射的java对象类型，select指定resultType表示将单条记录映射成的java对象。 -->
+	<!-- 用户信息综合查询总数 parameterType：指定输入类型和findUserList一样 resultType：输出结果类型 -->
+
+	<select id="findByParentMenuId" resultType="menu">
+		select * from frame_menu where pmenu_id = #{pMenuId} and enable_flag = 'Y' ORDER BY display_order ASC;
+	</select>
+	<select id="findByMenuId" resultType="menu">
+		select * from frame_menu where menu_id = #{pMenuId} and enable_flag = 'Y' ORDER BY display_order ASC;
+	</select>
+	<select id="getPagList"  resultType="menu" >
+		SELECT
+			display_order,
+			pmenu_id,
+			url,
+			menu_id,
+			menu_desc,
+			menu_name,
+		 	enable_flag
+		FROM
+			frame_menu a
+		where 1=1
+		<if test="menu_name!=null and menu_name!=''">
+		and a.menu_name LIKE '%${menu_name}%'
+		</if>
+		<if test="pmenu_id!=null and pmenu_id!=''">
+			and a.pmenu_id =  #{pmenu_id}
+		</if>
+		<if test="enable_flag!=null and enable_flag!=''">
+			and a.enable_flag =  #{enable_flag}
+		</if>
+		ORDER BY ${sortName} ${sortOrder}
+		LIMIT  #{offset},#{limit};
+	</select>
+	<select id="findMenuPagCount"   resultType="int">
+	   SELECT count(*) FROM
+			frame_menu a
+		where 1=1
+		<if test="menu_name!=null and menu_name!=''">
+		and a.menu_name LIKE '%${menu_name}%'
+		</if>
+		<if test="pmenu_id!=null and pmenu_id!=''">
+			and a.pmenu_id =  #{pmenu_id}
+		</if>
+   	</select> 
+   	<select id="findMenuSameName"   resultType="int">
+	   SELECT count(*) FROM
+			frame_menu a
+		where 1=1
+		<if test="menu_name!=null and menu_name!=''">
+		and a.menu_name =   #{menu_name}
+		</if>
+		<if test="pmenu_id!=null and pmenu_id!=''">
+			and a.pmenu_id =  #{pmenu_id}
+		</if>
+   	</select> 
+   	<insert id="saveMenu" parameterType="com.frame.kernel.menu.model.Menu">
+		<!-- 
+		将插入数据的主键返回，返回到user对象中
+		
+		SELECT LAST_INSERT_ID()：得到刚insert进去记录的主键值，只适用与自增主键
+		
+		keyProperty：将查询到主键值设置到parameterType指定的对象的哪个属性
+		order：SELECT LAST_INSERT_ID()执行顺序，相对于insert语句来说它的执行顺序
+		resultType：指定SELECT LAST_INSERT_ID()的结果类型
+		 -->
+		<!-- <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		insert into user(username,birthday,sex,address) value(#{username},#{birthday},#{sex},#{address})
+		 -->
+		<!-- 
+		使用mysql的uuid（）生成主键
+		执行过程：
+		首先通过uuid()得到主键，将主键设置到user对象的id属性中
+		其次在insert执行时，从user对象中取出id属性值
+		 -->
+		<selectKey keyProperty="menu_id" order="BEFORE" resultType="java.lang.Integer">
+			  SELECT nextval_sequence('frame_menu');
+		</selectKey>
+		insert into frame_menu(menu_id,menu_name,menu_desc,url,display_order,pmenu_id,enable_flag,created_date,created_by,last_updated_date,last_updated_by)
+		 			    value(#{menu_id},#{menu_name},#{menu_desc},#{url},#{display_order},#{pmenu_id},#{enable_flag},#{created_date},#{created_by},#{last_updated_date},#{last_updated_by})
+	</insert>
+	
+	<update id="updateMenu" parameterType="com.frame.kernel.menu.model.Menu">
+		update frame_menu set  menu_name=#{menu_name},
+		menu_desc=#{menu_desc},display_order=#{display_order}, url=#{url},
+	 	last_updated_date=#{last_updated_date},last_updated_by=#{last_updated_by}
+		 where menu_id=#{menu_id}
+	</update>
+	<update id="disableMenu"  >
+		update frame_menu set  enable_flag= 'N'
+		<foreach collection="ids" item="menu_id" open="where menu_id IN(" close=")" separator=",">
+				#{menu_id}
+		</foreach> 
+	</update>
+	<update id="ableMenu"  >
+		update frame_menu set  enable_flag= 'Y'
+		<foreach collection="ids" item="menu_id" open="where menu_id IN(" close=")" separator=",">
+				#{menu_id}
+		</foreach> 
+	</update>
+</mapper>
+
+

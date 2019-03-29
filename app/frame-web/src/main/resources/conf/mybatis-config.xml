@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration 
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<!-- 命名空间 -->
+	<typeAliases>
+		<typeAlias alias="Integer" type="java.lang.Integer" />
+		<typeAlias alias="String" type="java.lang.String" />
+
+		<typeAlias alias="user" type="com.frame.kernel.user.model.User" />
+		<typeAlias alias="userRole" type="com.frame.kernel.user.model.UserRole" />
+		<typeAlias alias="userOrg" type="com.frame.kernel.user.model.UserOrg" />
+		<typeAlias alias="menu" type="com.frame.kernel.menu.model.Menu" />
+		<typeAlias alias="org" type="com.frame.kernel.org.model.Org" />
+		<typeAlias alias="role" type="com.frame.kernel.role.model.Role" />
+		<typeAlias alias="dictionary" type="com.frame.kernel.dic.model.Dictionary"/>
+    	<typeAlias alias="dictionaryItem" type="com.frame.kernel.dic.model.DictionaryItem"/>
+    	<typeAlias alias="rooms" type="com.frame.business.rooms.model.Rooms"/>
+    	<typeAlias alias="userFocusRooms" type="com.frame.business.userFocusRooms.model.UserFocusRooms"/>
+    	<typeAlias alias="contracts" type="com.frame.business.contracts.model.Contracts"/>
+    	<typeAlias alias="roomReview" type="com.frame.business.roomReview.model.RoomReview"/>
+    	<typeAlias alias="coursewares" type="com.frame.business.coursewares.model.Coursewares"/>
+
+	</typeAliases>
+
+	<!-- 映射map -->
+	<mappers>
+		<package name="com.frame.business.*.dao,com.frame.kernel.*.dao" />
+	</mappers>
+</configuration>

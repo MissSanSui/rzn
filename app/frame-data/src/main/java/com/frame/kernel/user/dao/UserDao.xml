@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace命名空间，作用就是对sql进行分类化管理，理解sql隔离 注意：使用mapper代理方法开发，namespace有特殊重要的作用，namespace等于mapper接口地址 -->
+<mapper namespace="com.frame.kernel.user.dao.UserDao">
+
+    <!-- 在 映射文件中配置很多sql语句 -->
+    <!-- 需求：通过id查询用户表的记录 -->
+    <!-- 通过 select执行数据库查询 id：标识 映射文件中的 sql 将sql语句封装到mappedStatement对象中，所以将id称为statement的id
+        parameterType：指定输入 参数的类型，这里指定int型 #{}表示一个占位符号 #{id}：其中的id表示接收输入 的参数，参数名称就是id，如果输入
+        参数是简单类型，#{}中的参数名可以任意，可以value或其它名称 resultType：指定sql输出结果 的所映射的java对象类型，select指定resultType表示将单条记录映射成的java对象。 -->
+    <select id="getList" resultType="user">
+        SELECT
+        *
+        FROM
+        (
+        SELECT
+        a.*, b.emp_name supervisor_name,
+        c.org_name dept_name,
+        (select org_name from frame_org where org_id = 0 limit 0,1) as company_name
+
+        FROM
+        frame_user a
+        INNER JOIN(
+        SELECT
+        e.user_id,
+        f.*
+        FROM
+        frame_user_org e
+        LEFT JOIN frame_org f ON e.org_id = f.org_id
+        )c ON a.user_id = c.user_id
+        LEFT JOIN frame_user b ON a.supervisor = b.user_id
+        WHERE
+        1 = 1
+        <if test="type!=null and type!='' and  type=='list'">
+            and c.org_id = #{org_id}
+        </if>
+        <if test="user_id!=null and user_id!='' and  choose_user_type!='choose_old_user'">
+            and a.user_id != #{user_id}
+        </if>
+        <if test="emp_name!=null and emp_name!=''">
+            and a.emp_name LIKE '%${emp_name}%'
+        </if>
+        <if test="email!=null and email!=''">
+            and a.email LIKE '%${email}%'
+        </if>
+        <if test="telphone!=null and telphone!=''">
+            and (a.telphone LIKE '%${telphone}%' or a.mobile LIKE '%${telphone}%')
+        </if>
+        <if test="user_status!=null and user_status!=''">
+            and a.user_status = #{user_status}
+        </if>
+        <if test="org_id!=null and org_id!='' and  choose_user_type=='choose_old_user'">
+            and c.user_id not in (
+            select user_id from frame_user_org where org_id = #{org_id}
+            )
+        </if>
+        )c
+        ORDER BY ${sortName} ${sortOrder}
+        LIMIT #{offset},#{limit};
+    </select>
+    <!-- 用户信息综合查询总数 parameterType：指定输入类型和findUserList一样 resultType：输出结果类型 -->
+    <select id="findUserCount" resultType="int">
+        SELECT count(*) FROM
+        frame_user a
+        INNER JOIN(
+        SELECT
+        e.user_id,
+        f.*
+        FROM
+        frame_user_org e
+        LEFT JOIN frame_org f ON e.org_id = f.org_id
+        )c ON a.user_id = c.user_id
+        LEFT JOIN frame_user b ON a.supervisor = b.user_id
+        WHERE
+        1 = 1
+        <if test="type!=null and type!='' and  type=='list'">
+            and c.org_id = #{org_id}
+        </if>
+        <if test="user_id!=null and user_id!='' and  choose_user_type!='choose_old_user'">
+            and a.user_id != #{user_id}
+        </if>
+        <if test="emp_name!=null and emp_name!=''">
+            and a.emp_name LIKE '%${emp_name}%'
+        </if>
+        <if test="email!=null and email!=''">
+            and a.email LIKE '%${email}%'
+        </if>
+        <if test="telphone!=null and telphone!=''">
+            and a.telphone LIKE '%${telphone}%'
+        </if>
+        <if test="user_status!=null and user_status!=''">
+            and a.user_status = #{user_status}
+        </if>
+        <if test="org_id!=null and org_id!='' and  choose_user_type=='choose_old_user'">
+            and c.user_id not in (
+            select user_id from frame_user_org where org_id = #{org_id}
+            )
+        </if>
+    </select>
+    <!-- 添加用户 parameterType：指定输入 参数类型是pojo（包括 用户信息） #{}中指定pojo的属性名，接收到pojo对象的属性值，mybatis通过OGNL获取对象的属性值 -->
+    <insert id="saveUser" parameterType="com.frame.kernel.user.model.User" keyProperty="user_id">
+        <!-- 将插入数据的主键返回，返回到user对象中 SELECT LAST_INSERT_ID()：得到刚insert进去记录的主键值，只适用与自增主键
+            keyProperty：将查询到主键值设置到parameterType指定的对象的哪个属性 order：SELECT LAST_INSERT_ID()执行顺序，相对于insert语句来说它的执行顺序
+            resultType：指定SELECT LAST_INSERT_ID()的结果类型 -->
+        <!-- <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+            SELECT LAST_INSERT_ID() </selectKey> insert into user(username,birthday,sex,address)
+            value(#{username},#{birthday},#{sex},#{address}) -->
+        <!-- 使用mysql的uuid（）生成主键 执行过程： 首先通过uuid()得到主键，将主键设置到user对象的id属性中 其次在insert执行时，从user对象中取出id属性值 -->
+        <selectKey keyProperty="user_id" order="BEFORE" resultType="java.lang.Integer">
+            SELECT nextval_sequence('frame_user');
+        </selectKey>
+        insert into
+        frame_user(user_id,user_name,sex,work_space,password,emp_number,emp_name,english_name,id_card,birth,email,telphone,mobile,alternate_contact,alternate_contact_mobile,org_id,dept_id,supervisor,job,user_status,attribute1,attribute2,attribute3,attribute4,attribute5,created_date,created_by,last_updated_date,last_updated_by)
+        value(#{user_id},#{user_name},#{sex},#{work_space},#{password},#{emp_number},#{emp_name},#{english_name},#{id_card},#{birth},#{email},#{telphone},#{mobile},#{alternate_contact},#{alternate_contact_mobile},#{org_id},#{dept_id},#{supervisor},#{job},#{user_status},#{attribute1},#{attribute2},#{attribute3},#{attribute4},#{attribute5},#{created_date},#{created_by},#{last_updated_date},#{last_updated_by})
+    </insert>
+
+    <!-- 根据id更新用户 分析： 需要传入用户的id 需要传入用户的更新信息 parameterType指定user对象，包括 id和更新信息，注意：id必须存在
+        #{id}：从输入 user对象中获取id属性值 -->
+    <update id="updateUser" parameterType="com.frame.kernel.user.model.User">
+		update frame_user set
+		user_name=#{user_name},
+		emp_number=#{emp_number},
+		sex=#{sex},
+		work_space=#{work_space},
+		id_card=#{id_card},
+		emp_name=#{emp_name},
+		english_name=#{english_name},
+		birth=#{birth},
+		email=#{email},
+		telphone=#{telphone},
+		mobile=#{mobile},
+		alternate_contact=#{alternate_contact},
+		alternate_contact_mobile=#{alternate_contact_mobile},
+		org_id=#{org_id},
+		dept_id=#{dept_id},
+		supervisor=#{supervisor},
+		job=#{job},
+		last_updated_date=now(),
+		last_updated_by=#{last_updated_by}
+		where user_id=#{user_id}
+	</update>
+    <update id="updateUserHasPs" parameterType="com.frame.kernel.user.model.User">
+		update frame_user set
+		user_name=#{user_name},
+		emp_name=#{emp_name},
+		sex=#{sex},
+		work_space=#{work_space},
+		english_name=#{english_name},
+		birth=#{birth},
+		email=#{email},
+		telphone=#{telphone},
+		mobile=#{mobile},
+		password=#{password},
+		alternate_contact=#{alternate_contact},
+		alternate_contact_mobile=#{alternate_contact_mobile},
+		org_id=#{org_id},
+		dept_id=#{dept_id},
+		supervisor=#{supervisor},
+		job=#{job},
+		last_updated_date=now(),
+		last_updated_by=#{last_updated_by}
+		where user_id=#{user_id}
+	</update>
+    <update id="disableUser">
+        update frame_user set user_status= 'close'
+        <foreach collection="ids" item="user_id" open="where user_id IN("
+                 close=")" separator=",">
+            #{user_id}
+        </foreach>
+    </update>
+    <update id="ableUser">
+        update frame_user set user_status= 'open'
+        <foreach collection="ids" item="user_id" open="where user_id IN("
+                 close=")" separator=",">
+            #{user_id}
+        </foreach>
+    </update>
+    <select id="findUserSameName" resultType="int">
+        SELECT count(*) FROM
+        frame_user a
+        WHERE
+        1 = 1
+        <if test="userName!=null and userName!=''">
+            and a.user_name = #{userName}
+        </if>
+    </select>
+    <select id="findUserById" resultType="user">
+
+        SELECT
+        a.*, b.emp_name supervisor_name,
+        (
+        SELECT
+        org_name
+        FROM
+        frame_org
+        WHERE
+        org_id = 0
+        LIMIT 0,
+        1
+        )AS company_name,
+        c.org_name dept_name
+        FROM
+        frame_user a
+        INNER JOIN(
+        SELECT
+        e.user_id,
+        f.*
+        FROM
+        frame_user_org e
+        LEFT JOIN frame_org f ON e.org_id = f.org_id
+        )c ON a.user_id = c.user_id
+        LEFT JOIN frame_user b ON a.supervisor = b.user_id
+        WHERE
+        1 = 1
+        <if test="user_id!=null and user_id!=''">
+            and a.user_id = #{user_id}
+        </if>
+        <if test="org_id!=null and org_id!=''">
+            and c.org_id = #{org_id}
+        </if>
+    </select>
+    <select id="findUserInfoById" resultType="user">
+
+        SELECT
+        a.*, b.emp_name supervisor_name,
+        (
+        SELECT
+        org_name
+        FROM
+        frame_org
+        WHERE
+        org_id = 0
+        LIMIT 0,
+        1
+        )AS company_name
+        FROM
+        frame_user a
+
+        LEFT JOIN frame_user b ON a.supervisor = b.user_id
+        WHERE
+        1 = 1
+
+        <if test="user_id!=null and user_id!=''">
+            and a.user_id = #{user_id}
+        </if>
+
+    </select>
+
+
+    <select id="getUserOrgMapping" resultType="userOrg">
+        select * from frame_user_org where 1=1
+        <if test="org_id!=null and org_id!=''">
+            and org_id = #{org_id}
+        </if>
+        <if test="user_id!=null and user_id!=''">
+            and user_id = #{user_id}
+        </if>
+    </select>
+
+    <select id="commonUserPageList" resultType="user">
+        SELECT *
+        FROM (SELECT a.*,
+        '' as supervisor_name,
+        c.org_name as company_name,
+        d.org_name as dept_name
+        FROM frame_user a
+        LEFT JOIN frame_org c ON a.org_id = c.org_id
+        LEFT JOIN frame_org d ON a.dept_id = d.org_id
+        <if test="role_code!=null and role_code!=''">
+            LEFT JOIN frame_user_role u ON a.user_id = u.user_id
+            LEFT JOIN frame_role r ON u.role_id = r.role_id
+        </if>
+        WHERE 1 = 1
+        <if test="emp_name!=null and emp_name!=''">
+            and a.emp_name LIKE '%${emp_name}%'
+        </if>
+        <if test="role_code!=null and role_code!=''">
+            and r.role_code = #{role_code}
+        </if>
+        )c
+        ORDER BY ${sortName} ${sortOrder}
+        LIMIT #{offset},#{limit};
+    </select>
+
+    <select id="commonUserPageCount" resultType="int">
+        SELECT count(*)
+        FROM frame_user a
+        LEFT JOIN frame_org c ON a.org_id = c.org_id
+        LEFT JOIN frame_org d ON a.dept_id = d.org_id
+        <if test="role_code!=null and role_code!=''">
+            LEFT JOIN frame_user_role u ON a.user_id = u.user_id
+            LEFT JOIN frame_role r ON u.role_id = r.role_id
+        </if>
+        WHERE 1=1
+        <if test="emp_name!=null and emp_name!=''">
+            AND a.emp_name LIKE '%${emp_name}%'
+        </if>
+        <if test="role_code!=null and role_code!=''">
+            AND r.role_code = #{role_code}
+        </if>
+    </select>
+
+
+
+
+    <update id="updateSelfInfo" parameterType="com.frame.kernel.user.model.User">
+		update frame_user set
+		bank_name=#{bank_name},
+		bank_branch_name=#{bank_branch_name},
+		bank_account=#{bank_account},
+		photo=#{photo,typeHandler=org.apache.ibatis.type.BlobTypeHandler}
+		where user_id=#{user_id}
+	</update>
+    <select id="findUserByRoleCode" resultType="user">
+		select distinct a.* from frame_user a
+		LEFT JOIN frame_user_role b ON a.user_id = b.user_id
+	LEFT JOIN frame_role c ON b.role_id = c.role_id
+	where 1=1 and c.role_code = #{groupId}
+	</select>
+
+
+    <select id="queryUserByName" resultType="com.frame.kernel.user.model.User" parameterType="java.lang.String">
+		SELECT * FROM frame_user WHERE user_Name=#{userName}
+	</select>
+    <select id="queryRolesByName" resultType="java.lang.String" parameterType="java.lang.String">
+		SELECT name FROM role r,user_role ur,user u WHERE r.id = ur.roleId AND u.id = ur.userId AND u.userName=#{userName}
+	</select>
+</mapper>
+
+

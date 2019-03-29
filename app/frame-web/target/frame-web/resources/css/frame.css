@@ -1,0 +1,82 @@
+
+.vsino-navbar-main {
+    max-height: 45px;
+}
+
+.frame-container {
+    padding-top: 60px;
+    /*padding-bottom: 60px;*/
+}
+.frame-font-format {
+    font: 14px "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+.frame-font-red {
+    font: 10px "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+.frame-row {
+    margin-left: -5%;
+    margin-right: -5%;
+}
+.frame-panel-footer {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.frame-index {
+    width: 100%;
+    height: 28px;
+    position: fixed;
+    z-index: 998;
+    color: #262626;
+    font-size: 12px;
+    background-color: #F6F6F6;
+    border-bottom: 1px solid #e5e5e5;
+    box-shadow: 0 0 15px 0 #666;
+}
+
+.frame-index-breadcrumb {
+    font-size: 12px;
+}
+
+.frame-workspace {
+    padding: 30px;
+    background: #ffffff;
+    margin-bottom: 35px;
+    position: relative;
+    overflow: hidden;
+}
+
+.frame-control-label {
+    text-align: left !important;
+}
+
+.frame-sm-label {
+    padding-top: 6px !important;
+}
+
+.frame-input-sm {
+    height: 26px !important;
+    padding: 4px 6px;
+    font-size: 12px;
+    line-height: 1.5;
+    width: 160px !important;
+}
+
+select.frame-input-sm {
+    height: 26px;
+    padding: 4px 6px;
+    font-size: 12px;
+    line-height: 1.5;
+    width: 160px !important;
+}
+
+.frame-copyright {
+    /*background: #111;*/
+    font-size: 13px;
+    text-align: right;
+    min-height: 45px;
+    color: #ffffff;
+    padding-top: 14px;
+    padding-bottom: 14px;
+    /*border-top: 1px solid #303030;*/
+}
