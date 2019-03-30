@@ -2,43 +2,64 @@ import { stringify } from 'qs';
 import request from '@/utils/request';
 const { NODE_ENV, APP_TYPE, TEST } = process.env;
 
-const backendAddr = (() => {
-  const env = NODE_ENV
-  console.log(env)
-  switch (env) {
-    case 'dev': return {
-      sample: 'https://dev.p2shop.com.cn/sample',
-    };
-    case 'qa': return {
-      sample: 'https://qa.p2shop.com.cn/sample',
-    };
-    case 'production': return {
-      sample: 'https://gateway.p2shop.com.cn/sample',
-    };
-    default: return {
-      sample: 'http://localhost:8000',
-    };
-  }
-})();
+// const backendAddr = (() => {
+//   const env = NODE_ENV
+//   console.log(env)
+//   switch (env) {
+//     case 'dev': return {
+//       sample: 'http://localhost',
+//     };
+//     case 'qa': return {
+//       sample: 'http://localhost',
+//     };
+//     case 'production': return {
+//       sample: 'http://localhost',
+//     };
+//     default: return {
+//       sample: 'http://localhost',
+//     };
+//   }
+// })();
 export async function fakeAccountLogin(params) {
   return request('/api/login/account', {
-  // return request('api/entry/login', {
+    // return request('api/entry/login', {
     method: 'POST',
     body: params,
   });
 }
 
 export async function addUser(params) {
-  return request('/api/userManage/addUser', {
+  return request('/frame-web/user/1/saveUserInfo?org_id=-1', {
     method: 'POST',
     body: params,
   });
 }
-
+export async function updateUser(params) {
+  return request('/frame-web/user/UpdateUserInfo?org_id=-1', {
+    method: 'POST',
+    body: params,
+  });
+}
 export async function queryUsers(params) {
-  return request('/api/userManage/queryUsers?${stringify(params)}')
+  return request('/frame-web/user/userPageList')
 }
 
+
+export async function addCourseWare(params) {
+  return request('/frame-web/user/saveUserInfo?org_id=-1', {
+    method: 'POST',
+    body: params,
+  });
+}
+export async function updateCourseWare(params) {
+  return request('/frame-web/user/UpdateUserInfo?org_id=-1', {
+    method: 'POST',
+    body: params,
+  });
+}
+export async function queryCourseWares(params) {
+  return request('/frame-web/user/userPageList')
+}
 export async function queryProjectNotice() {
   return request('/api/project/notice');
 }
@@ -105,7 +126,7 @@ export async function queryAdvancedProfile() {
 }
 
 export async function queryFakeList(params) {
-  return request(backendAddr.sample+`/api/fake_list?${stringify(params)}`);
+  return request( `/api/fake_list?${stringify(params)}`);
 }
 
 export async function removeFakeList(params) {

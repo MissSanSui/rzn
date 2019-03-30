@@ -48,11 +48,12 @@ class UserManage extends PureComponent {
   state = {
     modalVisible: false,
     formValues: {},
-    modalType: "add"
+    modalType: "add",
+    pagination:{
+      current:1,
+      pageSize:10
+    }
   };
-
-
-
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
@@ -97,11 +98,10 @@ class UserManage extends PureComponent {
       if (err) return;
       const values = {
         ...fieldsValue,
-        updatedAt: fieldsValue.updatedAt && fieldsValue.updatedAt.valueOf(),
       };
-      this.setState({
-        formValues: values,
-      });
+      // this.setState({
+      //   formValues: values,
+      // });
       // 分页查询
       dispatch({
         type: 'userManage/fetch',
@@ -111,6 +111,7 @@ class UserManage extends PureComponent {
   };
 
   handleModalVisible = (flag, modalType, user) => {
+    console.log("handleModalVisible   modalType===",modalType)
     console.log("handleModalVisible   user===",user)
     this.setState({
       modalVisible: !!flag,
@@ -259,7 +260,7 @@ class UserManage extends PureComponent {
       loading,
     } = this.props;
     // 数据来源
-    const { modalVisible, modalType, modifyUser, } = this.state;
+    const { modalVisible, modalType, modifyUser,pagination } = this.state;
 
     return (
       <PageHeaderWrapper title="查询用户">
@@ -277,13 +278,13 @@ class UserManage extends PureComponent {
               // key={item.id}
               rowKey={user => user.id}
               columns={this.columns}
-              // onSelectRow={this.handleSelectRows}
+              pagination={pagination}
               onChange={this.handleStandardTableChange}
             />
           </div>
         </Card>
         <AddUser modalVisible={modalVisible} onCancel={() => this.handleModalVisible(false)} 
-        type={modalType} modifyUser={modifyUser} />
+        type={modalType} modifyUser={modifyUser} onSearch={this.handleSearch} />
       </PageHeaderWrapper>
     );
   }

@@ -16,77 +16,66 @@ const { TextArea } = Input;
 }))
 @Form.create()
 
-
-
 class AddUser extends PureComponent {
-
-  handleSubmit = e => {
-    const { dispatch, form } = this.props;
-    e.preventDefault();
-    form.validateFieldsAndScroll((err, values) => {
-      console.log(values);
-      if (!err) {
-        dispatch({
-          type: 'usermanage/addUser',
-          payload: values,
-        });
-      }
-    });
-  };
-  handleUpdate = fields => {
-    const { dispatch } = this.props;
-    const { formValues } = this.state;
-    dispatch({
-      type: 'userManage/update',
-      payload: {
-        query: formValues,
-        body: {
-          name: fields.name,
-          desc: fields.desc,
-          key: fields.key,
-        },
-      },
-    });
-    message.success('配置成功');
-    this.handleUpdateModalVisible();
-  };
   handleModalVisible = flag => {
     this.setState({
       modalVisible: !!flag,
     });
   };
-  state = {
-    size: 'default',
-  };
-
+  state = {size: 'default',  };
   handleSizeChange = (e) => {
     this.setState({ size: e.target.value });
   }
   constructor(props) {
     super(props);
-    this.state = {
-      room: null
-    }
+    this.state = {}
   }
-
   handleAdd = fields => {
     const { dispatch } = this.props;
     dispatch({
       type: 'userManage/add',
       payload: {
-        desc: fields.desc,
+        params: fields,
+      },
+      success:()=>{
+        message.success('配置成功');
+        this.props.onSearch()
+        this.handleUpdateModalVisible();
+      },
+      fail:(res)=>{
+        console.log("fail====",res)
+        message.error('添加失败！');
       },
     });
-
-    message.success('添加成功');
-    this.handleModalVisible();
+  };
+  handleUpdate = fields => {
+    const { dispatch ,modifyUser} = this.props;
+    fields.id = modifyUser.id
+    dispatch({
+      type: 'userManage/update',
+      payload: {
+       params:fields
+      },
+      success:()=>{
+        message.success('修改成功！');
+        this.props.onSearch()
+        this.handleUpdateModalVisible();
+      },
+      fail:(res)=>{
+        console.log("fail====",res)
+        message.error('修改失败！');
+      },
+    });
   };
   okHandle = () => {
-    const { form } = this.props
+    const { form,type } = this.props
     form.validateFields((err, fieldsValue) => {
       if (err) return;
-      form.resetFields();
-      this.handleAdd(fieldsValue);
+      if(type=="add"){
+        this.handleAdd(fieldsValue);
+      }else{
+        this.handleUpdate(fieldsValue);
+      }
     });
   };
   render() {
@@ -96,7 +85,6 @@ class AddUser extends PureComponent {
     if (type == "add") {
       modifyUser = {}
     }
-    console.log("this.props.modifyUser===", this.props.modifyUser)
     const {
       form: { getFieldDecorator, getFieldValue },
     } = this.props;
@@ -135,11 +123,10 @@ class AddUser extends PureComponent {
         onCancel={this.props.onCancel}
       >
           <Form onSubmit={this.handleSubmit} hideRequiredMark={false} style={{ marginTop: 8 }}>
-
             {/* 姓名 */}
             <FormItem {...formItemLayout} label={<FormattedMessage id="form.name" />}>
-              {getFieldDecorator('name', {
-                initialValue: modifyUser.name,
+              {getFieldDecorator('emp_name', {
+                initialValue: modifyUser.emp_name,
                 rules: [
                   {
                     required: true,
@@ -150,8 +137,8 @@ class AddUser extends PureComponent {
             </FormItem>
             {/* 登录名 */}
             <FormItem {...formItemLayout} label={<FormattedMessage id="form.account" />}>
-              {getFieldDecorator('account', {
-                initialValue: modifyUser.account,
+              {getFieldDecorator('user_name', {
+                initialValue: modifyUser.user_name,
                 rules: [
                   {
                     required: true,

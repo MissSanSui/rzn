@@ -351,5 +351,6 @@ export default {
   'GET /api/fake_list': getFakeList,
   'POST /api/fake_list': postFakeList,
   'GET /api/captcha': getFakeCaptcha,
-  'GET /api/userManage/queryUsers': getUsers,
+  //'GET /frame-web/user/userPageList': getUsers,
+  'GET /api/user/userPageList': getUsers,
 };
