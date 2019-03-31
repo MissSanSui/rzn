@@ -3,13 +3,30 @@ import { connect } from 'dva';
 import moment from 'moment';
 import router from 'umi/router';
 import {
-  Row, Col, Card, Form, Input,Select,Icon, Button,Dropdown,Menu,InputNumber,DatePicker,Modal,
-  message,Badge,Divider,Steps,Radio,Table,
+  Row,
+  Col,
+  Card,
+  Form,
+  Input,
+  Select,
+  Icon,
+  Button,
+  Dropdown,
+  Menu,
+  InputNumber,
+  DatePicker,
+  Modal,
+  message,
+  Badge,
+  Divider,
+  Steps,
+  Radio,
+  Table,
 } from 'antd';
 import StandardTable from '@/components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
-import AddUser from '@/pages/UserManage/Adduser';
-import styles from './UserManage.less';
+import ContractDetail from '@/pages/ContractManage/Detail';
+import styles from './Index.less';
 
 const FormItem = Form.Item;
 const { Step } = Steps;
@@ -22,31 +39,29 @@ const getValue = obj =>
     .join(',');
 
 /* eslint react/no-multi-comp:0 */
-@connect(({ userManage, loading }) => ({
-  userManage,
-  loading: loading.models.userManage,
+@connect(({ contract, loading }) => ({
+  contract,
 }))
 @Form.create()
-class UserManage extends PureComponent {
+class ContractManage extends PureComponent {
   state = {
     modalVisible: false,
     formValues: {},
     modalType: "add",
-    pagination: {
-      current: 1,
-      pageSize: 2
+    pagination:{
+      current:1,
+      pageSize:10
     }
   };
   componentDidMount() {
-    console.log("componentDidMount==")
     const { dispatch } = this.props;
     dispatch({
-      type: 'userManage/fetch',
-      payload: {}
-    })
+      type: 'contract/fetch',
+    });
   }
+
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
-    console.log("pagination====", pagination);
+    console.log(pagination);
     const { dispatch } = this.props;
     const { formValues } = this.state;
 
@@ -55,32 +70,33 @@ class UserManage extends PureComponent {
       newObj[key] = getValue(filtersArg[key]);
       return newObj;
     }, {});
+
     const params = {
-      offset: (pagination.current - 1) * pagination.pageSize,
-      limit: pagination.pageSize,
+      currentPage: pagination.current,
+      pageSize: pagination.pageSize,
       ...formValues,
       ...filters,
     };
+
     if (sorter.field) {
       params.sorter = `${sorter.field}_${sorter.order}`;
     }
+
     // 分页查询
     console.log(params);
     dispatch({
-      type: 'userManage/fetch',
+      type: 'user/fetch',
       payload: params,
     });
   };
 
   handleSearch = e => {
-    console.log("handleSearch===")
-    // e.preventDefault();
+    e.preventDefault();
     const { dispatch, form } = this.props;
     form.validateFields((err, fieldsValue) => {
       if (err) return;
       const values = {
         ...fieldsValue,
-      
       };
       // this.setState({
       //   formValues: values,
@@ -94,8 +110,8 @@ class UserManage extends PureComponent {
   };
 
   handleModalVisible = (flag, modalType, user) => {
-    console.log("handleModalVisible   modalType===", modalType)
-    console.log("handleModalVisible   user===", user)
+    console.log("handleModalVisible   modalType===",modalType)
+    console.log("handleModalVisible   user===",user)
     this.setState({
       modalVisible: !!flag,
       modalType,
@@ -112,12 +128,12 @@ class UserManage extends PureComponent {
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={6} sm={24}>
             <FormItem label="用户名">
-              {getFieldDecorator('user_name')(<Input placeholder="请输入用户名" />)}
+              {getFieldDecorator('name')(<Input placeholder="请输入用户名" />)}
             </FormItem>
           </Col>
           <Col md={6} sm={24}>
             <FormItem label="角色">
-              {getFieldDecorator('role')(
+              {getFieldDecorator('roles')(
                 <Select placeholder="请选择" style={{ width: '100%' }}>
                   <Option value="STU">学生</Option>
                   <Option value="TEA">教师</Option>
@@ -135,9 +151,8 @@ class UserManage extends PureComponent {
                   <Option value="STU">学生</Option>
                   <Option value="TEA">教师</Option>
                   <Option value="PAR">家长</Option>
-                  <Option value="PRE">准学生</Option>
-                  <Option value="SYS">管理员</Option>
-                  <Option value="ASS">助教</Option>
+                  <Option value="SYS">负责人</Option>
+                  <Option value="LEA">管理员</Option>
                 </Select>
               )}
             </FormItem>
@@ -157,15 +172,15 @@ class UserManage extends PureComponent {
   columns = [
     {
       title: '用户ID',
-      dataIndex: 'user_id',
+      dataIndex: 'id',
     },
     {
       title: '姓名',
-      dataIndex: 'emp_name',
+      dataIndex: 'name',
     },
     {
       title: '登录名',
-      dataIndex: 'user_name',
+      dataIndex: 'account',
     },
     {
       title: '密码',
@@ -180,19 +195,19 @@ class UserManage extends PureComponent {
           case "STU":
             roleName = "学生"
             break;
-          case "TEA":
+            case "TEA":
             roleName = "教师"
             break;
-          case "ASS":
+            case "ASS":
             roleName = "助教"
             break;
-          case "PAR":
+            case "PAR":
             roleName = "家长"
             break;
-          case "PRE":
+            case "PRE":
             roleName = "准学生"
             break;
-          case "SYS":
+            case "SYS":
             roleName = "超级管理员"
             break;
           default:
@@ -229,55 +244,49 @@ class UserManage extends PureComponent {
       title: '关注房间',
       dataIndex: 'focus',
     },
-    // {
-    //   title: '操作',
-    //   render: (text, record) => (
-    //     <Fragment>
-    //       <a onClick={() => this.handleModalVisible(true, 'modify', record)}>更新</a>
-    //     </Fragment>
-    //   ),
-    // },
+    {
+      title: '操作',
+      render: (text, record) => (
+        <Fragment>
+          <a onClick={() => this.handleModalVisible(true, 'modify', record)}>更新</a>
+        </Fragment>
+      ),
+    },
   ];
   render() {
     const {
-      userManage: { data },
+      contract: { data },
       loading,
     } = this.props;
     // 数据来源
-    const { modalVisible, modalType, modifyUser, pagination } = this.state;
+    const { modalVisible, modalType, modifyUser,pagination } = this.state;
+
     return (
       <PageHeaderWrapper title="查询用户">
         <Card bordered={false}>
-          <div className={styles.tableListForm}>{this.renderSimpleForm()}</div>
-          <div className={styles.tableListOperator}>
-            <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true, 'add')}>
-              新建
+          <div className={styles.tableList}>
+            <div className={styles.tableListForm}>{this.renderSimpleForm()}</div>
+            <div className={styles.tableListOperator}>
+              <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true, 'add')}>
+                新建
               </Button>
+            </div>
+            <Table
+              loading={loading}
+              dataSource={data.list}
+              // key={item.id}
+              rowKey={user => user.id}
+              columns={this.columns}
+              pagination={pagination}
+              onChange={this.handleStandardTableChange}
+            />
           </div>
         </Card>
-        <Card bordered={false} className={styles.tableList}>
-          <Table
-            loading={loading}
-            dataSource={data.list}
-            // key={item.id}
-            rowKey={user => user.user_id}
-            columns={this.columns}
-            pagination={data.pagination}
-            onChange={this.handleStandardTableChange}
-            onRow={(record) => {
-              return {
-                onClick: () => {
-                  this.handleModalVisible(true, 'modify', record)
-                },
-              };
-            }}
-          />
-        </Card>
-        <AddUser modalVisible={modalVisible} onCancel={() => this.handleModalVisible(false)}
-          type={modalType} modifyUser={modifyUser} onSearch={this.handleSearch} />
+        <ContractDetail modalVisible={modalVisible} onCancel={() => this.handleModalVisible(false)} 
+        type={modalType} modifyUser={modifyUser} onSearch={this.handleSearch} />
       </PageHeaderWrapper>
     );
   }
 }
 
-export default UserManage;
+export default ContractManage;

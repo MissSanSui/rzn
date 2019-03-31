@@ -35,25 +35,13 @@ export default [
           }
         ],
       },
-      {
-        name: 'courseWareManage',
-        icon: 'sys',
-        path: '/coursewareManage',
-        authority: ['admin', 'sys',],
-        routes: [
-          {
-            path: '/coursewareManage/index',
-            name: 'addCourseWare',
-            component: './CourseWareManage/Index',
-          },
-          {
-            path: '/coursewareManage/Add',
-            name: 'addCourseWare',
-            component: './CourseWareManage/Add',
-          }
-        ],
-      },
-
+      // {
+      //   name: 'courseWareManage',
+      //   icon: 'sys',
+      //   path: '/coursewareManage',
+      //   authority: ['admin', 'sys',],
+      //   component: './CourseWareManage/Index',
+      // },
       // 用户信息管理
       {
         name: 'userManage',
@@ -62,16 +50,17 @@ export default [
         component: './UserManage/UserManage',
         Routes: ['src/pages/Authorized'],
         authority: ['admin', 'sys',],
-        // routes: [
-        //   {
-        //     path: '/user-manage/addUser',
-        //     name: 'addUser',
-        //     component: './UserManage/Adduser',
-        //   }
-        // ],
+      },
+      //  课时管理
+       {
+        name: 'contractManage',
+        icon: 'contractManage',
+        path: '/contract-manage',
+        component: './ContractManage/Index',
+        Routes: ['src/pages/Authorized'],
+        authority: ['admin', 'sys',],
       },
       // 聊天室界面
-
       {
         name: 'chatroom',
         icon: 'video-camera',
