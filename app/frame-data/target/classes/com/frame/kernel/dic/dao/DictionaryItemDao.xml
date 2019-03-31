@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.frame.kernel.dic.dao.DictionaryItemDao">
+
+	<select id="getDictionaryItemList" resultType="dictionaryItem">
+		select * from (
+			SELECT a.*,b.dic_code,b.dic_name 
+				FROM frame_dic_item a ,frame_dic b
+				where a.dic_id = b.dic_id
+			<if test="dic_code != null and dic_code != '' ">
+				and b.dic_code = #{dic_code} 
+			</if>
+			<if test="dic_name != null and dic_name != '' ">
+				and b.dic_name = #{dic_name} 
+			</if>
+			<if test="dic_item_code != null and dic_item_code != '' ">
+				and a.dic_item_code = #{dic_item_code} 
+			</if>
+			<if test="dic_item_name != null and dic_item_name != '' ">
+				and a.dic_item_name = #{dic_item_name} 
+			</if>
+			) c
+			ORDER BY ${sortName} ${sortOrder}
+		    limit #{startInt},#{limitInt}
+	</select>
+
+	<select id="getDictionaryItemListCount" resultType="int">
+		select count(*) from (
+			SELECT a.*,b.dic_code,b.dic_name 
+				FROM frame_dic_item a ,frame_dic b
+				where a.dic_id = b.dic_id
+			<if test="dic_code != null and dic_code != '' ">
+				and b.dic_code = #{dic_code} 
+			</if>
+			<if test="dic_name != null and dic_name != '' ">
+				and b.dic_name = #{dic_name} 
+			</if>
+			<if test="dic_item_code != null and dic_item_code != '' ">
+				and a.dic_item_code = #{dic_item_code} 
+			</if>
+			<if test="dic_item_name != null and dic_item_name != '' ">
+				and a.dic_item_name = #{dic_item_name} 
+			</if>
+			) c
+	</select>
+	<insert id="saveDictionaryItemInfo" parameterType="dictionaryItem">
+		
+		<selectKey keyProperty="dic_item_id" order="BEFORE" resultType="java.lang.Integer">
+			 SELECT nextval_sequence('frame_dic_item');
+		</selectKey>
+		insert into frame_dic_item(dic_item_id,dic_id,dic_item_code,dic_item_name,dic_item_desc,enable_flag,attribute1,attribute2,attribute3,attribute4,attribute5,created_date,created_by,last_updated_date,last_updated_by)
+		 value(#{dic_item_id},#{dic_id},#{dic_item_code},#{dic_item_name},#{dic_item_desc},#{enable_flag},#{attribute1},#{attribute2},#{attribute3},#{attribute4},#{attribute5},#{created_date},#{created_by},#{last_updated_date},#{last_updated_by})
+	</insert>
+	<update id="updateDictionaryItemInfo" parameterType="dictionaryItem">
+		update frame_dic_item set dic_item_code=#{dic_item_code},dic_item_name=#{dic_item_name},dic_item_desc=#{dic_item_desc},last_updated_date=#{last_updated_date},last_updated_by=#{last_updated_by}
+		 where dic_item_id=#{dic_item_id}
+	</update>
+	<update id="ableDictionaryItem" >
+		update frame_dic_item
+			set  enable_flag = 'Y' ,
+			  last_updated_by = #{userId},
+			  last_updated_date = #{systimestamp}				
+		<foreach collection="ids" item="dic_item_id" open="where dic_item_id IN(" close=")" separator=",">
+				#{dic_item_id}
+		</foreach> 
+	</update>
+	<update id="disableDictionaryItem" >
+		update frame_dic_item
+			set  enable_flag = 'N' ,
+			  last_updated_by = #{userId},
+			  last_updated_date = #{systimestamp}				
+		<foreach collection="ids" item="dic_item_id" open="where dic_item_id IN(" close=")" separator=",">
+				#{dic_item_id}
+		</foreach>
+	</update>
+	 
+</mapper>
+
+

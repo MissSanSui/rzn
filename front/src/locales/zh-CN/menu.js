@@ -41,6 +41,8 @@ export default {
   'menu.sys': '系统管理',
   'menu.chatroom': '直播间',
   'menu.joinroom': '加入直播间',
+  'menu.courseWareManage': '课件管理',
+  'menu.courseWareManage.addCourseWare': '添加课件',
   'menu.view': '课堂',
   'menu.sys.usersManage': '用户管理',
   'menu.userManage': '用户管理',

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace命名空间，作用就是对sql进行分类化管理，理解sql隔离 
+注意：使用mapper代理方法开发，namespace有特殊重要的作用，namespace等于mapper接口地址
+-->
+<mapper namespace="com.frame.kernel.role.dao.RoleDao">
+
+	<select id="getRoleList"   resultType="role" >
+		SELECT *
+		  FROM (
+				SELECT a.*
+				  FROM frame_role a
+				 WHERE 1=1
+				<if test="p_role_name!=null and p_role_name!=''">
+				   AND a.role_name LIKE '%${p_role_name}%'
+				</if>
+				<if test="p_role_type!=null and p_role_type!=''">
+				   AND a.role_type =  #{p_role_type}
+				</if> 
+				<if test="enable_flag!=null and enable_flag!=''">
+				   AND a.enable_flag =  #{enable_flag}
+				</if> 
+				) c
+		 ORDER BY enable_flag desc , ${sortName} ${sortOrder}
+		 LIMIT  #{offset} , #{limit}
+	</select>
+	
+	<select id="getRoleCount"   resultType="int">
+	    SELECT count(1)
+		  FROM frame_role a
+		 WHERE 1=1
+		<if test="p_role_name!=null and p_role_name!=''">
+		   AND a.role_name LIKE '%${p_role_name}%'
+		</if>
+		<if test="p_role_type!=null and p_role_type!=''">
+		   AND a.role_type =  #{p_role_type}
+		</if> 
+		<if test="enable_flag!=null and enable_flag!=''">
+		   AND a.enable_flag =  #{enable_flag}
+		</if> 
+   	</select>
+   	
+   	<select id="roleCodeValid" resultType="role" >
+   	    SELECT *
+   	      FROM frame_role a
+   	     WHERE a.role_code = #{roleCode}  limit 1
+   	</select>
+   	
+   	<select id="roleNameValid" resultType="role">
+   	    SELECT *
+   	      FROM frame_role a
+   	     WHERE a.role_name = #{roleName}
+   	</select>
+   	
+   	<insert id="saveRole" parameterType="role" >
+   		<selectKey keyProperty="role_id" order="BEFORE" resultType="java.lang.Integer">
+			  SELECT nextval_sequence('frame_role');
+		</selectKey>
+		insert into frame_role(role_id,role_code,role_name,role_desc,role_type,enable_flag,attribute1,attribute2,attribute3,attribute4,attribute5,created_date,created_by,last_updated_date,last_updated_by)
+		value(#{role_id},#{role_code},#{role_name},#{role_desc},#{role_type},#{enable_flag},#{attribute1},#{attribute2},#{attribute3},#{attribute4},#{attribute5},#{created_date},#{created_by},#{last_updated_date},#{last_updated_by})
+   	</insert>
+   	
+   	<update id="updateRole" parameterType="role">
+		update frame_role
+		   set role_name=#{role_name}, 
+		       role_desc=#{role_desc},
+		       role_type=#{role_type}, 
+		       enable_flag=#{enable_flag},
+		       last_updated_date=#{last_updated_date},
+		       last_updated_by=#{last_updated_by}
+		 where role_id=#{role_id}
+	</update>
+	
+	<update id="rolesEnable" >
+		update frame_role
+		   set enable_flag='Y',
+		       last_updated_by=#{userId},
+		       last_updated_date=now() 
+		<foreach collection="ids" item="rid" open="where role_id IN(" close=")" separator=",">
+				#{rid}
+		</foreach> 
+	</update>
+	
+	<update id="rolesDisable" >
+		update frame_role
+		   set enable_flag= 'N',
+		       last_updated_by=#{userId},
+		       last_updated_date = now() 
+		<foreach collection="ids" item="rid" open="where role_id IN(" close=")" separator=",">
+				#{rid}
+		</foreach> 
+	</update>
+	
+	<select id="hasRoleMenuMappping"   resultType="int" >
+	    SELECT count(1)
+		  FROM frame_role_menu a
+		 WHERE a.role_id = #{roleId}
+		   AND a.menu_id = #{menuId}
+   	</select>
+   	
+   	<delete id="delRoleMenuMapping" >
+   	
+   		DELETE FROM frame_role_menu  WHERE role_id= #{roleId}
+   	
+   	</delete>
+   	
+   	<insert id="saveRoleMenuMapping">
+   		insert into frame_role_menu (role_id,menu_id,created_date,created_by,last_updated_date,last_updated_by)
+   		values( #{roleId},#{menuId},now(),#{userId},now(),#{userId})
+   	</insert>
+   	
+</mapper>
+
+

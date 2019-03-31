@@ -21,11 +21,12 @@ export default [
     Routes: ['src/pages/Authorized'],
     routes: [
       // 系统配置页面
+      { path: '/', redirect: '/user-manage', authority: ['admin', 'user', 'guest'] },
       {
         name: 'sys',
         icon: 'sys',
         path: '/sys',
-        authority: ['admin', 'sys'],
+        authority: ['admin', 'sys',],
         routes: [
           {
             path: '/sys/users',
@@ -34,6 +35,25 @@ export default [
           }
         ],
       },
+      {
+        name: 'courseWareManage',
+        icon: 'sys',
+        path: '/coursewareManage',
+        authority: ['admin', 'sys',],
+        routes: [
+          {
+            path: '/coursewareManage/index',
+            name: 'addCourseWare',
+            component: './CourseWareManage/Index',
+          },
+          {
+            path: '/coursewareManage/Add',
+            name: 'addCourseWare',
+            component: './CourseWareManage/Add',
+          }
+        ],
+      },
+
       // 用户信息管理
       {
         name: 'userManage',
@@ -41,7 +61,7 @@ export default [
         path: '/user-manage',
         component: './UserManage/UserManage',
         Routes: ['src/pages/Authorized'],
-        authority: ['admin', 'sys'],
+        authority: ['admin', 'sys',],
         // routes: [
         //   {
         //     path: '/user-manage/addUser',
@@ -51,7 +71,7 @@ export default [
         // ],
       },
       // 聊天室界面
-      
+
       {
         name: 'chatroom',
         icon: 'video-camera',
