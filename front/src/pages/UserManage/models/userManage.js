@@ -21,7 +21,6 @@ export default {
         payload: true,
       });
       console.log("userManage fetch payload==", payload)
-      payload.org_id = -1
       let response = yield call(queryUsers, payload);
       var result = {
         list: [],

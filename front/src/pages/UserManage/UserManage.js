@@ -119,25 +119,12 @@ class UserManage extends PureComponent {
             <FormItem label="角色">
               {getFieldDecorator('role')(
                 <Select placeholder="请选择" style={{ width: '100%' }}>
+                  <Option value="">全部</Option>
                   <Option value="STU">学生</Option>
                   <Option value="TEA">教师</Option>
                   <Option value="PAR">家长</Option>
                   <Option value="SYS">负责人</Option>
                   <Option value="LEA">管理员</Option>
-                </Select>
-              )}
-            </FormItem>
-          </Col>
-          <Col md={6} sm={24}>
-            <FormItem label="关注点">
-              {getFieldDecorator('focus')(
-                <Select placeholder="请选择" style={{ width: '100%' }}>
-                  <Option value="STU">学生</Option>
-                  <Option value="TEA">教师</Option>
-                  <Option value="PAR">家长</Option>
-                  <Option value="PRE">准学生</Option>
-                  <Option value="SYS">管理员</Option>
-                  <Option value="ASS">助教</Option>
                 </Select>
               )}
             </FormItem>
@@ -229,14 +216,6 @@ class UserManage extends PureComponent {
       title: '关注房间',
       dataIndex: 'focus',
     },
-    // {
-    //   title: '操作',
-    //   render: (text, record) => (
-    //     <Fragment>
-    //       <a onClick={() => this.handleModalVisible(true, 'modify', record)}>更新</a>
-    //     </Fragment>
-    //   ),
-    // },
   ];
   render() {
     const {

@@ -74,9 +74,10 @@ class AddUser extends PureComponent {
     form.validateFields((err, fieldsValue) => {
       console.log("fieldsValue===", fieldsValue)
       if (err) return;
-      if (fieldsValue.citys) {
+      if (fieldsValue.citys&&fieldsValue.citys.length==3) {
         fieldsValue.province = fieldsValue.citys[0]
         fieldsValue.city = fieldsValue.citys[1]
+        fieldsValue.county = fieldsValue.citys[2]
       }
       if (type == "add") {
         this.handleAdd(fieldsValue);
@@ -153,7 +154,7 @@ class AddUser extends PureComponent {
             <Col span={12}>
               <FormItem {...formItemLayout} label="性别">
                 {getFieldDecorator('sex', {
-                  initialValue: modifyUser.role,
+                  initialValue: modifyUser.sex,
                   rules: [
                     {
                       required: true,
@@ -278,7 +279,7 @@ class AddUser extends PureComponent {
             <Col span={24}>
               <FormItem {...formItemLayoutOne} label="城市">
                 {getFieldDecorator('citys', {
-                  initialValue: [modifyUser.province, modifyUser.city,],
+                  initialValue: [modifyUser.province, modifyUser.city,modifyUser.county,],
                   rules: [
                     {
                       required: false,

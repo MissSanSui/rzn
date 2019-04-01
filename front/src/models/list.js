@@ -1,7 +1,7 @@
-import { queryFakeList, removeFakeList, addFakeList, updateFakeList } from '@/services/api';
+import { queryRoomList, removeFakeList, addFakeList, updateFakeList } from '@/services/api';
 
 export default {
-  namespace: 'list',
+  namespace: 'room',
 
   state: {
     list: [],
@@ -9,7 +9,9 @@ export default {
 
   effects: {
     *fetch({ payload }, { call, put }) {
-      const response = yield call(queryFakeList, payload);
+      console.log("room  fetch payload===",payload)
+      const response = yield call(queryRoomList, payload);
+      console.log("room  fetch response===",response)
       yield put({
         type: 'queryList',
         payload: Array.isArray(response) ? response : [],
