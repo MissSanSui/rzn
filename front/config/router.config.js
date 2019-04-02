@@ -52,13 +52,26 @@ export default [
         authority: ['admin', 'sys',],
       },
       //  课时管理
-       {
+      {
         name: 'contractManage',
         icon: 'contractManage',
         path: '/contract-manage',
-        component: './ContractManage/Index',
         Routes: ['src/pages/Authorized'],
         authority: ['admin', 'sys',],
+        routes: [
+          {
+          name: 'add',
+          icon: 'userMcontractManageanage',
+          path: '/contract-manage/add',
+          component: './ContractManage/AddContract',
+        },
+        {
+          name: 'search',
+          icon: 'userMcontractManageanage',
+          path: '/contract-manage/search',
+          component: './ContractManage/Index',
+        }
+        ]
       },
       // 聊天室界面
       {

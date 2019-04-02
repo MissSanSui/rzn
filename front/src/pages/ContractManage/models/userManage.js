@@ -1,7 +1,7 @@
 import { queryUsers, addUser, updateUser, validateUserName,ableUser,disableUser } from '@/services/api';
 
 export default {
-  namespace: 'contract',
+  namespace: 'userManage',
 
   state: {
     loading: false,
@@ -20,7 +20,7 @@ export default {
         type: 'changeLoading',
         payload: true,
       });
-      console.log("contract fetch payload==", payload)
+      console.log("userManage fetch payload==", payload)
       let response = yield call(queryUsers, payload);
       var result = {
         list: [],
@@ -82,9 +82,9 @@ export default {
       }
     },
     *validate({ payload, callback }, { call, put }) {
-      console.log("contract validate payload==", payload)
+      console.log("userManage validate payload==", payload)
       let response = yield call(validateUserName, payload);
-      console.log("contract validate response==", response)
+      console.log("userManage validate response==", response)
       callback(response.valid)
     },
   },
