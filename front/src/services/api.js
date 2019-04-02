@@ -43,6 +43,15 @@ export async function updateUser(params) {
 export async function queryUsers(params) {
   return request(`/frame-web/user/userPageList?${stringify(params)}`)
 }
+export async function validateUserName(params) {
+  return request(`/frame-web/user/validateUserName?${stringify(params)}`)
+}
+export async function ableUser(params) {
+  return request(`/frame-web/user/ableUser?${stringify(params)}`)
+}
+export async function disableUser(params) {
+  return request(`/frame-web/user/disableUser?${stringify(params)}`)
+}
 export async function queryRoomList(params) {
   return request(`/frame-web/rooms/roomsList?${stringify(params)}`)
 }

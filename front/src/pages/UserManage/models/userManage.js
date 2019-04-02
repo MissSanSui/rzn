@@ -1,4 +1,4 @@
-import { queryUsers, addUser, updateUser } from '@/services/api';
+import { queryUsers, addUser, updateUser, validateUserName,ableUser,disableUser } from '@/services/api';
 
 export default {
   namespace: 'userManage',
@@ -81,7 +81,12 @@ export default {
         }
       }
     },
-
+    *validate({ payload, callback }, { call, put }) {
+      console.log("userManage validate payload==", payload)
+      let response = yield call(validateUserName, payload);
+      console.log("userManage validate response==", response)
+      callback(response.valid)
+    },
   },
   reducers: {
     save(state, action) {
@@ -92,7 +97,6 @@ export default {
       };
     },
     changeLoading(state, action) {
-      // console.log("action==", action)
       return {
         ...state,
         loading: action.payload
