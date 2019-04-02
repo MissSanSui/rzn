@@ -45,22 +45,41 @@ class Chatroom extends PureComponent {
 
     // 获取电子白板token
     // const joinWhiteUrl = 'https://cloudcapiv4.herewhite.com/room/join?uuid=' + jsonChat.data.white_id + '&token=' + jsonChat.miniToken;
-    const joinWhiteUrl = 'https://cloudcapiv4.herewhite.com/room/join?uuid=2866465814e84a30b5a1d47886bc3142&token=' + miniToken;
+    // const joinWhiteUrl = 'https://cloudcapiv4.herewhite.com/room/join?uuid=4a4050bb2bd04f58a456301891036f3a&token=' + miniToken;
 
-    const joinWhiteInit = {
+    // const joinWhiteInit = {
+    //   method: 'POST',
+    //   headers: {
+    //     "content-type": "application/json",
+    //   }
+    // };
+    // const resWhite = await fetch(joinWhiteUrl, joinWhiteInit);
+    // const jsonWhite = await resWhite.json();
+    // // 加入电子白板
+    // const whiteWebSdk = new WhiteWebSdk();
+    // room = await whiteWebSdk.joinRoom({uuid: '4a4050bb2bd04f58a456301891036f3a', roomToken: jsonWhite.msg.roomToken});
+    // room.setViewMode("broadcaster");
+    // // room.removeScenes("/");
+    // this.setState({room: room});
+
+    const whiteWebSdk = new WhiteWebSdk();
+
+    const url = 'https://cloudcapiv4.herewhite.com/room?token=' + miniToken;
+    const requestInit = {
       method: 'POST',
       headers: {
         "content-type": "application/json",
-      }
+      },
+      body: JSON.stringify({
+        name: '我的第一个 White 房间',
+        limit: 100, // 房间人数限制
+      }),
     };
-    const resWhite = await fetch(joinWhiteUrl, joinWhiteInit);
-    const jsonWhite = await resWhite.json();
-    // 加入电子白板
-    const whiteWebSdk = new WhiteWebSdk();
-    room = await whiteWebSdk.joinRoom({uuid: '2866465814e84a30b5a1d47886bc3142', roomToken: jsonWhite.msg.roomToken});
-    room.setViewMode("broadcaster");
-    // room.removeScenes("/");
+    const res = await fetch(url, requestInit);
+    const json = await res.json();
+    const room = await whiteWebSdk.joinRoom({uuid: json.msg.room.uuid, roomToken: json.msg.roomToken});
     this.setState({room: room});
+    
 
     // 加入视频直播间
     // const client = AgoraRTC.createClient({mode: 'live', codec: "h264"});
