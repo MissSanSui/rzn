@@ -1,16 +1,13 @@
 import { queryUsers, addUser, updateUser } from '@/services/api';
 
 export default {
-  namespace: 'userManage',
+  namespace: 'contract',
 
   state: {
     loading: false,
     data: {
       list: [],
-      pagination: {
-        current: 1,
-        pageSize: 10
-      },
+      pagination: {},
     },
   },
 
@@ -20,7 +17,6 @@ export default {
         type: 'changeLoading',
         payload: true,
       });
-      console.log("userManage fetch payload==", payload)
       let response = yield call(queryUsers, payload);
       var result = {
         list: [],
@@ -39,20 +35,14 @@ export default {
         payload: false,
       });
     },
-    *add({ payload, success, fail }, { call }) {
-      payload.org_id = -1
-      let formData = new FormData()
-      Object.keys(payload.params).forEach((key) => {
-        if (payload.params[key]) {
-          formData.append(key, payload.params[key])
-        }
-      });
-      let response = yield call(addUser, formData)
-      if (!response || response.flag != "0") {
-        response = response || {}
+    *add({ payload, success, fail }, { call, put }) {
+      console.log("addUser=payload=", payload)
+      let response = yield call(addUser, payload.params);
+      if (!response || response.flag) {
+        response = response||{}
         console.log(" addUser  fail==", response)
         if (fail && typeof fail === 'function') {
-          fail(response.msg || '');
+          fail(response.msg||'');
         }
       }
       else {
@@ -62,15 +52,9 @@ export default {
       }
     },
     * update({ payload, success, fail }, { call, put }) {
-      // console.log("updateUser=payload=", payload)
-      let formData = new FormData()
-      Object.keys(payload.params).forEach((key) => {
-        if (payload.params[key]) {
-          formData.append(key, payload.params[key])
-        }
-      });
-      let response = yield call(updateUser, formData);
-      if (response.flag == "0") {
+      console.log("updateUser=payload=", payload)
+      let response = yield call(updateUser, payload.params);
+      if (!response.flag) {
         if (success && typeof success === 'function') {
           success();
         }
@@ -85,14 +69,14 @@ export default {
   },
   reducers: {
     save(state, action) {
-      // console.log("action==", action)
+      console.log("action==", action)
       return {
         ...state,
         data: action.payload,
       };
     },
     changeLoading(state, action) {
-      // console.log("action==", action)
+      console.log("action==", action)
       return {
         ...state,
         loading: action.payload
