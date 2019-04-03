@@ -7,7 +7,6 @@ import {
   Form, Input, DatePicker, Select, Button, Card, InputNumber,
   Row, Col, Radio, Icon, Modal, Tooltip, message, Switch
 } from 'antd';
-import CitySelect from '@/components/CitiySelect/CitySelect';
 
 import formsStyles from '../Forms/style.less';
 
@@ -146,12 +145,6 @@ class AddUser extends PureComponent {
         sm: { span: 20 },
       },
     };
-
-    const Option = Select.Option;
-    const children = [];
-    for (let i = 10; i < 36; i++) {
-      children.push(<Option key={i.toString(36) + i}>{i.toString(36) + i}</Option>);
-    }
     return (
       <Modal
         destroyOnClose
@@ -174,157 +167,6 @@ class AddUser extends PureComponent {
                     },
                   ],
                 })(<Input placeholder={formatMessage({ id: 'form.name' })} />)}
-              </FormItem>
-            </Col>
-            <Col span={12}>
-              <FormItem {...formItemLayout} label="性别">
-                {getFieldDecorator('sex', {
-                  initialValue: modifyUser.sex,
-                  rules: [
-                    {
-                      required: true,
-                      message: "选择性别",
-                    },
-                  ],
-                })(<Select
-                  showSearch
-                  style={{ width: "100%" }}
-                  placeholder="请选择性别"
-                >
-                  <Option value="男">男</Option>
-                  <Option value="女">女</Option>
-                </Select>)}
-              </FormItem>
-            </Col>
-            {/* 登录名 */}
-            <Col span={12}>
-              <FormItem {...formItemLayout} label={<FormattedMessage id="form.account" />}>
-                {getFieldDecorator('user_name', {
-                  initialValue: modifyUser.user_name,
-                  rules: [
-                    {
-                      required: true,
-                      message: formatMessage({ id: 'validation.account.required' }),
-                    },
-                    {
-                      validator: this.onUsenameValidate
-                    }
-                  ],
-                })(<Input placeholder={'登录名只能为字母和数字'} onBlur={this.onUserNameBlur} />)}
-              </FormItem>
-            </Col>
-            {/* 密码 */}
-            <Col span={12}>
-              <FormItem {...formItemLayout} label={<FormattedMessage id="form.passwd" />}>
-                {getFieldDecorator('password', {
-                  initialValue: modifyUser.password,
-                  rules: [
-                    {
-                      required: true,
-                      message: formatMessage({ id: 'validation.passwd.required' }),
-                    },
-                  ],
-                })(<Input placeholder={formatMessage({ id: 'form.passwd' })} />)}
-              </FormItem>
-            </Col>
-            {/* 角色 */}
-            <Col span={12}>
-              <FormItem {...formItemLayout} label={<FormattedMessage id="form.role" />}>
-                {getFieldDecorator('role', {
-                  initialValue: modifyUser.role,
-                  rules: [
-                    {
-                      required: true,
-                      message: formatMessage({ id: 'validation.role.required' }),
-                    },
-                  ],
-                })(<Select
-                  showSearch
-                  style={{ width: "100%" }}
-                  placeholder="请选择角色"
-                  optionFilterProp="children"
-                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                >
-                  <Option value="STU">学生</Option>
-                  <Option value="TEA">教师</Option>
-                  <Option value="PAR">家长</Option>
-                  <Option value="ASS">助教</Option>
-                  <Option value="SYS">负责人</Option>
-                  <Option value="LEA">管理员</Option>
-                </Select>)}
-              </FormItem>
-            </Col>
-            <Col span={12}>
-              <FormItem {...formItemLayout} label="联系电话">
-                {getFieldDecorator('mobile', {
-                  initialValue: modifyUser.mobile,
-                  rules: [
-                    {
-                      required: true,
-                      message: "请输入联系电话",
-                    },
-                  ],
-                })(<Input placeholder="联系电话" />)}
-              </FormItem>
-            </Col>
-            <Col span={12}>
-              <FormItem {...formItemLayout} label="身份证号">
-                {getFieldDecorator('id_card', {
-                  initialValue: modifyUser.id_card,
-                  rules: [
-                    {
-                      required: false,
-                      message: "请输入身份证号",
-                    },
-                  ],
-                })(<Input placeholder="身份证号" />)}
-              </FormItem>
-            </Col>
-            <Col span={12}>
-              <FormItem   {...formItemLayout} label="生日">
-                {getFieldDecorator('birth',
-                  {
-                    initialValue: modifyUser.birth,
-                    rules: [{ type: 'object', required: false, message: 'Please select time!' }]
-                  })(
-                    <DatePicker />
-                  )}
-              </FormItem>
-            </Col>
-            <Col span={0}>
-              <FormItem  {...formItemLayout} label="启用与否">
-                {getFieldDecorator('status', {
-                  initialValue: modifyUser.user_status == "open",
-                  valuePropName: 'checked'
-                })(
-                  <Switch />
-                )}
-              </FormItem>
-            </Col>
-            <Col span={24}>
-              <FormItem {...formItemLayoutOne} label="城市">
-                {getFieldDecorator('citys', {
-                  initialValue: [modifyUser.province, modifyUser.city, modifyUser.county,],
-                  rules: [
-                    {
-                      required: false,
-                      message: "请选择省份",
-                    },
-                  ],
-                })(<CitySelect placeholder="选择城市" />)}
-              </FormItem>
-            </Col>
-            <Col span={24}>
-              <FormItem {...formItemLayoutOne} label="地址">
-                {getFieldDecorator('address', {
-                  initialValue: modifyUser.address,
-                  rules: [
-                    {
-                      required: false,
-                      message: "请输入地址",
-                    },
-                  ],
-                })(<Input placeholder="地址" />)}
               </FormItem>
             </Col>
             <Col span={12}>
@@ -368,20 +210,6 @@ class AddUser extends PureComponent {
                       },
                     ],
                   })(<Input placeholder="擅长" />)}
-                </FormItem>
-              </Col>
-              <Col span={0}>
-                {/* 报名老师 */}
-                <FormItem {...formItemLayout} label={<FormattedMessage id="form.teachers" />}>
-                  <Select
-                    mode="multiple"
-                    size={size}
-                    placeholder="请选择老师"
-                    defaultValue={['a10', 'c12']}
-                    style={{ width: '100%' }}
-                  >
-                    {children}
-                  </Select>
                 </FormItem>
               </Col>
           </Row>

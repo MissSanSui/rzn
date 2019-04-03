@@ -42,10 +42,11 @@ export default {
   'menu.chatroom': '直播间',
   'menu.joinroom': '加入直播间',
   'menu.courseWareManage': '课件管理',
+  'menu.courseWareManage.add': '添加课件',
+  'menu.courseWareManage.search': '查询课件',
   'menu.contractManage': '课时管理',
   'menu.contractManage.add': '添加课时',
   'menu.contractManage.search': '查询课时',
-  
   'menu.courseWareManage.addCourseWare': '添加课件',
   'menu.view': '课堂',
   'menu.sys.usersManage': '用户管理',

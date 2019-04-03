@@ -74,7 +74,7 @@ class BasicForms extends PureComponent {
                             })(<UserSelectInput role="STU" placeholder={formatMessage({ id: 'form.title.placeholder' })} />)}
                         </FormItem>
                         <FormItem {...formItemLayout} label="直播间">
-                            {getFieldDecorator('contract_tea', {
+                            {getFieldDecorator('contract_room_no', {
                                 rules: [
                                     {
                                         required: true,

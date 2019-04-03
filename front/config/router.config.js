@@ -35,13 +35,27 @@ export default [
           }
         ],
       },
-      // {
-      //   name: 'courseWareManage',
-      //   icon: 'sys',
-      //   path: '/coursewareManage',
-      //   authority: ['admin', 'sys',],
-      //   component: './CourseWareManage/Index',
-      // },
+      {
+        name: 'courseWareManage',
+        icon: 'courseWareManage',
+        path: '/courseware-manage',
+        authority: ['admin', 'sys',],
+        // component: './CourseWareManage/Index',
+        routes: [
+          {
+          name: 'add',
+          icon: 'courseWareManage',
+          path: '/courseware-manage/add',
+          component: './CourseWareManage/Add',
+        },
+        {
+          name: 'search',
+          icon: 'courseWareManage',
+          path: '/courseware-manage/search',
+          component: './CourseWareManage/Index',
+        }
+        ]
+      },
       // 用户信息管理
       {
         name: 'userManage',
@@ -61,13 +75,13 @@ export default [
         routes: [
           {
           name: 'add',
-          icon: 'userMcontractManageanage',
+          icon: '',
           path: '/contract-manage/add',
           component: './ContractManage/AddContract',
         },
         {
           name: 'search',
-          icon: 'userMcontractManageanage',
+          icon: '',
           path: '/contract-manage/search',
           component: './ContractManage/Index',
         }

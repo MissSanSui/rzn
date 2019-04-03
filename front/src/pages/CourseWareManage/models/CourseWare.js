@@ -11,7 +11,9 @@ export default {
 
   effects: {
     *fetch({ payload }, { call, put }) {
+      console.log("courseWare fetch payload==", payload)
       let response = yield call(queryCourseWares, payload);
+      console.log("courseWare fetch response==", response)
       var result = {}
       if (response.rows && response.rows.length > 0) {
         result.list = response.rows
@@ -23,7 +25,9 @@ export default {
       });
     },
     *add({ payload, success, fail }, { call, put }) {
+      console.log("courseWare add payload==", payload)
       let response = yield call(addCourseWare, payload.params);
+      console.log("courseWare add response==", response)
       if (!response.flag) {
         if (success && typeof success === 'function') {
           success();
@@ -49,7 +53,6 @@ export default {
   },
   reducers: {
     save(state, action) {
-      console.log("action==", action)
       return {
         ...state,
         data: action.payload,

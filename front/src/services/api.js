@@ -86,7 +86,7 @@ export async function updateCourseWare(params) {
   });
 }
 export async function queryCourseWares(params) {
-  return request('/frame-web/user/userPageList')
+  return request('/frame-web/coursewares/coursewaresList')
 }
 export async function queryProjectNotice() {
   return request('/api/project/notice');
