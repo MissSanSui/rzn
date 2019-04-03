@@ -9,7 +9,7 @@ import {
 import StandardTable from '@/components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import Detail from '@/pages/ContractManage/Detail';
-import styles from './Index.less';
+import styles from './UserManage.less';
 
 const FormItem = Form.Item;
 const { Step } = Steps;
@@ -32,7 +32,7 @@ export default class UserSelect extends PureComponent {
         formValues: {},
     };
     componentDidMount() {
-        console.log("componentDidMount==")
+        console.log(" UserSelect componentDidMount==")
         const { dispatch, role } = this.props;
         dispatch({
             type: 'userManage/fetch',
@@ -70,12 +70,12 @@ export default class UserSelect extends PureComponent {
 
     handleSearch = e => {
         // e.preventDefault();
-        const { dispatch, form } = this.props;
+        const { dispatch, form,role } = this.props;
         form.validateFields((err, fieldsValue) => {
             if (err) return;
             const values = {
                 ...fieldsValue,
-
+                role:role
             };
             dispatch({
                 type: 'userManage/fetch',
@@ -91,9 +91,9 @@ export default class UserSelect extends PureComponent {
         return (
             <Form onSubmit={this.handleSearch} layout="inline">
                 <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
-                    <Col md={6} sm={24}>
-                        <FormItem label="用户名">
-                            {getFieldDecorator('user_name')(<Input placeholder="请输入用户名" />)}
+                    <Col md={12} sm={24}>
+                        <FormItem label="用户姓名">
+                            {getFieldDecorator('emp_name')(<Input placeholder="请输入用户姓名" />)}
                         </FormItem>
                     </Col>
                     <Col md={6} sm={24}>
@@ -157,10 +157,13 @@ export default class UserSelect extends PureComponent {
         },
     ];
     render() {
+      
+        console.log("this.props===",this.props)
         const {
             userManage: { data },
             loading,
         } = this.props;
+        // let data=this.props.userManage?this.props.userManage.data:{list:[],pagination:{}}
         // 数据来源
         const { modalVisible, modalType, modifyUser, pagination } = this.state;
         return (

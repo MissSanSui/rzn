@@ -29,13 +29,13 @@ export async function fakeAccountLogin(params) {
 }
 
 export async function addUser(params) {
-  return request('/frame-web/user/saveUserInfo?org_id=-1', {
+  return request('/frame-web/user/saveUserInfo', {
     method: 'POST',
     body: params,
   });
 }
 export async function updateUser(params) {
-  return request('/frame-web/user/UpdateUserInfo?org_id=-1', {
+  return request('/frame-web/user/UpdateUserInfo', {
     method: 'POST',
     body: params,
   });
@@ -56,6 +56,22 @@ export async function queryRoomList(params) {
   return request(`/frame-web/rooms/roomsList?${stringify(params)}`)
 }
 
+
+export async function addContract(params) {
+  return request('/frame-web/contracts/saveContracts', {
+    method: 'POST',
+    body: params,
+  });
+}
+export async function updateContract(params) {
+  return request('/frame-web/contracts/UpdateContractsInfo', {
+    method: 'POST',
+    body: params,
+  });
+}
+export async function queryContracts(params) {
+  return request(`/frame-web/contracts/contractsList?${stringify(params)}`)
+}
 
 export async function addCourseWare(params) {
   return request('/frame-web/user/saveUserInfo?org_id=-1', {

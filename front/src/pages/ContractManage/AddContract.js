@@ -6,16 +6,14 @@ import {
     Icon, Tooltip, Modal,
 } from 'antd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
-import UserSelectInput from './UserSelectInput';
+import UserSelectInput from '@/pages/UserManage/UserSelectInput';
 import styles from './Index.less';
+import router from 'umi/router';
+
 
 const FormItem = Form.Item;
-const { Option } = Select;
-const { RangePicker } = DatePicker;
-const { TextArea } = Input;
 
-@connect(({ loading }) => ({
-    submitting: loading.effects['form/submitRegularForm'],
+@connect(({  }) => ({
 }))
 @Form.create()
 class BasicForms extends PureComponent {
@@ -24,21 +22,22 @@ class BasicForms extends PureComponent {
         e.preventDefault();
         form.validateFieldsAndScroll((err, values) => {
             if (!err) {
-                console.log("values===",values)
-                // dispatch({
-                //     type: 'form/submitRegularForm',
-                //     payload: values,
-                // });
+                console.log("values===", values)
+                dispatch({
+                    type: 'contract/add',
+                    payload: values,
+                });
             }
         });
     };
-
+    onToList = () => {
+        router.push('/contract-manage/search');
+    }
     render() {
         const { submitting } = this.props;
         const {
             form: { getFieldDecorator, getFieldValue },
         } = this.props;
-
         const formItemLayout = {
             labelCol: {
                 xs: { span: 24 },
@@ -65,7 +64,7 @@ class BasicForms extends PureComponent {
                 <Card bordered={false}>
                     <Form onSubmit={this.handleSubmit} style={{ marginTop: 8 }}>
                         <FormItem {...formItemLayout} label="学生">
-                            {getFieldDecorator('student', {
+                            {getFieldDecorator('contract_stu', {
                                 rules: [
                                     {
                                         required: true,
@@ -75,7 +74,7 @@ class BasicForms extends PureComponent {
                             })(<UserSelectInput role="STU" placeholder={formatMessage({ id: 'form.title.placeholder' })} />)}
                         </FormItem>
                         <FormItem {...formItemLayout} label="直播间">
-                            {getFieldDecorator('room', {
+                            {getFieldDecorator('contract_tea', {
                                 rules: [
                                     {
                                         required: true,
@@ -85,46 +84,73 @@ class BasicForms extends PureComponent {
                             })(<Input placeholder={formatMessage({ id: 'form.title.placeholder' })} />)}
                         </FormItem>
                         <FormItem {...formItemLayout} label="总课时">
-                            {getFieldDecorator('total', {
+                            {getFieldDecorator('contract_hour', {
                                 rules: [
                                     {
                                         required: true,
                                         message: formatMessage({ id: 'validation.title.required' }),
                                     },
+                                    {
+                                        type: "number",
+                                        transform(value) {
+                                            if (value) {
+                                                return Number(value);
+                                            }
+                                        },
+                                        message: "请输入正确的格式"
+                                    }
                                 ],
                             })(<Input placeholder={formatMessage({ id: 'form.title.placeholder' })} />)}
                         </FormItem>
                         <FormItem {...formItemLayout} label="剩余课时">
-                            {getFieldDecorator('rest', {
+                            {getFieldDecorator('contract_rest_hour', {
                                 rules: [
                                     {
                                         required: true,
                                         message: formatMessage({ id: 'validation.title.required' }),
                                     },
+                                    {
+                                        type: "number",
+                                        transform(value) {
+                                            if (value) {
+                                                return Number(value);
+                                            }
+                                        },
+                                        message: "请输入正确的格式"
+                                    }
                                 ],
                             })(<Input placeholder={formatMessage({ id: 'form.title.placeholder' })} />)}
                         </FormItem>
                         <FormItem {...formItemLayout} label="金额">
-                            {getFieldDecorator('amount', {
+                            {getFieldDecorator('contract_amount', {
                                 rules: [
                                     {
                                         required: true,
                                         message: formatMessage({ id: 'validation.title.required' }),
                                     },
+                                    {
+                                        type: "number",
+                                        transform(value) {
+                                            if (value) {
+                                                return Number(value);
+                                            }
+                                        },
+                                        message: "请输入正确的格式"
+                                    }
                                 ],
                             })(<Input placeholder={formatMessage({ id: 'form.title.placeholder' })} />)}
                         </FormItem>
                         <FormItem {...submitFormLayout} style={{ marginTop: 32 }}>
                             <Button type="primary" htmlType="submit" loading={submitting}>
-                                <FormattedMessage id="form.submit" />
-                            </Button>
-                            <Button style={{ marginLeft: 8 }}>
                                 <FormattedMessage id="form.save" />
+                            </Button>
+                            <Button style={{ marginLeft: 8 }} onClick={this.onToList}>
+                                查看列表
                             </Button>
                         </FormItem>
                     </Form>
                 </Card>
-             
+
             </PageHeaderWrapper>
         );
     }

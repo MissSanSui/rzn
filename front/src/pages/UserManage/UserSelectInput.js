@@ -8,6 +8,7 @@ import {
     message, Badge, Divider, Steps, Radio, Table,
 } from 'antd';
 import UserSelect from './UserSelect'
+@connect()
 export default class SelectInput extends React.Component {
     static getDerivedStateFromProps(nextProps) {
         // Should be a controlled component.

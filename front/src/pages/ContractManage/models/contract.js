@@ -1,4 +1,4 @@
-import { queryUsers, addUser, updateUser, validateUserName,ableUser,disableUser } from '@/services/api';
+import { queryContracts, addContract, updateUser, validateUserName,ableUser,disableUser } from '@/services/api';
 
 export default {
   namespace: 'contract',
@@ -21,12 +21,12 @@ export default {
         payload: true,
       });
       console.log("contract fetch payload==", payload)
-      let response = yield call(queryUsers, payload);
+      let response = yield call(queryContracts, payload);
       var result = {
         list: [],
         pagination: {},
       }
-      if (response.rows && response.rows.length > 0) {
+      if (response.code ==0&& response.rows.length > 0) {
         result.list = response.rows
         result.pagination.total = response.total
       }
@@ -40,14 +40,14 @@ export default {
       });
     },
     *add({ payload, success, fail }, { call }) {
-      payload.org_id = -1
       let formData = new FormData()
-      Object.keys(payload.params).forEach((key) => {
-        if (payload.params[key]) {
-          formData.append(key, payload.params[key])
+      Object.keys(payload).forEach((key) => {
+        if (payload[key]) {
+          formData.append(key, payload[key])
         }
       });
-      let response = yield call(addUser, formData)
+      console.log("contract add formData==", formData)
+      let response = yield call(addContract, formData)
       if (!response || response.flag != "0") {
         response = response || {}
         console.log(" addUser  fail==", response)

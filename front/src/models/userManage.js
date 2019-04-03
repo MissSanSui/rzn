@@ -40,7 +40,6 @@ export default {
       });
     },
     *add({ payload, success, fail }, { call }) {
-      payload.org_id = -1
       let formData = new FormData()
       Object.keys(payload.params).forEach((key) => {
         if (payload.params[key]) {
