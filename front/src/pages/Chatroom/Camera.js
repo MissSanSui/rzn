@@ -1,19 +1,18 @@
-import React, {PureComponent} from "react";
-import {RoomWhiteboard} from "white-react-sdk";
-import {WhiteWebSdk} from "white-web-sdk";
-import * as serviceWorker from "./serviceWorker";
-import {Row, Col, Button, Icon, Modal} from "antd";
-import "white-web-sdk/style/index.css";
-import Camera from './Camera';
-import Courseware from './Courseware';
-let room = null;
+import React, { PureComponent } from 'react';
+import ReactDOM from "react-dom";
+import styles from './Joinroom.less';
+import {RoomWhiteboard} from 'white-react-sdk';
+import {WhiteWebSdk} from 'white-web-sdk';
+import * as serviceWorker from './serviceWorker';
+import AgoraRTC from 'agora-rtc-sdk'
+import Redirect from 'umi/redirect';
 
-
-class Chatroom extends PureComponent {
+class Camera extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            room: null
+            room: null,
+            visible: false
         }
     }
 
@@ -73,7 +72,7 @@ class Chatroom extends PureComponent {
         const room = await whiteWebSdk.joinRoom({
             uuid: json.msg.room.uuid,
             roomToken: json.msg.roomToken});
-
+        room.setViewMode("broadcaster");
         this.setState({room: room});
 
 
@@ -143,40 +142,7 @@ class Chatroom extends PureComponent {
 
     }
 
-    eraser = ()=> {
-        room.setMemberState({
-            currentApplianceName: "eraser"
-        });
-    };
-    selector = ()=> {
-        room.setMemberState({
-            currentApplianceName: "selector"
-        });
-    };
-    pencil = ()=> {
-        room.setMemberState({
-            currentApplianceName: "pencil",
-            strokeColor: [255, 0, 0],
-            strokeWidth: 2,
-        });
-    };
-    rectangle = ()=> {
-        room.setMemberState({
-            currentApplianceName: "rectangle"
-        });
-    };
-    ellipse = ()=> {
-        room.setMemberState({
-            currentApplianceName: "ellipse"
-        });
-    };
-    text = ()=> {
-        room.setMemberState({
-            currentApplianceName: "text",
 
-            textSize: 14
-        });
-    };
 
     add = () => {
         room.putScenes("/math", [{name: "geometry"}]);
@@ -193,53 +159,9 @@ class Chatroom extends PureComponent {
 
     render() {
         return (
-            this.state.room ?
-                <div className="joinRoomStyle">
-                    <div className="room-left">
-                        <Courseware />
-                    </div>
-                    <div className="room-middle">
-                        <ul className="room-icon">
-                            <li>
-                                <Icon type="delete" theme="filled" onClick={this.eraser.bind(this)}/>
-                            </li>
-                            <li>
-                                <Icon type="edit" theme="filled" onClick={this.pencil.bind(this)}/>
-                            </li>
-                            <li>
-                                <Icon type="font-size" onClick={this.text.bind(this)}/>
-                            </li>
-                            <li>
-                                <Icon type="border" onClick={this.rectangle.bind(this)}/>
-                            </li>
-                        </ul>
-
-                        <Col span={24}>
-                            <RoomWhiteboard room={this.state.room}
-                                            style={{width: '100%', height: '100vh'}}/>
-                        </Col>
-
-                    </div>
-                    <div className="room-right">
-                        <Col span={24} style={{paddingLeft: '5px'}}>
-                            <Camera />
-                            <Button type="primary" htmlType="submit" onClick={this.add}>加一页</Button>
-                        </Col>
-                    </div>
-
-                    {/*
-                     <Button type="primary" htmlType="submit" onClick={this.add}>加一页</Button>
-                     <Button type="primary" htmlType="submit" onClick={this.qiehuan}>切换</Button>
-                     <Button type="primary" htmlType="submit" onClick={this.chaxun}>查询</Button>
-                     */}
-
-
-                </div>
-                : <div>Loading</div>
+            <div>视频区域</div>
         )
     }
 }
 
-export default Chatroom;
-
-serviceWorker.unregister();
+export default Camera;
