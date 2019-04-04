@@ -12,7 +12,10 @@ class WhiteList extends PureComponent {
     render() {
         return (
             <div className="whiteList">
-                <Button type="primary" onClick={this.props.add.bind(this)}>加一页</Button>
+                <div className="whiteBtn">
+                    <Button type="primary" onClick={this.props.add.bind(this)}>创建画板</Button>
+                </div>
+
                 <List
                     grid={{column: 1, gutter: 0}}
 
@@ -20,9 +23,10 @@ class WhiteList extends PureComponent {
                     renderItem={item => (
                         <List.Item>
                             <Card
-                                height="150px"
                                 hoverable
-                                cover={<img alt='' src={item}/>}
+
+                                bodyStyle={{display:'none'}}
+                                cover={<img alt='' src={item.url}/>}
                             >
                             </Card>
 

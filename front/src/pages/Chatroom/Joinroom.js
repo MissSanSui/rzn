@@ -9,23 +9,30 @@ import Courseware from "./Courseware";
 import WhiteList from "./WhiteList";
 
 let room = null;
-
+const whiteImg = [
+    {
+        key: 0,
+        url: 'https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png'
+    },
+    {
+        key: 1,
+        url: 'https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png'
+    },
+    {
+        key: 2,
+        url: 'https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png'
+    },
+];
 
 class Chatroom extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
             room: null,
-            whiteImgList:[]
+            whiteImgList: whiteImg
         }
     }
 
-    async creatRoom(obj,call) {
-        const that = this;
-
-
-
-    };
 
     async componentWillMount() {
         const miniToken = 'WHITEcGFydG5lcl9pZD1scGMxOEtuU3JaUlE3YWFmUm1wZFNFaEFhM3J3TzB5T01pOTYmc2lnPTM5ZWQxYWY3ZjE3OGE5MTU1ZThmNDFhNmMyNThiYWExNTU0MDA5MmE6YWRtaW5JZD0xMjQmcm9sZT1taW5pJmV4cGlyZV90aW1lPTE1ODI5NzQ5NTAmYWs9bHBjMThLblNyWlJRN2FhZlJtcGRTRWhBYTNyd08weU9NaTk2JmNyZWF0ZV90aW1lPTE1NTE0MTc5OTgmbm9uY2U9MTU1MTQxNzk5ODMxMDAw';
@@ -52,34 +59,17 @@ class Chatroom extends PureComponent {
             roomToken: json.msg.roomToken
         });
 
+        room.putScenes("/math", [{name: "geometry"}]);
+        //room.setScenePath("/math");
+        function onWindowResize() {
+            room.refreshViewSize();
+        }
 
-
-        //封面
-        const url1 = 'https://cloudcapiv4.herewhite.com/handle/room/snapshot?token=' + miniToken;
-        const page = {
-            method: 'POST',
-            headers: {
-                "content-type": "application/json",
-            },
-            body: JSON.stringify({
-                width: "150",
-                height: "150",
-                uuid: room.uuid
-            }),
-        };
-        //const pageRes = await fetch(url1, page);
-        //const pageJson = await pageRes.json();
-
-        //console.log(pageJson);
-
-        function onWindowResize() {room.refreshViewSize();}
         window.addEventListener("resize", onWindowResize);
 
-        const arr = this.state.whiteImgList;
-        //arr.push();
+
         this.setState({
             room: room,
-            whiteImgList:arr
         });
         // 加载直播间信息
         // const enterChatUrl = '/api/chat/enterChat';
@@ -153,10 +143,8 @@ class Chatroom extends PureComponent {
         });
     };
 
-    add = () => {
-        const that = this;
-
-        //this.state.room.putScenes("/math", [{name: "geometry"}]);
+    add = ()=> {
+        //this.state.room.putScenes("/init");
     };
 
     render() {
