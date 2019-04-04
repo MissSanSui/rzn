@@ -6,29 +6,56 @@ const plainOptions = [
     {
 
         title: 0,
-        img: 'http://img0.imgtn.bdimg.com/it/u=4235563522,1399401048&fm=200&gp=0.jpg'
+        img: 'https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png'
     },
     {
         title: 1,
-        img: 'http://img2.a0bi.com/upload/ttq/20150802/1438503585635.jpg'
+        img: 'https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png'
     },
     {
         title: 2,
-        img: 'http://b.hiphotos.baidu.com/zhidao/pic/item/267f9e2f0708283896af675aba99a9014d08f1da.jpg'
+        img: 'https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png'
     }
     ,
     {
         title: 3,
-        img: 'http://pic171.nipic.com/file/20180704/26129549_092612455034_2.jpg'
+        img: 'https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png'
     }
     ,
     {
         title: 4,
-        img: 'http://gss0.baidu.com/94o3dSag_xI4khGko9WTAnF6hhy/zhidao/pic/item/eac4b74543a98226d7a9ff488c82b9014a90eb71.jpg'
+        img: 'https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png'
     },
     {
         title: 5,
-        img: 'http://img2.imgtn.bdimg.com/it/u=3386645186,1292480344&fm=26&gp=0.jpg'
+        img: 'https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png'
+    },
+    {
+
+        title: 6,
+        img: 'https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png'
+    },
+    {
+        title: 7,
+        img: 'https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png'
+    },
+    {
+        title: 8,
+        img: 'https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png'
+    }
+    ,
+    {
+        title: 9,
+        img: 'https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png'
+    }
+    ,
+    {
+        title: 10,
+        img: 'https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png'
+    },
+    {
+        title: 11,
+        img: 'https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png'
     }
 ];
 const pushOption = [];
@@ -145,9 +172,11 @@ class Courseware extends PureComponent {
         return (
             <div>
                 <Col span={20} className="cardStyle">
-                    <Button type="primary" block icon="picture"
-                            className="Courseware-upload"
-                            onClick={this.showModal.bind(this)}>上传课件</Button>
+                    <div className="Courseware-upload">
+                        <Button type="primary" block icon="picture"
+                                onClick={this.showModal.bind(this)}>上传课件</Button>
+                    </div>
+
 
                     <List
                         grid={{column: 1}}
