@@ -6,7 +6,7 @@ import {Row, Col, Button, Icon, Modal} from "antd";
 import "white-web-sdk/style/index.css";
 import Camera from './Camera';
 import Courseware from './Courseware';
-import AgoraRTC from 'agora-rtc-sdk'
+
 let room = null;
 
 
@@ -57,7 +57,6 @@ class Chatroom extends PureComponent {
         // this.setState({room: room});
 
         const whiteWebSdk = new WhiteWebSdk();
-
         const url = 'https://cloudcapiv4.herewhite.com/room?token=' + miniToken;
         const requestInit = {
             method: 'POST',
@@ -74,75 +73,7 @@ class Chatroom extends PureComponent {
         const room = await whiteWebSdk.joinRoom({
             uuid: json.msg.room.uuid,
             roomToken: json.msg.roomToken});
-
-
         this.setState({room: room});
-
-
-        // 加入视频直播间
-        const appleId = '4c2508e4a3b94c72a5c56e80281760fd';
-        const client = AgoraRTC.createClient({mode: 'live', codec: "h264"});
-        client.init(appleId, function () {
-          console.log("AgoraRTC client initialized");
-          // 初始化成功后加入频道
-          client.join(null, 'fans', '1', function(uid) {
-            console.log("User " + uid + " join channel successfully");
-            var localStream = AgoraRTC.createStream({
-              streamID: uid,
-              audio: true,
-              video: true,
-              screen: false}
-            );
-            localStream.init(function() {
-              console.log("getUserMedia successfully");
-              localStream.play('agora_local');
-
-              client.publish(localStream, function (err) {
-                console.log("Publish local stream error: " + err);
-              });
-
-              client.on('stream-published', function (evt) {
-                console.log("Publish local stream successfully");
-              });
-
-            }, function (err) {
-              console.log("getUserMedia failed", err);
-            });
-
-          }, function(err) {
-            console.log("Join channel failed", err);
-          });
-
-          client.on('stream-added', function (evt) {
-            var stream = evt.stream;
-            console.log("New stream added: " + stream.getId());
-            console.log(stream.getId() == '1');
-            if(stream.getId() == '1') {
-              client.leave(function () {
-                console.log("Leave channel successfully");
-              }, function (err) {
-                console.log("Leave channel failed");
-              });
-            }
-
-            client.subscribe(stream, function (err) {
-              console.log("Subscribe stream failed", err);
-            });
-          });
-          client.on('stream-subscribed', function (evt) {
-            var remoteStream = evt.stream;
-            console.log("Subscribe remote stream successfully: " + remoteStream.getId());
-            remoteStream.play('agora_remote');
-
-
-          })
-
-
-        }, function (err) {
-          console.log("AgoraRTC client init failed", err);
-        });
-
-
     }
 
     eraser = ()=> {
@@ -227,16 +158,8 @@ class Chatroom extends PureComponent {
                             <Camera />
                             <Button type="primary" htmlType="submit" onClick={this.add}>加一页</Button>
                         </Col>
-                        <div id='agora_local' style={{width: '190px', height: '190px'}}/>
-                         <div id='agora_remote' style={{width: '190px', height: '190px'}}/>
-                    </div>
 
-                    {/*
-                     <Button type="primary" htmlType="submit" onClick={this.add}>加一页</Button>
-                     <Button type="primary" htmlType="submit" onClick={this.qiehuan}>切换</Button>
-                     <Button type="primary" htmlType="submit" onClick={this.chaxun}>查询</Button>
-                     */}
-          
+                    </div>
 
 
                 </div>
