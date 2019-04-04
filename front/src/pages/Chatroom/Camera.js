@@ -2,14 +2,12 @@ import React, {PureComponent} from "react";
 import {RoomWhiteboard} from "white-react-sdk";
 import {WhiteWebSdk} from "white-web-sdk";
 import AgoraRTC from "agora-rtc-sdk";
+import {Icon} from "antd";
 
 class Camera extends PureComponent {
     constructor(props) {
         super(props);
-        this.state = {
-            room: null,
-            visible: false
-        }
+
     }
 
 
@@ -81,25 +79,13 @@ class Camera extends PureComponent {
 
     }
 
-
-    add = () => {
-        room.putScenes("/math", [{name: "geometry"}]);
-    };
-
-    qiehuan = () => {
-        room.setScenePath("/math/geometry");
-    };
-
-    chaxun = () => {
-        console.log(room.state.sceneState);
-    };
-
-
     render() {
         return (
             <div className="camera">
-                <div id='agora_local' style={{width: '50%', height: '120px',float:'left'}}/>
+                <div id='agora_local' style={{width: '50%', height: '120px',float:'left'}}></div>
                 <div id='agora_remote' style={{width: '50%', height: '120px',float:'left'}}/>
+
+                <Icon type="video-camera" theme="filled" />
             </div>
         )
     }

@@ -4,8 +4,9 @@ import {WhiteWebSdk} from "white-web-sdk";
 import * as serviceWorker from "./serviceWorker";
 import {Row, Col, Button, Icon, Modal} from "antd";
 import "white-web-sdk/style/index.css";
-import Camera from './Camera';
-import Courseware from './Courseware';
+import Camera from "./Camera";
+import Courseware from "./Courseware";
+import WhiteList from "./WhiteList";
 
 let room = null;
 
@@ -14,14 +15,72 @@ class Chatroom extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            room: null
+            room: null,
+            whiteImgList:[]
         }
     }
 
+    async creatRoom(obj,call) {
+        const that = this;
+
+
+
+    };
 
     async componentWillMount() {
         const miniToken = 'WHITEcGFydG5lcl9pZD1scGMxOEtuU3JaUlE3YWFmUm1wZFNFaEFhM3J3TzB5T01pOTYmc2lnPTM5ZWQxYWY3ZjE3OGE5MTU1ZThmNDFhNmMyNThiYWExNTU0MDA5MmE6YWRtaW5JZD0xMjQmcm9sZT1taW5pJmV4cGlyZV90aW1lPTE1ODI5NzQ5NTAmYWs9bHBjMThLblNyWlJRN2FhZlJtcGRTRWhBYTNyd08weU9NaTk2JmNyZWF0ZV90aW1lPTE1NTE0MTc5OTgmbm9uY2U9MTU1MTQxNzk5ODMxMDAw';
 
+        const whiteWebSdk = new WhiteWebSdk();
+        const url = 'https://cloudcapiv4.herewhite.com/room?token=' + miniToken;
+        const requestInit = {
+            method: 'POST',
+            headers: {
+                "content-type": "application/json",
+            },
+            body: JSON.stringify({
+                name: '我的第1个 White 房间',
+                limit: 100, // 房间人数限制
+                mode: 'historied'
+            }),
+        };
+
+
+        const res = await fetch(url, requestInit);
+        const json = await res.json();
+        const room = await whiteWebSdk.joinRoom({
+            uuid: json.msg.room.uuid,
+            roomToken: json.msg.roomToken
+        });
+
+
+
+        //封面
+        const url1 = 'https://cloudcapiv4.herewhite.com/handle/room/snapshot?token=' + miniToken;
+        const page = {
+            method: 'POST',
+            headers: {
+                "content-type": "application/json",
+            },
+            body: JSON.stringify({
+                width: "150",
+                height: "150",
+                uuid: room.uuid
+            }),
+        };
+        //const pageRes = await fetch(url1, page);
+        //const pageJson = await pageRes.json();
+
+        //console.log(pageJson);
+
+        function onWindowResize() {room.refreshViewSize();}
+        window.addEventListener("resize", onWindowResize);
+
+        const arr = this.state.whiteImgList;
+        //arr.push();
+        this.setState({
+            room: room,
+            whiteImgList:arr
+        });
         // 加载直播间信息
         // const enterChatUrl = '/api/chat/enterChat';
         // const enterChatInit = {
@@ -56,24 +115,7 @@ class Chatroom extends PureComponent {
         // // room.removeScenes("/");
         // this.setState({room: room});
 
-        const whiteWebSdk = new WhiteWebSdk();
-        const url = 'https://cloudcapiv4.herewhite.com/room?token=' + miniToken;
-        const requestInit = {
-            method: 'POST',
-            headers: {
-                "content-type": "application/json",
-            },
-            body: JSON.stringify({
-                name: '我的第一个 White 房间',
-                limit: 100, // 房间人数限制
-            }),
-        };
-        const res = await fetch(url, requestInit);
-        const json = await res.json();
-        const room = await whiteWebSdk.joinRoom({
-            uuid: json.msg.room.uuid,
-            roomToken: json.msg.roomToken});
-        this.setState({room: room});
+
     }
 
     eraser = ()=> {
@@ -112,17 +154,10 @@ class Chatroom extends PureComponent {
     };
 
     add = () => {
-        this.state.room.putScenes("/math", [{name: "geometry"}]);
-    };
+        const that = this;
 
-    qiehuan = () => {
-        this.state.room.setScenePath("/math/geometry");
+        //this.state.room.putScenes("/math", [{name: "geometry"}]);
     };
-
-    chaxun = () => {
-        this.state.console.log(room.state.sceneState);
-    };
-
 
     render() {
         return (
@@ -156,7 +191,10 @@ class Chatroom extends PureComponent {
                     <div className="room-right">
                         <Col span={24} style={{paddingLeft: '5px'}}>
                             <Camera />
-                            <Button type="primary" htmlType="submit" onClick={this.add}>加一页</Button>
+
+
+                            <WhiteList add={this.add.bind(this)} whiteList={this.state.whiteImgList}/>
+
                         </Col>
 
                     </div>
