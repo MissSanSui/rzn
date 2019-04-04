@@ -74,6 +74,7 @@ class Chatroom extends PureComponent {
             uuid: json.msg.room.uuid,
             roomToken: json.msg.roomToken});
 
+
         this.setState({room: room});
 
 
@@ -144,34 +145,34 @@ class Chatroom extends PureComponent {
     }
 
     eraser = ()=> {
-        room.setMemberState({
+        this.state.room.setMemberState({
             currentApplianceName: "eraser"
         });
     };
     selector = ()=> {
-        room.setMemberState({
+        this.state.room.setMemberState({
             currentApplianceName: "selector"
         });
     };
     pencil = ()=> {
-        room.setMemberState({
+        this.state.room.setMemberState({
             currentApplianceName: "pencil",
             strokeColor: [255, 0, 0],
             strokeWidth: 2,
         });
     };
     rectangle = ()=> {
-        room.setMemberState({
+        this.state.room.setMemberState({
             currentApplianceName: "rectangle"
         });
     };
     ellipse = ()=> {
-        room.setMemberState({
+        this.state.room.setMemberState({
             currentApplianceName: "ellipse"
         });
     };
     text = ()=> {
-        room.setMemberState({
+        this.state.room.setMemberState({
             currentApplianceName: "text",
 
             textSize: 14
@@ -179,15 +180,15 @@ class Chatroom extends PureComponent {
     };
 
     add = () => {
-        room.putScenes("/math", [{name: "geometry"}]);
+        this.state.room.putScenes("/math", [{name: "geometry"}]);
     };
 
     qiehuan = () => {
-        room.setScenePath("/math/geometry");
+        this.state.room.setScenePath("/math/geometry");
     };
 
     chaxun = () => {
-        console.log(room.state.sceneState);
+        this.state.console.log(room.state.sceneState);
     };
 
 
