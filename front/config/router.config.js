@@ -22,19 +22,19 @@ export default [
     routes: [
       // 系统配置页面
       { path: '/', redirect: '/user-manage', authority: ['admin', 'user', 'guest'] },
-      {
-        name: 'sys',
-        icon: 'sys',
-        path: '/sys',
-        authority: ['admin', 'sys',],
-        routes: [
-          {
-            path: '/sys/users',
-            name: 'usersManage',
-            component: './Sys/Users/UsersManage',
-          }
-        ],
-      },
+      // {
+      //   name: 'sys',
+      //   icon: 'sys',
+      //   path: '/sys',
+      //   authority: ['admin', 'sys',],
+      //   routes: [
+      //     {
+      //       path: '/sys/users',
+      //       name: 'usersManage',
+      //       component: './Sys/Users/UsersManage',
+      //     }
+      //   ],
+      // },
       {
         name: 'courseWareManage',
         icon: 'courseWareManage',
