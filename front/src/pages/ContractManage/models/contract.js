@@ -1,4 +1,4 @@
-import { queryUsers, addUser, updateUser } from '@/services/api';
+import { queryContracts, addContract, updateUser, validateUserName,ableUser,disableUser } from '@/services/api';
 
 export default {
   namespace: 'contract',
@@ -7,7 +7,10 @@ export default {
     loading: false,
     data: {
       list: [],
-      pagination: {},
+      pagination: {
+        current: 1,
+        pageSize: 10
+      },
     },
   },
 
@@ -17,12 +20,13 @@ export default {
         type: 'changeLoading',
         payload: true,
       });
-      let response = yield call(queryUsers, payload);
+      console.log("contract fetch payload==", payload)
+      let response = yield call(queryContracts, payload);
       var result = {
         list: [],
         pagination: {},
       }
-      if (response.rows && response.rows.length > 0) {
+      if (response.code ==0&& response.rows.length > 0) {
         result.list = response.rows
         result.pagination.total = response.total
       }
@@ -35,14 +39,20 @@ export default {
         payload: false,
       });
     },
-    *add({ payload, success, fail }, { call, put }) {
-      console.log("addUser=payload=", payload)
-      let response = yield call(addUser, payload.params);
-      if (!response || response.flag) {
-        response = response||{}
+    *add({ payload, success, fail }, { call }) {
+      let formData = new FormData()
+      Object.keys(payload).forEach((key) => {
+        if (payload[key]) {
+          formData.append(key, payload[key])
+        }
+      });
+      console.log("contract add formData==", formData)
+      let response = yield call(addContract, formData)
+      if (!response || response.flag != "0") {
+        response = response || {}
         console.log(" addUser  fail==", response)
         if (fail && typeof fail === 'function') {
-          fail(response.msg||'');
+          fail(response.msg || '');
         }
       }
       else {
@@ -52,9 +62,15 @@ export default {
       }
     },
     * update({ payload, success, fail }, { call, put }) {
-      console.log("updateUser=payload=", payload)
-      let response = yield call(updateUser, payload.params);
-      if (!response.flag) {
+      // console.log("updateUser=payload=", payload)
+      let formData = new FormData()
+      Object.keys(payload.params).forEach((key) => {
+        if (payload.params[key]) {
+          formData.append(key, payload.params[key])
+        }
+      });
+      let response = yield call(updateUser, formData);
+      if (response.flag == "0") {
         if (success && typeof success === 'function') {
           success();
         }
@@ -65,18 +81,22 @@ export default {
         }
       }
     },
-
+    *validate({ payload, callback }, { call, put }) {
+      console.log("contract validate payload==", payload)
+      let response = yield call(validateUserName, payload);
+      console.log("contract validate response==", response)
+      callback(response.valid)
+    },
   },
   reducers: {
     save(state, action) {
-      console.log("action==", action)
+      // console.log("action==", action)
       return {
         ...state,
         data: action.payload,
       };
     },
     changeLoading(state, action) {
-      console.log("action==", action)
       return {
         ...state,
         loading: action.payload

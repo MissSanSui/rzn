@@ -1,4 +1,4 @@
-import { queryUsers, addUser, updateUser } from '@/services/api';
+import { queryUsers, addUser, updateUser, validateUserName, ableUser, disableUser } from '@/services/api';
 
 export default {
   namespace: 'userManage',
@@ -40,7 +40,6 @@ export default {
       });
     },
     *add({ payload, success, fail }, { call }) {
-      payload.org_id = -1
       let formData = new FormData()
       Object.keys(payload.params).forEach((key) => {
         if (payload.params[key]) {
@@ -81,8 +80,36 @@ export default {
         }
       }
     },
-
+    * changeStatus({ payload, success, fail }, { call, put }) {
+      console.log("changeStatus=payload=", payload)
+      let formData = {}
+      formData.id=payload.id
+      let response = {}
+      if (payload.status) {
+        response = yield call(ableUser, formData);
+      } else {
+        response = yield call(disableUser, formData);
+      }
+      console.log("changeStatus=response=", response)
+      if (response.flag == "0") {
+        if (success && typeof success === 'function') {
+          success();
+        }
+      } else {
+        console.log(" updateUser  fail==", response)
+        if (fail && typeof fail === 'function') {
+          fail(response.msg);
+        }
+      }
+    },
+    *validate({ payload, callback }, { call, put }) {
+      console.log("userManage validate payload==", payload)
+      let response = yield call(validateUserName, payload);
+      console.log("userManage validate response==", response)
+      callback(response.valid)
+    },
   },
+
   reducers: {
     save(state, action) {
       // console.log("action==", action)
@@ -92,7 +119,6 @@ export default {
       };
     },
     changeLoading(state, action) {
-      // console.log("action==", action)
       return {
         ...state,
         loading: action.payload

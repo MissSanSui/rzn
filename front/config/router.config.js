@@ -22,26 +22,40 @@ export default [
     routes: [
       // 系统配置页面
       { path: '/', redirect: '/user-manage', authority: ['admin', 'user', 'guest'] },
+      // {
+      //   name: 'sys',
+      //   icon: 'sys',
+      //   path: '/sys',
+      //   authority: ['admin', 'sys',],
+      //   routes: [
+      //     {
+      //       path: '/sys/users',
+      //       name: 'usersManage',
+      //       component: './Sys/Users/UsersManage',
+      //     }
+      //   ],
+      // },
       {
-        name: 'sys',
-        icon: 'sys',
-        path: '/sys',
+        name: 'courseWareManage',
+        icon: 'courseWareManage',
+        path: '/courseware-manage',
         authority: ['admin', 'sys',],
+        // component: './CourseWareManage/Index',
         routes: [
           {
-            path: '/sys/users',
-            name: 'usersManage',
-            component: './Sys/Users/UsersManage',
-          }
-        ],
+          name: 'add',
+          icon: 'courseWareManage',
+          path: '/courseware-manage/add',
+          component: './CourseWareManage/Add',
+        },
+        {
+          name: 'search',
+          icon: 'courseWareManage',
+          path: '/courseware-manage/search',
+          component: './CourseWareManage/Index',
+        }
+        ]
       },
-      // {
-      //   name: 'courseWareManage',
-      //   icon: 'sys',
-      //   path: '/coursewareManage',
-      //   authority: ['admin', 'sys',],
-      //   component: './CourseWareManage/Index',
-      // },
       // 用户信息管理
       {
         name: 'userManage',
@@ -52,13 +66,26 @@ export default [
         authority: ['admin', 'sys',],
       },
       //  课时管理
-       {
+      {
         name: 'contractManage',
         icon: 'contractManage',
         path: '/contract-manage',
-        component: './ContractManage/Index',
         Routes: ['src/pages/Authorized'],
         authority: ['admin', 'sys',],
+        routes: [
+          {
+          name: 'add',
+          icon: '',
+          path: '/contract-manage/add',
+          component: './ContractManage/AddContract',
+        },
+        {
+          name: 'search',
+          icon: '',
+          path: '/contract-manage/search',
+          component: './ContractManage/Index',
+        }
+        ]
       },
       // 聊天室界面
       {

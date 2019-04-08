@@ -53,8 +53,9 @@ export default {
       yield put({
         type: 'changeLoginStatus',
         payload: {
-          status: false,
+          user_status: false,
           currentAuthority: 'guest',
+          user_id:""
         },
       });
       reloadAuthorized();
@@ -74,9 +75,10 @@ export default {
       console.log("payload==",payload);
       console.log("payload.currentAuthority==",payload.currentAuthority);
       setAuthority(payload.currentAuthority);
+      setUserId(payload.user_id)
       return {
         ...state,
-        status: payload.status,
+        status: payload.user_status,
         type: payload.type,
       };
     },
