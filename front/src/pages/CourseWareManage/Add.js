@@ -3,7 +3,7 @@ import { connect } from 'dva';
 import { formatMessage, FormattedMessage } from 'umi-plugin-react/locale';
 import {
     Form, Input, DatePicker, Select, Button, Card, InputNumber,
-    Icon, Tooltip, Modal, Upload, Row, Col, Steps
+    Icon, Tooltip, Modal, Upload, Row, Col, Steps,message
 } from 'antd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import styles from './Index.less';
@@ -27,37 +27,32 @@ class BasicForms extends PureComponent {
         e.preventDefault();
         form.validateFieldsAndScroll((err, values) => {
             if (!err) {
-                console.log("values===", values)
+                console.log("   ===", values)
                 dispatch({
                     type: 'courseWare/add',
                     payload: values,
-                });
-            }
-        });
-    };
-    onToList = () => {
-        router.push('/courseWare-manage/search');
-        // this.setState({
-        //     current: 2
-        // })
-    }
-    onToUpload = () => {
-        // router.push('/courseWare-manage/search');
-        const { dispatch, form } = this.props;
-        e.preventDefault();
-        form.validateFieldsAndScroll((err, values) => {
-            if (!err) {
-                console.log("values===", values)
-                dispatch({
-                    type: 'courseWare/add',
-                    payload: values,
+                    success:()=>{
+                        this.setState({
+                            current: 2
+                        })
+                    },
+                    fail:()=>{
+                        message.warn("fail")
+                        this.setState({
+                            current: 2
+                        })
+                    }
                 });
             }
         });
         this.setState({
             current: 2
         })
+    };
+    onToList = () => {
+        router.push('/courseWare-manage/search');
     }
+
     changeContent = (value) => {
         this.setState({
             content: value
@@ -148,7 +143,7 @@ class BasicForms extends PureComponent {
                                     {/* <Button type="primary" htmlType="submit" loading={submitting}>
                                         <FormattedMessage id="form.save" />
                                     </Button> */}
-                                    <Button type="primary"  style={{ marginLeft: 8 }} htmlType="submit" onClick={this.onToUpload}>
+                                    <Button type="primary"  style={{ marginLeft: 8 }} htmlType="submit">
                                         保存并添加图片
                                      </Button>
                                 </FormItem>

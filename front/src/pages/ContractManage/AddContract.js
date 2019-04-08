@@ -150,7 +150,6 @@ class BasicForms extends PureComponent {
                         </FormItem>
                     </Form>
                 </Card>
-
             </PageHeaderWrapper>
         );
     }

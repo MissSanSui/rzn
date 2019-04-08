@@ -103,6 +103,7 @@ class UserManage extends PureComponent {
         status: checked
       },
       success: () => {
+        message("成功")
         dispatch({
           type: 'userManage/fetch',
           payload: params,
@@ -220,7 +221,7 @@ class UserManage extends PureComponent {
     },
   ];
   render() {
-    console.log("this.props===", this.props)
+    // console.log("this.props===", this.props) 
     const {
       userManage: { data },
       loading,
