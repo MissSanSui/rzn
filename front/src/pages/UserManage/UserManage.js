@@ -3,8 +3,8 @@ import { connect } from 'dva';
 import moment from 'moment';
 import router from 'umi/router';
 import {
-  Row, Col, Card, Form, Input,Select,Icon, Button,Dropdown,Menu,InputNumber,DatePicker,Modal,
-  message,Badge,Divider,Steps,Radio,Table,
+  Row, Col, Card, Form, Input, Select, Icon, Button, Dropdown, Menu, InputNumber, DatePicker, Modal,
+  message, Badge, Divider, Steps, Radio, Table, Switch
 } from 'antd';
 import StandardTable from '@/components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
@@ -80,7 +80,7 @@ class UserManage extends PureComponent {
       if (err) return;
       const values = {
         ...fieldsValue,
-      
+
       };
       // this.setState({
       //   formValues: values,
@@ -92,7 +92,24 @@ class UserManage extends PureComponent {
       });
     });
   };
-
+  userStatusChange = (id, checked, e) => {
+    e.stopPropagation()
+    console.log("userStatusChange")
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'userManage/changeStatus',
+      payload: {
+        id: id,
+        status: checked
+      },
+      success: () => {
+        dispatch({
+          type: 'userManage/fetch',
+          payload: params,
+        });
+      }
+    });
+  }
   handleModalVisible = (flag, modalType, user) => {
     console.log("handleModalVisible   modalType===", modalType)
     console.log("handleModalVisible   user===", user)
@@ -193,32 +210,17 @@ class UserManage extends PureComponent {
       dataIndex: 'mobile',
     },
     {
-      title: '省份',
-      dataIndex: 'province',
-    },
-    {
-      title: '城市',
-      dataIndex: 'city',
-    },
-    {
-      title: '地址',
-      dataIndex: 'address',
-    },
-    {
-      title: '兴趣',
-      dataIndex: 'interests',
-    },
-    {
-      title: '擅长',
-      dataIndex: 'good',
-    },
-    {
-      title: '关注房间',
-      dataIndex: 'focus',
+      title: '启用与否',
+      dataIndex: 'user_status',
+      render: (text, user) => {
+        return (
+          <Switch checked={text == "open"} loading={this.state[user.user_id + "_loading"]} onChange={(checked, e) => this.userStatusChange(user.user_id, checked, e)} />
+        )
+      }
     },
   ];
   render() {
-    console.log("this.props===",this.props)
+    console.log("this.props===", this.props)
     const {
       userManage: { data },
       loading,

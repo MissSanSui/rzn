@@ -1,4 +1,4 @@
-import { queryUsers, addUser, updateUser, validateUserName,ableUser,disableUser } from '@/services/api';
+import { queryUsers, addUser, updateUser, validateUserName, ableUser, disableUser } from '@/services/api';
 
 export default {
   namespace: 'userManage',
@@ -80,6 +80,28 @@ export default {
         }
       }
     },
+    * changeStatus({ payload, success, fail }, { call, put }) {
+      console.log("changeStatus=payload=", payload)
+      let formData = new FormData()
+      formData.append("user_id", payload.id)
+      let response = {}
+      if (payload.status) {
+        response = yield call(ableUser, formData);
+      } else {
+        response = yield call(disableUser, formData);
+      }
+      console.log("changeStatus=response=", response)
+      if (response.flag == "0") {
+        if (success && typeof success === 'function') {
+          success();
+        }
+      } else {
+        console.log(" updateUser  fail==", response)
+        if (fail && typeof fail === 'function') {
+          fail(response.msg);
+        }
+      }
+    },
     *validate({ payload, callback }, { call, put }) {
       console.log("userManage validate payload==", payload)
       let response = yield call(validateUserName, payload);
@@ -87,6 +109,7 @@ export default {
       callback(response.valid)
     },
   },
+
   reducers: {
     save(state, action) {
       // console.log("action==", action)
