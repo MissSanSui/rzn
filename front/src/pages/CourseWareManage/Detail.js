@@ -5,7 +5,7 @@ import { connect } from 'dva';
 import { formatMessage, FormattedMessage } from 'umi/locale';
 import {
   Form, Input, DatePicker, Select, Button, Card, InputNumber,
-  Row, Col, Radio, Icon, Modal, Tooltip, message, Switch
+  Row, Col, Upload, Icon, Modal, message, Switch
 } from 'antd';
 
 import formsStyles from '../Forms/style.less';
@@ -20,40 +20,20 @@ const { TextArea } = Input;
 }))
 @Form.create()
 
-class AddUser extends PureComponent {
-  state = { size: 'default', };
-  handleSizeChange = (e) => {
-    this.setState({ size: e.target.value });
-  }
+class Detail extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = {}
+    console.log("props====", props)
+    this.state = {
+      fileList: []
+    }
   }
-  handleAdd = fields => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'contract/add',
-      payload: {
-        params: fields,
-      },
-      success: () => {
-        message.success('配置成功');
-        console.log("this.props===", this.props)
-        this.props.onCancel();
-        this.props.onSearch()
-      },
-      fail: (res) => {
-        console.log("fail====", res)
-        message.error('添加失败！');
-      },
-    });
-  };
   handleUpdate = fields => {
-    const { dispatch, modifyUser } = this.props;
+    const { dispatch, modifyCourseWare } = this.props;
     fields.user_id = modifyUser.user_id
     fields.user_status = fields.status ? "open" : "close"
     dispatch({
-      type: 'contract/update',
+      type: 'courseWare/update',
       payload: {
         params: fields
       },
@@ -69,28 +49,14 @@ class AddUser extends PureComponent {
       },
     });
   };
-  onUsenameValidate = (rule, value, callback) => {
-    const { dispatch, modifyUser, type } = this.props;
-    if (!value) {
-      callback()
-    } else if (type == "modify" && modifyUser.user_name == value) {
-      callback()
-    } else {
-      console.log(":validate===")
-      dispatch({
-        type: 'contract/validate',
-        payload: {
-          user_name: value
-        },
-        callback: (status) => {
-          if (!status) {
-            callback("重复！")
-          } else {
-            callback()
-          }
-        },
-      });
+  handleChange = ({ file, fileList, event }) => {
+    console.log("handleChange file==", file)
+    console.log("handleChange fileList==", fileList)
+    console.log("handleChange event==", event)
+    for (let i in fileList) {
+      fileList[i].url = fileList[i].thumbUrl
     }
+    this.setState({ fileList })
   }
 
   okHandle = () => {
@@ -103,36 +69,31 @@ class AddUser extends PureComponent {
         fieldsValue.city = fieldsValue.citys[1]
         fieldsValue.county = fieldsValue.citys[2]
       }
-      if (type == "add") {
-        this.handleAdd(fieldsValue);
-      } else {
-        this.handleUpdate(fieldsValue);
-      }
+      this.handleUpdate(fieldsValue);
     });
   };
   render() {
-    const { size } = this.state;
-    const { submitting, modalVisible, onCancel, type } = this.props;
-    let modifyUser = this.props.modifyUser || {}
-    // console.log("modifyUser===", modifyUser)
-    if (type == "add") {
-      modifyUser = {}
-    }
+    const { submitting, modalVisible, onCancel, } = this.props;
+    let modifyCourseWare = this.props.modifyCourseWare || {}
+    console.log("modifyCourseWare===", modifyCourseWare)
     const {
       form: { getFieldDecorator, getFieldValue },
     } = this.props;
-    let title = "添加用户"
-    if (type != "add") {
-      title = "修改用户"
-    }
+    const { previewVisible, previewImage, fileList, current } = this.state;
+    const uploadButton = (
+      <div>
+        <Icon type="plus" />
+        <div className="ant-upload-text">Upload</div>
+      </div>
+    );
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
-        sm: { span: 8 },
+        sm: { span: 6 },
       },
       wrapperCol: {
         xs: { span: 24 },
-        sm: { span: 16 },
+        sm: { span: 18 },
       },
     };
     const formItemLayoutOne = {
@@ -148,75 +109,42 @@ class AddUser extends PureComponent {
     return (
       <Modal
         destroyOnClose
-        title={title}
+        title="课件详情"
         visible={modalVisible}
         onOk={this.okHandle}
         onCancel={this.props.onCancel}
       >
         <Form onSubmit={this.handleSubmit} hideRequiredMark={false} style={{ marginTop: 8 }}>
           {/* 姓名 */}
-          <Row >
-            <Col span={12}>
-              <FormItem {...formItemLayout} label={<FormattedMessage id="form.name" />}>
-                {getFieldDecorator('emp_name', {
-                  initialValue: modifyUser.emp_name,
-                  rules: [
-                    {
-                      required: true,
-                      message: formatMessage({ id: 'validation.name.required' }),
-                    },
-                  ],
-                })(<Input placeholder={formatMessage({ id: 'form.name' })} />)}
-              </FormItem>
-            </Col>
-            <Col span={12}>
-              <FormItem {...formItemLayout} label="邮箱">
-                {getFieldDecorator('email', {
-                  initialValue: modifyUser.email,
-                  rules: [
-                    {
-                      required: false,
-                      message: "请输入邮箱",
-                    },
-                    {
-                      type: "email",
-                      message: "请输入正确的邮箱地址",
-                    },
-                  ],
-                })(<Input placeholder="邮箱" />)}
-              </FormItem>
-            </Col>
-            <Col span={12}>
-                <FormItem {...formItemLayout} label="兴趣">
-                  {getFieldDecorator('interests', {
-                    initialValue: modifyUser.interests,
-                    rules: [
-                      {
-                        required: false,
-                        message: "请输入兴趣",
-                      },
-                    ],
-                  })(<Input placeholder="兴趣" />)}
-                </FormItem>
-              </Col>
-              <Col span={12}>
-                <FormItem {...formItemLayout} label="擅长">
-                  {getFieldDecorator('good', {
-                    initialValue: modifyUser.good,
-                    rules: [
-                      {
-                        required: false,
-                        message: "请输入擅长",
-                      },
-                    ],
-                  })(<Input placeholder="擅长" />)}
-                </FormItem>
-              </Col>
-          </Row>
+          <FormItem {...formItemLayout} label="课件描述">
+            {getFieldDecorator('coursewares_content ', {
+              initialValue: modifyCourseWare.coursewares_content,
+              rules: [
+                {
+                  required: true,
+                  message: "请输入课件描述",
+                },
+              ],
+            })(<Input placeholder="课件描述" />)}
+          </FormItem>
+
+          <FormItem {...formItemLayout} label="课件描述">
+            <Upload
+              action="/frame-web/uploadApi/upload"
+              listType="picture-card"
+              fileList={fileList}
+              onPreview={this.handlePreview}
+              onChange={this.handleChange}
+              beforeUpload={this.beforeUpload}
+              onRemove={this.onFileRemove}
+            >
+              {fileList.length >= 3 ? null : uploadButton}
+            </Upload>
+          </FormItem>
         </Form>
       </Modal >
-        )
-      }
-    }
-    
-export default AddUser;
+    )
+  }
+}
+
+export default Detail;

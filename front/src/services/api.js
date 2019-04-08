@@ -74,7 +74,7 @@ export async function queryContracts(params) {
 }
 
 export async function addCourseWare(params) {
-  return request('/frame-web/user/saveUserInfo?org_id=-1', {
+  return request('/frame-web/coursewares/saveCoursewares', {
     method: 'POST',
     body: params,
   });
@@ -86,7 +86,7 @@ export async function updateCourseWare(params) {
   });
 }
 export async function queryCourseWares(params) {
-  return request('/frame-web/coursewares/coursewaresList')
+  return request(`/frame-web/coursewares/coursewaresList?${stringify(params)}`)
 }
 export async function queryProjectNotice() {
   return request('/api/project/notice');

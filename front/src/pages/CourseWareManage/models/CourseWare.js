@@ -1,4 +1,5 @@
 import { queryCourseWares, addCourseWare } from '@/services/api';
+import { getUserId } from '@/utils/authority';
 
 export default {
   namespace: 'courseWare',
@@ -11,7 +12,8 @@ export default {
 
   effects: {
     *fetch({ payload }, { call, put }) {
-      console.log("courseWare fetch payload==", payload)
+      payload.coursewares_tea= getUserId()
+      // console.log("courseWare fetch payload==", payload)
       let response = yield call(queryCourseWares, payload);
       console.log("courseWare fetch response==", response)
       var result = {}
@@ -26,7 +28,15 @@ export default {
     },
     *add({ payload, success, fail }, { call, put }) {
       console.log("courseWare add payload==", payload)
-      let response = yield call(addCourseWare, payload.params);
+      let formData = new FormData()
+      Object.keys(payload).forEach((key) => {
+        if (payload[key]) {
+          formData.append(key, payload[key])
+        }
+      });
+      formData.append("coursewares_tea", getUserId())
+      console.log("courseWare add formData==", formData)
+      let response = yield call(addCourseWare, formData);
       console.log("courseWare add response==", response)
       if (!response.flag) {
         if (success && typeof success === 'function') {
