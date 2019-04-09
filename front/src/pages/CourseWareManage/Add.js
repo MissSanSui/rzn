@@ -3,7 +3,7 @@ import { connect } from 'dva';
 import { formatMessage, FormattedMessage } from 'umi-plugin-react/locale';
 import {
     Form, Input, DatePicker, Select, Button, Card, InputNumber,
-    Icon, Tooltip, Modal, Upload, Row, Col, Steps,message
+    Icon, Tooltip, Modal, Upload, Row, Col, Steps, message
 } from 'antd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import styles from './Index.less';
@@ -31,12 +31,14 @@ class BasicForms extends PureComponent {
                 dispatch({
                     type: 'courseWare/add',
                     payload: values,
-                    success:()=>{
+                    success: (data) => {
                         this.setState({
-                            current: 2
+                            current: 2,
+                            coursewaresId: data.coursewaresId,
+                            teaId: data.teaId
                         })
                     },
-                    fail:()=>{
+                    fail: () => {
                         message.warn("fail")
                         this.setState({
                             current: 2
@@ -69,19 +71,31 @@ class BasicForms extends PureComponent {
 
     handleChange = ({ file, fileList, event }) => {
         console.log("handleChange file==", file)
-        console.log("handleChange fileList==", fileList)
-        console.log("handleChange event==", event)
-        for (let i in fileList) {
-            fileList[i].url = fileList[i].thumbUrl
-        }
+        fileList = fileList.map((file) => {
+            if (file.response && file.response.code == 0) {
+                // Component will show file.url as link
+                file.url = file.response.data[file.name]["fileAdress"]
+            }
+            return file;
+        });
         this.setState({ fileList })
-
     }
-    beforeUpload = (file, fileList, event) => {
+    beforeUpload = (file) => {
+        let { fileList } = this.state
         console.log("beforeUpload file==", file)
-        console.log("beforeUpload fileList==", fileList)
-        console.log("beforeUpload event==", event)
-
+        let flag = true
+        fileList.forEach(
+            (item) => {
+                if (item.name == file.name) {
+                    flag = false
+                    return
+                }
+            }
+        )
+        if (!flag) {
+            message.warn("文件名重复！")
+            return false
+        }
     }
     onFileRemove = (file) => {
         console.log("onFileRemove file==", file)
@@ -91,7 +105,7 @@ class BasicForms extends PureComponent {
         const {
             form: { getFieldDecorator, getFieldValue },
         } = this.props;
-        const { previewVisible, previewImage, fileList, current } = this.state;
+        const { previewVisible, previewImage, fileList, current, coursewaresId, teaId } = this.state;
         const uploadButton = (
             <div>
                 <Icon type="plus" />
@@ -143,7 +157,7 @@ class BasicForms extends PureComponent {
                                     {/* <Button type="primary" htmlType="submit" loading={submitting}>
                                         <FormattedMessage id="form.save" />
                                     </Button> */}
-                                    <Button type="primary"  style={{ marginLeft: 8 }} htmlType="submit">
+                                    <Button type="primary" style={{ marginLeft: 8 }} htmlType="submit">
                                         保存并添加图片
                                      </Button>
                                 </FormItem>
@@ -156,7 +170,8 @@ class BasicForms extends PureComponent {
                                 <Form onSubmit={this.handleSubmit} style={{ marginTop: 8 }}>
                                     <FormItem {...formItemLayout} label="课件描述">
                                         <Upload
-                                            action="/frame-web/uploadApi/upload"
+                                            action={"/frame-web/uploadApi/upload?coursewaresId="
+                                                + coursewaresId + "&teaId=" + teaId}
                                             listType="picture-card"
                                             fileList={fileList}
                                             onPreview={this.handlePreview}
@@ -164,7 +179,7 @@ class BasicForms extends PureComponent {
                                             beforeUpload={this.beforeUpload}
                                             onRemove={this.onFileRemove}
                                         >
-                                            {fileList.length >= 3 ? null : uploadButton}
+                                            {fileList.length >= 5 ? null : uploadButton}
                                         </Upload>
                                     </FormItem>
                                 </Form>

@@ -71,7 +71,7 @@ class CourseWare extends PureComponent {
 
   handleSearch = e => {
     console.log("handleSearch===")
-    e.preventDefault();
+    // e.preventDefault();
     const { dispatch, form } = this.props;
     form.validateFields((err, fieldsValue) => {
       if (err) return;
@@ -93,7 +93,6 @@ class CourseWare extends PureComponent {
     router.push('/courseWare-manage/add');
   }
   handleModalVisible = (flag, courseWare) => {
-    console.log("handleModalVisible   courseWare===", courseWare)
     this.setState({
       modalVisible: !!flag,
       modifyCourseWare: courseWare
@@ -133,9 +132,13 @@ class CourseWare extends PureComponent {
     {
       title: '课件图片',
       dataIndex: 'coursewares_images',
-      render: () => {
+      render: (text, obj) => {
+        let src = ""
+        if (obj && obj.coursewares_images) {
+          src = coursewares_images
+        }
         return (
-          <image src="" />
+          <img src={src} />
         )
       }
     },

@@ -1,4 +1,4 @@
-import { queryCourseWares, addCourseWare } from '@/services/api';
+import { queryCourseWares, addCourseWare,updateCourseWare,deleteCourseWare } from '@/services/api';
 import { getUserId } from '@/utils/authority';
 
 export default {
@@ -12,10 +12,10 @@ export default {
 
   effects: {
     *fetch({ payload }, { call, put }) {
-      payload.coursewares_tea= getUserId()
+      payload.coursewares_tea = getUserId()
       // console.log("courseWare fetch payload==", payload)
       let response = yield call(queryCourseWares, payload);
-      console.log("courseWare fetch response==", response)
+      // console.log("courseWare fetch response==", response)
       var result = {}
       if (response.rows && response.rows.length > 0) {
         result.list = response.rows
@@ -38,6 +38,20 @@ export default {
       console.log("courseWare add formData==", formData)
       let response = yield call(addCourseWare, formData);
       console.log("courseWare add response==", response)
+      if (!response.code) {
+        if (success && typeof success === 'function') {
+          success(JSON.parse(response.data));
+        }
+      } else {
+        if (fail && typeof fail === 'function') {
+          fail(response.msg);
+        }
+      }
+    },
+    *update({ payload, success, fail }, { call, put }) {
+      console.log("courseWare update payload==", payload)
+      let response = yield call(updateCourseWare, payload.params);
+      
       if (!response.flag) {
         if (success && typeof success === 'function') {
           success();
@@ -48,8 +62,9 @@ export default {
         }
       }
     },
-    *update({ payload, success, fail }, { call, put }) {
-      let response = yield call(addUser, payload.params);
+    *delete({ payload, success, fail }, { call, put }) {
+      console.log("courseWare update payload==", payload)
+      let response = yield call(deleteCourseWare, payload.params);
       if (!response.flag) {
         if (success && typeof success === 'function') {
           success();
