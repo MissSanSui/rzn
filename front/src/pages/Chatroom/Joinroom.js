@@ -50,10 +50,7 @@ class Chatroom extends PureComponent {
             roomToken: json.msg.roomToken
         });
 
-        room.putScenes("/math", [{name: "geometry"}]);
-        room.setScenePath("/math/geometry");
-
-
+        
         function onWindowResize() {
             room.refreshViewSize();
         }
@@ -64,29 +61,8 @@ class Chatroom extends PureComponent {
         this.setState({
             room: room,
         });
-
-
-        //获取封面
-        const url1 = 'https://cloudcapiv4.herewhite.com/handle/rooms/snapshots?roomToken=' +
-            room.roomToken;
-        const pageRes = await fetch(url1, {
-            method: 'POST',
-            headers: {
-                "content-type": "application/json",
-            },
-            body: JSON.stringify({
-                width: '150px',
-                height: '120px',
-                scenePath: '/math/geometry',
-                uuid: room.uuid
-            }),
-        });
-        const pageJson = await pageRes.json();
-        this.setState({
-            whiteImgList: pageJson.msg,
-        });
-
-        console.log(this.state.whiteImgList);
+        this.state.room.putScenes("/record", [{name: "class1"}]);
+        this.state.room.setScenePath("/record/class1");
 
         // 加载直播间信息
         // const enterChatUrl = '/api/chat/enterChat';
@@ -161,22 +137,46 @@ class Chatroom extends PureComponent {
     };
 
     add = ()=> {
-
         const that = this;
-        const url = 'https://cloudcapiv4.herewhite.com/room?token=' + miniToken;
-        fetch(url, {
+        this.state.room.putScenes("/record", [{name: "class2"}]);
+        this.state.room.setScenePath("/record/class2");
+        console.log(this.state.room.roomToken)
+        //获取封面
+        const url1 = 'https://cloudcapiv4.herewhite.com/handle/rooms/snapshots?roomToken=' +
+            this.state.room.roomToken;
+        fetch(url1, {
             method: 'POST',
             headers: {
                 "content-type": "application/json",
             },
             body: JSON.stringify({
-                name: 'no2',
-                limit: '100',
-                mode: 'historied'
+                width: '150px',
+                height: '120px',
+                scenePath: '/record',
+                uuid: this.state.room.uuid
             }),
         }).then(res=>res.clone().json()).then(res=> {
+            that.setState({
+                whiteImgList: res.msg,
+            });
+        });
+        console.log(this.state.whiteImgList);
 
-            const msg = res.msg;
+        // const that = this;
+        // const url = 'https://cloudcapiv4.herewhite.com/room?token=' + miniToken;
+        // fetch(url, {
+        //     method: 'POST',
+        //     headers: {
+        //         "content-type": "application/json",
+        //     },
+        //     body: JSON.stringify({
+        //         name: 'no2',
+        //         limit: '100',
+        //         mode: 'historied'
+        //     }),
+        // }).then(res=>res.clone().json()).then(res=> {
+
+        //     const msg = res.msg;
 
             /*
             fetch('https://cloudcapiv4.herewhite.com/handle/rooms/snapshots?roomToken=' +
@@ -198,7 +198,7 @@ class Chatroom extends PureComponent {
                 console.log(res)
             }).catch(error=>console.error('Error:', error))
             */
-        }).catch(error => console.error('Error:', error))
+        // }).catch(error => console.error('Error:', error))
 
 
     };
