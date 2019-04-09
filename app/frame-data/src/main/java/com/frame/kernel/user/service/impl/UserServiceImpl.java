@@ -19,11 +19,37 @@ public class UserServiceImpl implements UserService {
     private UserDao userDao;
 
     @Override
-    public List<User> getList(int limit, int offset, String sortName, String sortOrder, String emp_name, String email, String telphone, String user_status, String org_id, String choose_user_type, String user_id, String type) throws Exception {
-        if (!StringUtils.isEmpty(org_id) && Integer.parseInt(org_id) == 0) {
-            org_id = null;
-        }
-        return userDao.getList(limit, offset, sortName, sortOrder, emp_name, email, telphone, user_status, org_id, choose_user_type, user_id, type);
+    public List<User> getList(int limit,
+                              int offset,
+                              String sortName,
+                              String sortOrder,
+                              String user_id,
+                              String emp_name,
+                              String address,
+                              String email,
+                              String telephone,
+                              String user_status,
+                              String english_name,
+                              String id_card,
+                              String sex,
+                              String role,
+                              String province,
+                              String city) throws Exception {
+
+        return userDao.getList(limit, offset, sortName, sortOrder,
+                user_id,
+                emp_name,
+                address,
+                email,
+                telephone,
+                user_status,
+                english_name,
+                id_card,
+                sex,
+                role,
+                province,
+                city
+        );
     }
 
     @Override
@@ -33,6 +59,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateUser(User user) throws Exception {
+        /*
+        判断用户名不能重复
+         */
+        if(StringUtils.isEmpty(user.getUser_name())){
+            throw  new Exception("用户名不能为空！");
+        }
+        User queryUser = queryUserByName(user.getUser_name());
+        if(null!=queryUser && queryUser.getUser_id()!=user.getUser_id() && queryUser.getUser_name().equals(user.getUser_name())){
+            throw  new Exception("用户名"+user.getUser_name()+"不能重复！");
+        }
         userDao.updateUser(user);
     }
 
@@ -42,11 +78,34 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int findUserCount(String emp_name, String email, String telphone, String user_status, String org_id, String choose_user_type, String user_id, String type) throws Exception {
-        if (!StringUtils.isEmpty(org_id) && Integer.parseInt(org_id) == 0) {
-            org_id = null;
-        }
-        return userDao.findUserCount(emp_name, email, telphone, user_status, org_id, choose_user_type, user_id, type);
+    public int findUserCount(String user_id,
+                             String emp_name,
+                             String address,
+                             String email,
+                             String telephone,
+                             String user_status,
+                             String english_name,
+                             String id_card,
+                             String sex,
+                             String role,
+                             String province,
+                             String city
+    ) throws Exception {
+
+        return userDao.findUserCount(
+                user_id,
+                emp_name,
+                address,
+                email,
+                telephone,
+                user_status,
+                english_name,
+                id_card,
+                sex,
+                role,
+                province,
+                city
+        );
     }
 
     @Override
@@ -75,8 +134,6 @@ public class UserServiceImpl implements UserService {
     }
 
 
-
-
     @Override
     public List<UserOrg> getUserOrgMapping(String org_id, String user_id) throws Exception {
         return userDao.getUserOrgMapping(org_id, user_id);
@@ -95,16 +152,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void saveUserInfo(User user, int currencyUserId, String OrgId) throws Exception {
-        if (StringUtils.isEmpty(OrgId)) {
-            throw new RuntimeException("获取组织信息出错。");
+        /*
+        判断用户名是否重复
+         */
+        if(StringUtils.isEmpty(user.getUser_name())){
+            throw  new Exception("用户名不能为空！");
+        }
+        User queryUser = queryUserByName(user.getUser_name());
+        if(null!=queryUser && queryUser.getUser_name().equals(user.getUser_name())){
+            throw  new Exception("用户名"+user.getUser_name()+"已存在！");
         }
         saveUser(user);
-        UserOrg uo = new UserOrg();
-        uo.setUser_id(user.getUser_id());
-        uo.setOrg_id(Integer.parseInt(OrgId));
-        uo.setCreated_by(currencyUserId);
-        uo.setLast_updated_by(currencyUserId);
-
 
     }
 
@@ -125,7 +183,6 @@ public class UserServiceImpl implements UserService {
     public List<User> findUserByRoleCode(String groupId) throws Exception {
         return userDao.findUserByRoleCode(groupId);
     }
-
 
 
     @Override
