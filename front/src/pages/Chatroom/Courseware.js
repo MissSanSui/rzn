@@ -171,7 +171,7 @@ class Courseware extends PureComponent {
 
         return (
             <div>
-                <Col span={20} className="cardStyle">
+                <Col span={19} className="cardStyle">
                     <div className="Courseware-upload">
                         <Button type="primary" block icon="picture"
                                 onClick={this.showModal.bind(this)}>上传课件</Button>
@@ -180,7 +180,7 @@ class Courseware extends PureComponent {
 
                     <List
                         grid={{column: 1}}
-
+                        className="Courseware-list"
                         dataSource={pushOption}
                         renderItem={item => (
                             <List.Item>

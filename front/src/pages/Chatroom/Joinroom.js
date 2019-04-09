@@ -177,7 +177,7 @@ class Chatroom extends PureComponent {
         }).then(res=>res.clone().json()).then(res=> {
 
             const msg = res.msg;
-            
+
             /*
             fetch('https://cloudcapiv4.herewhite.com/handle/rooms/snapshots?roomToken=' +
                 that.state.room.roomToken, {
@@ -242,6 +242,7 @@ class Chatroom extends PureComponent {
             this.state.room ?
                 <div className="joinRoomStyle">
                     <div className="room-left">
+                        <Camera />
                         <Courseware />
                     </div>
                     <div className="room-middle">
@@ -293,7 +294,7 @@ class Chatroom extends PureComponent {
                         onClose={this.onClose}
                         visible={this.state.visible}
                     >
-                        <Camera />
+
                         <div className="whiteBtn">
                             <Button type="primary" onClick={this.add.bind(this)}>创建画板</Button>
                         </div>
