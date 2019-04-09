@@ -115,17 +115,20 @@ const roleList =[
 ]
 function getUsers(req, res){
   console.log("getUsers req===",req)
-  let list=[]
+  let rows=[]
   for (let i = 0; i < 8; i += 1) {
-    list.push({
-      id: i,
-      account: "white_id"+i % 8,
-      name: "name"+i % 8,
+    rows.push({
+      user_id: i,
+      emp_name: "emp_name"+i % 8,
+      user_name: "name"+i % 8,
       role:roleList[i % 6],
       mobile: "mobile"+i % 8,
     });
   }
-  return res.json(list);
+  let result ={}
+  result.rows=rows
+  result.flag="0"
+  return res.json(result);
 }
 let sourceData;
 
@@ -352,5 +355,5 @@ export default {
   'POST /api/fake_list': postFakeList,
   'GET /api/captcha': getFakeCaptcha,
   //'GET /frame-web/user/userPageList': getUsers,
-  'GET /api/user/userPageList': getUsers,
+  'GET /frame-web/user/userPageList': getUsers,
 };

@@ -29,13 +29,13 @@ export async function fakeAccountLogin(params) {
 }
 
 export async function addUser(params) {
-  return request('/frame-web/user/saveUserInfo?org_id=-1', {
+  return request('/frame-web/user/saveUserInfo', {
     method: 'POST',
     body: params,
   });
 }
 export async function updateUser(params) {
-  return request('/frame-web/user/UpdateUserInfo?org_id=-1', {
+  return request('/frame-web/user/UpdateUserInfo', {
     method: 'POST',
     body: params,
   });
@@ -43,13 +43,38 @@ export async function updateUser(params) {
 export async function queryUsers(params) {
   return request(`/frame-web/user/userPageList?${stringify(params)}`)
 }
+export async function validateUserName(params) {
+  return request(`/frame-web/user/validateUserName?${stringify(params)}`)
+}
+export async function ableUser(params) {
+  return request(`/frame-web/user/ableUser?${stringify(params)}`)
+}
+export async function disableUser(params) {
+  return request(`/frame-web/user/disableUser?${stringify(params)}`)
+}
 export async function queryRoomList(params) {
   return request(`/frame-web/rooms/roomsList?${stringify(params)}`)
 }
 
 
+export async function addContract(params) {
+  return request('/frame-web/contracts/saveContracts', {
+    method: 'POST',
+    body: params,
+  });
+}
+export async function updateContract(params) {
+  return request('/frame-web/contracts/UpdateContractsInfo', {
+    method: 'POST',
+    body: params,
+  });
+}
+export async function queryContracts(params) {
+  return request(`/frame-web/contracts/contractsList?${stringify(params)}`)
+}
+
 export async function addCourseWare(params) {
-  return request('/frame-web/user/saveUserInfo?org_id=-1', {
+  return request('/frame-web/coursewares/saveCoursewares', {
     method: 'POST',
     body: params,
   });
@@ -61,7 +86,7 @@ export async function updateCourseWare(params) {
   });
 }
 export async function queryCourseWares(params) {
-  return request('/frame-web/user/userPageList')
+  return request(`/frame-web/coursewares/coursewaresList?${stringify(params)}`)
 }
 export async function queryProjectNotice() {
   return request('/api/project/notice');

@@ -5,7 +5,7 @@ import { connect } from 'dva';
 import { formatMessage, FormattedMessage } from 'umi/locale';
 import {
   Form, Input, DatePicker, Select, Button, Card, InputNumber,
-  Row, Col, Radio, Icon, Modal, Tooltip, message,
+  Row, Col, Radio, Icon, Modal, Tooltip, message, Switch
 } from 'antd';
 import CitySelect from '@/components/CitiySelect/CitySelect';
 
@@ -32,6 +32,7 @@ class AddUser extends PureComponent {
   }
   handleAdd = fields => {
     const { dispatch } = this.props;
+    fields.user_status = fields.status ? "open" : "close"
     dispatch({
       type: 'userManage/add',
       payload: {
@@ -52,6 +53,7 @@ class AddUser extends PureComponent {
   handleUpdate = fields => {
     const { dispatch, modifyUser } = this.props;
     fields.user_id = modifyUser.user_id
+    fields.user_status = fields.status ? "open" : "close"
     dispatch({
       type: 'userManage/update',
       payload: {
@@ -69,12 +71,36 @@ class AddUser extends PureComponent {
       },
     });
   };
+  onUsenameValidate = (rule, value, callback) => {
+    const { dispatch, modifyUser, type } = this.props;
+    if (!value) {
+      callback()
+    } else if (type == "modify" && modifyUser.user_name == value) {
+      callback()
+    } else {
+      console.log(":validate===")
+      dispatch({
+        type: 'userManage/validate',
+        payload: {
+          user_name: value
+        },
+        callback: (status) => {
+          if (!status) {
+            callback("重复！")
+          } else {
+            callback()
+          }
+        },
+      });
+    }
+  }
+
   okHandle = () => {
     const { form, type } = this.props
     form.validateFields((err, fieldsValue) => {
       console.log("fieldsValue===", fieldsValue)
       if (err) return;
-      if (fieldsValue.citys&&fieldsValue.citys.length==3) {
+      if (fieldsValue.citys && fieldsValue.citys.length == 3) {
         fieldsValue.province = fieldsValue.citys[0]
         fieldsValue.city = fieldsValue.citys[1]
         fieldsValue.county = fieldsValue.citys[2]
@@ -181,8 +207,11 @@ class AddUser extends PureComponent {
                       required: true,
                       message: formatMessage({ id: 'validation.account.required' }),
                     },
+                    {
+                      validator: this.onUsenameValidate
+                    }
                   ],
-                })(<Input placeholder={'登录名只能为字母和数字'} />)}
+                })(<Input placeholder={'登录名只能为字母和数字'} onBlur={this.onUserNameBlur} />)}
               </FormItem>
             </Col>
             {/* 密码 */}
@@ -240,19 +269,6 @@ class AddUser extends PureComponent {
               </FormItem>
             </Col>
             <Col span={12}>
-              <FormItem {...formItemLayout} label="邮箱">
-                {getFieldDecorator('email', {
-                  initialValue: modifyUser.email,
-                  rules: [
-                    {
-                      required: false,
-                      message: "请输入邮箱",
-                    },
-                  ],
-                })(<Input placeholder="邮箱" />)}
-              </FormItem>
-            </Col>
-            <Col span={12}>
               <FormItem {...formItemLayout} label="身份证号">
                 {getFieldDecorator('id_card', {
                   initialValue: modifyUser.id_card,
@@ -269,17 +285,27 @@ class AddUser extends PureComponent {
               <FormItem   {...formItemLayout} label="生日">
                 {getFieldDecorator('birth',
                   {
+                    initialValue: modifyUser.birth,
                     rules: [{ type: 'object', required: false, message: 'Please select time!' }]
                   })(
                     <DatePicker />
                   )}
               </FormItem>
             </Col>
-
+            <Col span={0}>
+              <FormItem  {...formItemLayout} label="启用与否">
+                {getFieldDecorator('status', {
+                  initialValue: modifyUser.user_status == "open",
+                  valuePropName: 'checked'
+                })(
+                  <Switch />
+                )}
+              </FormItem>
+            </Col>
             <Col span={24}>
               <FormItem {...formItemLayoutOne} label="城市">
                 {getFieldDecorator('citys', {
-                  initialValue: [modifyUser.province, modifyUser.city,modifyUser.county,],
+                  initialValue: [modifyUser.province, modifyUser.city, modifyUser.county,],
                   rules: [
                     {
                       required: false,
@@ -302,52 +328,68 @@ class AddUser extends PureComponent {
                 })(<Input placeholder="地址" />)}
               </FormItem>
             </Col>
-
             <Col span={12}>
-              <FormItem {...formItemLayout} label="兴趣">
-                {getFieldDecorator('interests', {
-                  initialValue: modifyUser.interests,
+              <FormItem {...formItemLayout} label="邮箱">
+                {getFieldDecorator('email', {
+                  initialValue: modifyUser.email,
                   rules: [
                     {
                       required: false,
-                      message: "请输入兴趣",
+                      message: "请输入邮箱",
+                    },
+                    {
+                      type: "email",
+                      message: "请输入正确的邮箱地址",
                     },
                   ],
-                })(<Input placeholder="兴趣" />)}
+                })(<Input placeholder="邮箱" />)}
               </FormItem>
             </Col>
             <Col span={12}>
-              <FormItem {...formItemLayout} label="擅长">
-                {getFieldDecorator('good', {
-                  initialValue: modifyUser.good,
-                  rules: [
-                    {
-                      required: false,
-                      message: "请输入擅长",
-                    },
-                  ],
-                })(<Input placeholder="擅长" />)}
-              </FormItem>
-            </Col>
-            <Col span={0}>
-              {/* 报名老师 */}
-              <FormItem {...formItemLayout} label={<FormattedMessage id="form.teachers" />}>
-                <Select
-                  mode="multiple"
-                  size={size}
-                  placeholder="请选择老师"
-                  defaultValue={['a10', 'c12']}
-                  style={{ width: '100%' }}
-                >
-                  {children}
-                </Select>
-              </FormItem>
-            </Col>
+                <FormItem {...formItemLayout} label="兴趣">
+                  {getFieldDecorator('interests', {
+                    initialValue: modifyUser.interests,
+                    rules: [
+                      {
+                        required: false,
+                        message: "请输入兴趣",
+                      },
+                    ],
+                  })(<Input placeholder="兴趣" />)}
+                </FormItem>
+              </Col>
+              <Col span={12}>
+                <FormItem {...formItemLayout} label="擅长">
+                  {getFieldDecorator('good', {
+                    initialValue: modifyUser.good,
+                    rules: [
+                      {
+                        required: false,
+                        message: "请输入擅长",
+                      },
+                    ],
+                  })(<Input placeholder="擅长" />)}
+                </FormItem>
+              </Col>
+              <Col span={0}>
+                {/* 报名老师 */}
+                <FormItem {...formItemLayout} label={<FormattedMessage id="form.teachers" />}>
+                  <Select
+                    mode="multiple"
+                    size={size}
+                    placeholder="请选择老师"
+                    defaultValue={['a10', 'c12']}
+                    style={{ width: '100%' }}
+                  >
+                    {children}
+                  </Select>
+                </FormItem>
+              </Col>
           </Row>
         </Form>
       </Modal >
-    )
-  }
-}
-
+        )
+      }
+    }
+    
 export default AddUser;

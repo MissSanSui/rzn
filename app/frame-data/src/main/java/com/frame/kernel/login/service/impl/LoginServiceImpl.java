@@ -51,7 +51,7 @@ public class LoginServiceImpl implements LoginService {
 					session.setAttribute("currentEnglishName", user.getEnglish_name());
 					session.setAttribute("currentEmpName", user.getEmp_name());
 					session.setAttribute("currentEmpEmail", user.getEmail());
-					session.setAttribute("currentEmpTelphone", user.getTelphone());
+					session.setAttribute("currentEmpTelephone", user.getTelephone());
 					session.setAttribute("currentEmpMobile", user.getMobile());
 					
 					//设置当前用户登录菜单

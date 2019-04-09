@@ -32,7 +32,7 @@ public class ContractsController {
 	private Logger logger = LoggerFactory.getLogger(getClass());
 	@ResponseBody
 	@RequestMapping("contractsList")
-	public String  index(HttpServletRequest request, HttpServletResponse response){
+	public String  contractsList(HttpServletRequest request, HttpServletResponse response){
 		JSONObject js = new JSONObject();//=&=desc
 		String sortName = request.getParameter("sortName");
 		String sortOrder = request.getParameter("sortOrder");
@@ -40,7 +40,8 @@ public class ContractsController {
 		String limit = request.getParameter("limit");
 		String contract_no = request.getParameter("contract_no");
 		String contract_stu = request.getParameter("contract_stu");
-		String contract_tea =request.getParameter("contract_tea");
+		String contract_stu_name =request.getParameter("contract_stu_name");
+		String contract_room_no = request.getParameter("contract_room_no");
 
 		int offsetInt = Integer.parseInt(CommonUtils.isEmpty(offset)?"0":offset);
 		int limitInt = Integer.parseInt(CommonUtils.isEmpty(limit)?"10":limit);
@@ -49,8 +50,12 @@ public class ContractsController {
 		try {
 			list = contractsService.getList
 					( offsetInt, limitInt,CommonUtils.isEmpty(sortName)?"contract_tea":sortName,
-							CommonUtils.isEmpty(sortOrder)?"desc":sortOrder, contract_no,contract_stu,contract_tea);
-			total = contractsService.findCount(contract_no,contract_stu,contract_tea);
+							CommonUtils.isEmpty(sortOrder)?"desc":sortOrder, contract_no,contract_stu,
+							contract_room_no,
+							contract_stu_name);
+			total = contractsService.findCount(contract_no,contract_stu,
+					contract_room_no,
+					contract_stu_name);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -61,13 +66,16 @@ public class ContractsController {
 	}
 	@ResponseBody
 	@RequestMapping("findContractByNo")
-	public String  UpdateUserInfo(HttpServletRequest request, HttpServletResponse response){
+	public String  findContractByNo(HttpServletRequest request, HttpServletResponse response){
 
 		String  contractNo= request.getParameter("contractNo");
-
+		String contract_stu = request.getParameter("contract_stu");
+		String contract_stu_name =request.getParameter("contract_stu_name");
+		String contract_room_no = request.getParameter("contract_room_no");
 		try {
-			Contracts contracts = contractsService.findContracts(contractNo,null,null);
-			ajaxResult.success(contracts);
+			Contracts contracts = contractsService.findContracts(contractNo,contract_stu,contract_room_no,
+					contract_stu_name);
+			ajaxResult.success("查询成功",contracts);
 		} catch (Exception e) {
 
 			e.printStackTrace();
@@ -110,8 +118,8 @@ public class ContractsController {
 		return JSONUtil.ToFormatJson(ajaxResult);
     }
 	@ResponseBody
-	@RequestMapping("UpdateUserInfo")
-    public String UpdateUserInfo(HttpServletRequest request, HttpServletResponse response, Contracts contracts) {
+	@RequestMapping("UpdateContractsInfo")
+    public String UpdateContractsInfo(HttpServletRequest request, HttpServletResponse response, Contracts contracts) {
 		try {
 			Subject subject = SecurityUtils.getSubject();
 			User userLogin = (User) subject.getPrincipal();
@@ -124,5 +132,23 @@ public class ContractsController {
 		}
 		return JSONUtil.ToFormatJson(ajaxResult);
     }
+	@ResponseBody
+	@RequestMapping("findContractList")
+	public String  findContractList(HttpServletRequest request, HttpServletResponse response){
 
+		String  contractNo= request.getParameter("contractNo");
+		String contract_stu = request.getParameter("contract_stu");
+		String contract_stu_name =request.getParameter("contract_stu_name");
+		String contract_room_no = request.getParameter("contract_room_no");
+		try {
+			List<Contracts>  contractsList = contractsService.findContractsList(contractNo,contract_stu,contract_room_no,
+					contract_stu_name);
+			ajaxResult.success("查询成功",contractsList);
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			ajaxResult.addError("查询出错："+e.getMessage());
+		}
+		return JSONUtil.ToFormatJson(ajaxResult);
+	}
 }

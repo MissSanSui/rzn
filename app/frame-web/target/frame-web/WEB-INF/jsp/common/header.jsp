@@ -124,7 +124,7 @@ $(function() {
 					var data = result.data;
 					$("#editEmpEgName").val(data.english_name);
 					$("#editEmpName").val(data.emp_name);
-					$("#editTel").val(data.telphone);
+					$("#editTel").val(data.telephone);
 					$("#editMobile").val(data.mobile);
 					$("#editEmail").val(data.email);
 					$("#editUserId").val("<%=editUserId%>");

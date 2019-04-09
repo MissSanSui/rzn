@@ -6,9 +6,10 @@ import java.sql.Timestamp;
 
 public class UserFocusRooms extends BaseModelImpl {
     private static final long serialVersionUID = 1L;
-    private String focus_no;
+    private int focus_no;
     private String room_no;
-    private String user_id;
+    private int user_id;
+    private String emp_name;
     private String attribute1;
     private String attribute2;
     private String attribute3;
@@ -19,19 +20,11 @@ public class UserFocusRooms extends BaseModelImpl {
     private Timestamp last_updated_date;
     private int last_updated_by;
 
-    public String getUser_id() {
-        return user_id;
-    }
-
-    public void setUser_id(String user_id) {
-        this.user_id = user_id;
-    }
-
-    public String getFocus_no() {
+    public int getFocus_no() {
         return focus_no;
     }
 
-    public void setFocus_no(String focus_no) {
+    public void setFocus_no(int focus_no) {
         this.focus_no = focus_no;
     }
 
@@ -41,6 +34,22 @@ public class UserFocusRooms extends BaseModelImpl {
 
     public void setRoom_no(String room_no) {
         this.room_no = room_no;
+    }
+
+    public int getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(int user_id) {
+        this.user_id = user_id;
+    }
+
+    public String getEmp_name() {
+        return emp_name;
+    }
+
+    public void setEmp_name(String emp_name) {
+        this.emp_name = emp_name;
     }
 
     public String getAttribute1() {

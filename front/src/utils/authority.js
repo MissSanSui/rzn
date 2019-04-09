@@ -20,3 +20,9 @@ export function setAuthority(authority) {
   const proAuthority = typeof authority === 'string' ? [authority] : authority;
   return sessionStorage.setItem('antd-pro-authority', JSON.stringify(proAuthority));
 }
+export function setUserId(id) {
+  return sessionStorage.setItem('userid', JSON.stringify(id));
+}
+export function getUserId() {
+  return sessionStorage.getItem('userid') ||12;
+}

@@ -41,8 +41,8 @@ public class Test {
 	String[] arr = str.split(",");
 		DirectoryStream<Path> directoryStream;
 
-		File in = new File("C:\\Users\\pccw\\Desktop\\zp"); // 资源文件夹
-		File out = new File("C:\\Users\\pccw\\Desktop\\zp1"); // 目标文件夹
+		File in = new File("C:\\Users\\user\\Desktop\\zp"); // 资源文件夹
+		File out = new File("C:\\Users\\user\\Desktop\\zp1"); // 目标文件夹
 
 		try {
 			directoryStream = Files.newDirectoryStream(in.toPath()); //returning a DirectoryStream to iterate over* all entries in the directory.

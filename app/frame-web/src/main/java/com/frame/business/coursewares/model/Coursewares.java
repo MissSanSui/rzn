@@ -6,8 +6,9 @@ import java.sql.Timestamp;
 
 public class Coursewares extends BaseModelImpl {
     private static final long serialVersionUID = 1L;
-    private String coursewares_no;
+    private int coursewares_no;
     private String coursewares_tea;
+    private String emp_name_fut;
     private String coursewares_content;
     private String coursewares_images;
     private String attribute1;
@@ -20,11 +21,11 @@ public class Coursewares extends BaseModelImpl {
     private Timestamp last_updated_date;
     private int last_updated_by;
 
-    public String getCoursewares_no() {
+    public int getCoursewares_no() {
         return coursewares_no;
     }
 
-    public void setCoursewares_no(String coursewares_no) {
+    public void setCoursewares_no(int coursewares_no) {
         this.coursewares_no = coursewares_no;
     }
 
@@ -34,6 +35,14 @@ public class Coursewares extends BaseModelImpl {
 
     public void setCoursewares_tea(String coursewares_tea) {
         this.coursewares_tea = coursewares_tea;
+    }
+
+    public String getEmp_name_fut() {
+        return emp_name_fut;
+    }
+
+    public void setEmp_name_fut(String emp_name_fut) {
+        this.emp_name_fut = emp_name_fut;
     }
 
     public String getCoursewares_content() {

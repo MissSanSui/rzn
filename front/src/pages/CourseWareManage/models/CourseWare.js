@@ -1,4 +1,5 @@
 import { queryCourseWares, addCourseWare } from '@/services/api';
+import { getUserId } from '@/utils/authority';
 
 export default {
   namespace: 'courseWare',
@@ -11,7 +12,10 @@ export default {
 
   effects: {
     *fetch({ payload }, { call, put }) {
+      payload.coursewares_tea= getUserId()
+      // console.log("courseWare fetch payload==", payload)
       let response = yield call(queryCourseWares, payload);
+      console.log("courseWare fetch response==", response)
       var result = {}
       if (response.rows && response.rows.length > 0) {
         result.list = response.rows
@@ -23,7 +27,17 @@ export default {
       });
     },
     *add({ payload, success, fail }, { call, put }) {
-      let response = yield call(addCourseWare, payload.params);
+      console.log("courseWare add payload==", payload)
+      let formData = new FormData()
+      Object.keys(payload).forEach((key) => {
+        if (payload[key]) {
+          formData.append(key, payload[key])
+        }
+      });
+      formData.append("coursewares_tea", getUserId())
+      console.log("courseWare add formData==", formData)
+      let response = yield call(addCourseWare, formData);
+      console.log("courseWare add response==", response)
       if (!response.flag) {
         if (success && typeof success === 'function') {
           success();
@@ -49,7 +63,6 @@ export default {
   },
   reducers: {
     save(state, action) {
-      console.log("action==", action)
       return {
         ...state,
         data: action.payload,

@@ -139,7 +139,7 @@ var TableInit = function() {
 										sortable : false
 									},
 									{
-										field : 'telphone',
+										field : 'telephone',
 										title : '手机号码',
 										sortable : false
 									},
@@ -219,7 +219,7 @@ var TableInit = function() {
 			offset : params.offset, // 页码
 			emp_name : $("#query_emp_name").val(),
 			email : $("#query_email").val(),
-			telphone : $("#query_telphone").val(),
+			telephone : $("#query_telephone").val(),
 			user_status : $("#query_userStatues").val(),
 			type :'list',
 			sortName : params.sort,
