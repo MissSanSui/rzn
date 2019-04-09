@@ -13,7 +13,7 @@
 
 
     <!-- 扫描controller（controller层注入） -->
-    <context:component-scan base-package="com.frame.kernel.*.controller,com.frame.kernel.activiti.*,com.frame.business.*.controller">
+    <context:component-scan base-package="com.frame.kernel.*.controller,com.frame.business.*.controller">
     </context:component-scan>
     <!-- 开启MVC注解,表示SpringMVC支持注解功能 做了很多事情，不包括添加自己定义的拦截器 -->
     <mvc:annotation-driven/>

@@ -228,11 +228,11 @@
                                    name="email" />
                         </div>
                         <small><label
-                                for="telphone" style="font-weight: normal">工作电话</label></small>
+                                for="telephone" style="font-weight: normal">工作电话</label></small>
                         <div class="form-group">
                             <input type="text"  disabled="disabled"
-                                   class="form-control frame-form-control input-sm" id="telphone"  value="${updateUser.telphone}"
-                                   name="telphone" />
+                                   class="form-control frame-form-control input-sm" id="telephone"  value="${updateUser.telephone}"
+                                   name="telephone" />
                         </div>
                         <small><label
                                 for="mobile" style="font-weight: normal">手机号码</label></small>

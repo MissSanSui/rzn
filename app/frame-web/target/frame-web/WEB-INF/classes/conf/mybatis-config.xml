@@ -21,6 +21,10 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
     	<typeAlias alias="contracts" type="com.frame.business.contracts.model.Contracts"/>
     	<typeAlias alias="roomReview" type="com.frame.business.roomReview.model.RoomReview"/>
     	<typeAlias alias="coursewares" type="com.frame.business.coursewares.model.Coursewares"/>
+    	<typeAlias alias="coursewaresImags" type="com.frame.business.coursewaresImags.model.CoursewaresImags"/>
+    	<typeAlias alias="roomReviewCoursewaresImags" type="com.frame.business.roomReviewCoursewares.model.RoomReviewCoursewares"/>
+		<typeAlias alias="roomsCoursewares" type="com.frame.business.roomsCoursewares.model.RoomsCoursewares"/>
+		<typeAlias alias="roomsUser" type="com.frame.business.roomsUser.model.RoomsUser"/>
 
 	</typeAliases>
 

@@ -52,5 +52,7 @@ public class Constants {
 	public static final String MODEL_NAME = "name";
 	public static final String MODEL_REVISION = "revision";
 	public static final String MODEL_DESCRIPTION = "description";
+
+	public static final String IMG_SUFFIX = ",.bmp,.jpg,.png,.tif,.gif,.pcx,.tga,.exif,.fpx,.svg,.psd,.cdr,.pcd,.dxf,.ufo,.eps,.ai,.raw,.WMF,.webp,";
 }
 

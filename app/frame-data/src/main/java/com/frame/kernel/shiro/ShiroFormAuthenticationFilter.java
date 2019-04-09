@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * Created by pccw on 2019-3-29.
+ * Created by   on 2019-3-29.
  */
 public class ShiroFormAuthenticationFilter  extends FormAuthenticationFilter {
     @Override

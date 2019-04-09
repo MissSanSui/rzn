@@ -8,7 +8,8 @@ public class Contracts extends BaseModelImpl {
     private static final long serialVersionUID = 1L;
     private int contract_no;
     private int contract_stu;
-    private int contract_tea;
+    private String emp_name_fus;
+    private String  contract_room_no;
     private double contract_amount;
     private double contract_hour;
     private double contract_rest_hour;
@@ -38,20 +39,28 @@ public class Contracts extends BaseModelImpl {
         this.contract_no = contract_no;
     }
 
+    public String getEmp_name_fus() {
+        return emp_name_fus;
+    }
+
+    public void setEmp_name_fus(String emp_name_fus) {
+        this.emp_name_fus = emp_name_fus;
+    }
+
+    public String getContract_room_no() {
+        return contract_room_no;
+    }
+
+    public void setContract_room_no(String contract_room_no) {
+        this.contract_room_no = contract_room_no;
+    }
+
     public int getContract_stu() {
         return contract_stu;
     }
 
     public void setContract_stu(int contract_stu) {
         this.contract_stu = contract_stu;
-    }
-
-    public int getContract_tea() {
-        return contract_tea;
-    }
-
-    public void setContract_tea(int contract_tea) {
-        this.contract_tea = contract_tea;
     }
 
     public double getContract_amount() {
