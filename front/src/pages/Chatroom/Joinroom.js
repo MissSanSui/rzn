@@ -177,9 +177,7 @@ class Chatroom extends PureComponent {
         }).then(res=>res.clone().json()).then(res=> {
 
             const msg = res.msg;
-            console.log(msg)
-
-
+            
             /*
             fetch('https://cloudcapiv4.herewhite.com/handle/rooms/snapshots?roomToken=' +
                 that.state.room.roomToken, {
