@@ -1,14 +1,24 @@
 package com.frame.business.roomReview.model;
 
+import com.frame.business.roomReviewCoursewares.model.RoomReviewCoursewares;
 import com.frame.kernel.base.model.impl.BaseModelImpl;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 public class RoomReview extends BaseModelImpl {
     private static final long serialVersionUID = 1L;
-    private String review_white_id;
-    private String review_stu;
-    private String review_tea;
+    private int review_id;
+    private int review_white_id;
+    private int review_stu;
+    private int review_tea;
+    private String emp_name_stu;
+    private String emp_name_tea;
+    private String review_content;
+    private String roomReviewCoursewares;
+
+    private List<RoomReviewCoursewares> roomReviewCoursewaresList;
+
     private String attribute1;
     private String attribute2;
     private String attribute3;
@@ -19,28 +29,76 @@ public class RoomReview extends BaseModelImpl {
     private Timestamp last_updated_date;
     private int last_updated_by;
 
-    public String getReview_white_id() {
+    public int getReview_id() {
+        return review_id;
+    }
+
+    public void setReview_id(int review_id) {
+        this.review_id = review_id;
+    }
+
+    public int getReview_white_id() {
         return review_white_id;
     }
 
-    public void setReview_white_id(String review_white_id) {
+    public void setReview_white_id(int review_white_id) {
         this.review_white_id = review_white_id;
     }
 
-    public String getReview_stu() {
+    public int getReview_stu() {
         return review_stu;
     }
 
-    public void setReview_stu(String review_stu) {
+    public void setReview_stu(int review_stu) {
         this.review_stu = review_stu;
     }
 
-    public String getReview_tea() {
+    public int getReview_tea() {
         return review_tea;
     }
 
-    public void setReview_tea(String review_tea) {
+    public void setReview_tea(int review_tea) {
         this.review_tea = review_tea;
+    }
+
+    public String getEmp_name_stu() {
+        return emp_name_stu;
+    }
+
+    public void setEmp_name_stu(String emp_name_stu) {
+        this.emp_name_stu = emp_name_stu;
+    }
+
+    public String getEmp_name_tea() {
+        return emp_name_tea;
+    }
+
+    public void setEmp_name_tea(String emp_name_tea) {
+        this.emp_name_tea = emp_name_tea;
+    }
+
+    public String getReview_content() {
+        return review_content;
+    }
+
+    public void setReview_content(String review_content) {
+        this.review_content = review_content;
+    }
+
+    public String getRoomReviewCoursewares() {
+        return roomReviewCoursewares;
+    }
+
+    public void setRoomReviewCoursewares(String roomReviewCoursewares) {
+        this.roomReviewCoursewares = roomReviewCoursewares;
+    }
+
+    public List<RoomReviewCoursewares> getRoomReviewCoursewaresList() {
+        return roomReviewCoursewaresList;
+    }
+
+    public void setRoomReviewCoursewaresList(List<RoomReviewCoursewares> roomReviewCoursewaresList) {
+        this.roomReviewCoursewaresList = roomReviewCoursewaresList;
     }
 
     public String getAttribute1() {

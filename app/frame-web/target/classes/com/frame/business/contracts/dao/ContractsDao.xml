@@ -12,14 +12,12 @@
         parameterType：指定输入 参数的类型，这里指定int型 #{}表示一个占位符号 #{id}：其中的id表示接收输入 的参数，参数名称就是id，如果输入
         参数是简单类型，#{}中的参数名可以任意，可以value或其它名称 resultType：指定sql输出结果 的所映射的java对象类型，select指定resultType表示将单条记录映射成的java对象。 -->
     <select id="getList" resultType="contracts">
-        select fc.*,fus.emp_name,fut.emp_name from
+        select fc.*,fus.emp_name emp_name_fus from
         frame_contracts fc
         LEFT JOIN
         (select * from frame_user where role = 'STU' ) fus
         on fc.contract_stu = fus.user_id
-        LEFT JOIN
-        (select * from frame_user where role = 'TEA' ) fut
-        on fc.contract_tea = fut.user_id
+
         WHERE
         1 = 1
         <if test="contract_no!=null and contract_no!='' ">
@@ -28,8 +26,14 @@
         <if test="contract_tea!=null and contract_tea!='' ">
             and fc.contract_tea = #{contract_tea}
         </if>
+        <if test="contract_room_no!=null and contract_room_no!='' ">
+            and fc.contract_room_no like  '%${contract_room_no}%'
+        </if>
         <if test="contract_stu!=null and contract_stu!='' ">
             and fc.contract_stu = #{contract_stu}
+        </if>
+        <if test="contract_stu_name!=null and contract_stu_name!='' ">
+            and fus.emp_name like  '%${contract_stu_name}%'
         </if>
         ORDER BY ${sortName} ${sortOrder}
         LIMIT #{offset},#{limit};
@@ -38,6 +42,10 @@
     <select id="findCount" resultType="int">
         SELECT count(*) from
         frame_contracts fc
+        LEFT JOIN
+        (select * from frame_user where role = 'STU' ) fus
+        on fc.contract_stu = fus.user_id
+
         WHERE
         1 = 1
         <if test="contract_no!=null and contract_no!='' ">
@@ -46,8 +54,14 @@
         <if test="contract_tea!=null and contract_tea!='' ">
             and fc.contract_tea = #{contract_tea}
         </if>
+        <if test="contract_room_no!=null and contract_room_no!='' ">
+            and fc.contract_room_no like  '%${contract_room_no}%'
+        </if>
         <if test="contract_stu!=null and contract_stu!='' ">
             and fc.contract_stu = #{contract_stu}
+        </if>
+        <if test="contract_stu_name!=null and contract_stu_name!='' ">
+            and fus.emp_name like  '%${contract_stu_name}%'
         </if>
     </select>
     <!-- 添加用户 parameterType：指定输入 参数类型是pojo（包括 用户信息） #{}中指定pojo的属性名，接收到pojo对象的属性值，mybatis通过OGNL获取对象的属性值 -->
@@ -63,8 +77,8 @@
             SELECT nextval_sequence('frame_contracts');
         </selectKey>
         insert into
-        frame_contracts(contract_no,contract_stu,contract_tea,contract_amount,contract_hour,contract_rest_hour,attribute1,attribute2,attribute3,attribute4,attribute5,created_date,created_by,last_updated_date,last_updated_by)
-        value(#{contract_no},#{contract_stu},#{contract_tea},#{contract_amount},#{contract_hour},#{contract_rest_hour},#{attribute1},#{attribute2},#{attribute3},#{attribute4},#{attribute5},now(),#{created_by},now(),#{last_updated_by})
+        frame_contracts(contract_no,contract_stu,contract_room_no,contract_amount,contract_hour,contract_rest_hour,attribute1,attribute2,attribute3,attribute4,attribute5,created_date,created_by,last_updated_date,last_updated_by)
+        value(#{contract_no},#{contract_stu},#{contract_room_no},#{contract_amount},#{contract_hour},#{contract_rest_hour},#{attribute1},#{attribute2},#{attribute3},#{attribute4},#{attribute5},now(),#{created_by},now(),#{last_updated_by})
     </insert>
 
     <!-- 根据id更新用户 分析： 需要传入用户的id 需要传入用户的更新信息 parameterType指定user对象，包括 id和更新信息，注意：id必须存在
@@ -72,10 +86,15 @@
     <update id="updateContracts" parameterType="com.frame.business.contracts.model.Contracts">
 		update frame_contracts set
 		contract_stu=#{contract_stu},
-		contract_tea=#{contract_tea},
+		contract_room_no=#{contract_room_no},
 		contract_amount=#{contract_amount},
 		contract_hour=#{contract_hour},
 		contract_rest_hour=#{contract_rest_hour},
+		attribute1=#{attribute1},
+		attribute2=#{attribute2},
+		attribute3=#{attribute3},
+		attribute4=#{attribute4},
+		attribute5=#{attribute5},
 		last_updated_date=now(),
 		last_updated_by=#{last_updated_by}
 		where contract_no=#{contract_no}
@@ -89,14 +108,12 @@
     </delete>
 
     <select id="findContracts" resultType="contracts">
-        select fc.*,fus.emp_name,fut.emp_name from
+        select fc.*,fus.emp_name emp_name_fus from
         frame_contracts fc
         LEFT JOIN
         (select * from frame_user where role = 'STU' ) fus
         on fc.contract_stu = fus.user_id
-        LEFT JOIN
-        (select * from frame_user where role = 'TEA' ) fut
-        on fc.contract_tea = fut.user_id
+
         WHERE
         1 = 1
         <if test="contract_no!=null and contract_no!='' ">
@@ -105,8 +122,40 @@
         <if test="contract_tea!=null and contract_tea!='' ">
             and fc.contract_tea = #{contract_tea}
         </if>
+        <if test="contract_room_no!=null and contract_room_no!='' ">
+            and fc.contract_room_no =  #${contract_room_no}
+        </if>
         <if test="contract_stu!=null and contract_stu!='' ">
             and fc.contract_stu = #{contract_stu}
+        </if>
+        <if test="contract_stu_name!=null and contract_stu_name!='' ">
+            and fus.emp_name like  '%${contract_stu_name}%'
+        </if>
+        LIMIT 0,1
+    </select>
+    <select id="findContractsList" resultType="contracts">
+        select fc.*,fus.emp_name emp_name_fus from
+        frame_contracts fc
+        LEFT JOIN
+        (select * from frame_user where role = 'STU' ) fus
+        on fc.contract_stu = fus.user_id
+
+        WHERE
+        1 = 1
+        <if test="contract_no!=null and contract_no!='' ">
+            and fc.contract_no = #{contract_no}
+        </if>
+        <if test="contract_tea!=null and contract_tea!='' ">
+            and fc.contract_tea = #{contract_tea}
+        </if>
+        <if test="contract_room_no!=null and contract_room_no!='' ">
+            and fc.contract_room_no =  #${contract_room_no}
+        </if>
+        <if test="contract_stu!=null and contract_stu!='' ">
+            and fc.contract_stu = #{contract_stu}
+        </if>
+        <if test="contract_stu_name!=null and contract_stu_name!='' ">
+            and fus.emp_name like  '%${contract_stu_name}%'
         </if>
 
     </select>

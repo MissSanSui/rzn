@@ -4,13 +4,23 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:util="http://www.springframework.org/schema/util"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
-        http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+        http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/context
-        http://www.springframework.org/schema/context/spring-context-4.3.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+        http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
     <!-- 使用spring组件扫描@service  -->
     <context:component-scan base-package="com.frame.*.service"/>
-
+    <bean id="propertyConfigurerRedis"
+          class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="order" value="1" />
+        <property name="ignoreUnresolvablePlaceholders" value="true" />
+        <property name="locations">
+            <list>
+                <value>classpath:conf/redis.properties</value>
+                <value>classpath:conf/config.properties</value>
+            </list>
+        </property>
+    </bean>
     <!-- 缓存管理器 -->
     <bean id="cacheManager" class="com.frame.kernel.shiro.SpringCacheManagerWrapper">
         <property name="cacheManager" ref="springCacheManager" />
@@ -131,8 +141,8 @@
         <property name="cacheManager" ref="cacheManager"/>
         <property name="sessionManager" ref="sessionManager"/>
 
-        <property name="kickoutAfter" value="false"/>
-        <property name="maxSession" value="1"/>
+        <property name="kickoutAfter" value="true"/>
+        <property name="maxSession" value="${maxLogSession}"/>
         <property name="kickoutUrl" value="/login?kickout=1"/>
     </bean>
 
@@ -168,8 +178,6 @@
             <value>
                 <!-- 对静态资源设置匿名访问 -->
                 /resources/**=anon
-                / = user
-                /index = user
                 /login = anon
                 /loginUser = anon
                 /sso =anon

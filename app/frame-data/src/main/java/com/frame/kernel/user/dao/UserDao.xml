@@ -15,29 +15,13 @@
         SELECT
         *
         FROM
-        (
-        SELECT
-        a.*, b.emp_name supervisor_name,
-        c.org_name dept_name,
-        (select org_name from frame_org where org_id = 0 limit 0,1) as company_name
 
-        FROM
         frame_user a
-        INNER JOIN(
-        SELECT
-        e.user_id,
-        f.*
-        FROM
-        frame_user_org e
-        LEFT JOIN frame_org f ON e.org_id = f.org_id
-        )c ON a.user_id = c.user_id
-        LEFT JOIN frame_user b ON a.supervisor = b.user_id
+
         WHERE
         1 = 1
-        <if test="type!=null and type!='' and  type=='list'">
-            and c.org_id = #{org_id}
-        </if>
-        <if test="user_id!=null and user_id!='' and  choose_user_type!='choose_old_user'">
+
+        <if test="user_id!=null and user_id!=''">
             and a.user_id != #{user_id}
         </if>
         <if test="emp_name!=null and emp_name!=''">
@@ -46,18 +30,34 @@
         <if test="email!=null and email!=''">
             and a.email LIKE '%${email}%'
         </if>
-        <if test="telphone!=null and telphone!=''">
-            and (a.telphone LIKE '%${telphone}%' or a.mobile LIKE '%${telphone}%')
+        <if test="telephone!=null and telephone!=''">
+            and (a.telephone LIKE '%${telephone}%' or a.mobile LIKE '%${telephone}%')
         </if>
         <if test="user_status!=null and user_status!=''">
             and a.user_status = #{user_status}
         </if>
-        <if test="org_id!=null and org_id!='' and  choose_user_type=='choose_old_user'">
-            and c.user_id not in (
-            select user_id from frame_user_org where org_id = #{org_id}
-            )
+        <if test="english_name!=null and english_name!=''">
+            and a.english_name  LIKE '%${english_name}%'
         </if>
-        )c
+        <if test="id_card!=null and id_card!=''">
+            and a.id_card  LIKE '%${id_card}%'
+        </if>
+        <if test="sex!=null and sex!=''">
+            and a.sex  LIKE '%${sex}%'
+        </if>
+        <if test="role!=null and role!=''">
+            and a.role  LIKE '%${role}%'
+        </if>
+        <if test="province!=null and province!=''">
+            and a.province  LIKE '%${province}%'
+        </if>
+        <if test="city!=null and city!=''">
+            and a.city  LIKE '%${city}%'
+        </if>
+        <if test="address!=null and address!=''">
+            and a.address  LIKE '%${address}%'
+        </if>
+
         ORDER BY ${sortName} ${sortOrder}
         LIMIT #{offset},#{limit};
     </select>
@@ -65,20 +65,10 @@
     <select id="findUserCount" resultType="int">
         SELECT count(*) FROM
         frame_user a
-        INNER JOIN(
-        SELECT
-        e.user_id,
-        f.*
-        FROM
-        frame_user_org e
-        LEFT JOIN frame_org f ON e.org_id = f.org_id
-        )c ON a.user_id = c.user_id
-        LEFT JOIN frame_user b ON a.supervisor = b.user_id
+
         WHERE
         1 = 1
-        <if test="type!=null and type!='' and  type=='list'">
-            and c.org_id = #{org_id}
-        </if>
+
         <if test="user_id!=null and user_id!='' and  choose_user_type!='choose_old_user'">
             and a.user_id != #{user_id}
         </if>
@@ -88,17 +78,13 @@
         <if test="email!=null and email!=''">
             and a.email LIKE '%${email}%'
         </if>
-        <if test="telphone!=null and telphone!=''">
-            and a.telphone LIKE '%${telphone}%'
+        <if test="telephone!=null and telephone!=''">
+            and a.telephone LIKE '%${telephone}%'
         </if>
         <if test="user_status!=null and user_status!=''">
             and a.user_status = #{user_status}
         </if>
-        <if test="org_id!=null and org_id!='' and  choose_user_type=='choose_old_user'">
-            and c.user_id not in (
-            select user_id from frame_user_org where org_id = #{org_id}
-            )
-        </if>
+
     </select>
     <!-- 添加用户 parameterType：指定输入 参数类型是pojo（包括 用户信息） #{}中指定pojo的属性名，接收到pojo对象的属性值，mybatis通过OGNL获取对象的属性值 -->
     <insert id="saveUser" parameterType="com.frame.kernel.user.model.User" keyProperty="user_id">
@@ -113,57 +99,74 @@
             SELECT nextval_sequence('frame_user');
         </selectKey>
         insert into
-        frame_user(user_id,user_name,sex,work_space,password,emp_number,emp_name,english_name,id_card,birth,email,telphone,mobile,alternate_contact,alternate_contact_mobile,org_id,dept_id,supervisor,job,user_status,attribute1,attribute2,attribute3,attribute4,attribute5,created_date,created_by,last_updated_date,last_updated_by)
-        value(#{user_id},#{user_name},#{sex},#{work_space},#{password},#{emp_number},#{emp_name},#{english_name},#{id_card},#{birth},#{email},#{telphone},#{mobile},#{alternate_contact},#{alternate_contact_mobile},#{org_id},#{dept_id},#{supervisor},#{job},#{user_status},#{attribute1},#{attribute2},#{attribute3},#{attribute4},#{attribute5},#{created_date},#{created_by},#{last_updated_date},#{last_updated_by})
+        frame_user(user_id,user_name,password,emp_number,isLive,emp_name,english_name,id_card,birth,email,telephone,mobile,alternate_contact,alternate_contact_mobile,org_id,dept_id,user_status,attribute1,attribute2,attribute3,attribute4,attribute5,created_date,created_by,last_updated_date,last_updated_by,sex,work_space,photo,role,province,city,address,interests,good)
+        value(#{user_id},#{user_name},#{password},#{emp_number},#{isLive},#{emp_name},#{english_name},#{id_card},#{birth},#{email},#{telephone},#{mobile},#{alternate_contact},#{alternate_contact_mobile},#{org_id},#{dept_id},#{user_status},#{attribute1},#{attribute2},#{attribute3},#{attribute4},#{attribute5},#{created_date},#{created_by},#{last_updated_date},#{last_updated_by},#{sex},#{work_space},#{photo},#{role},#{province},#{city},#{address},#{interests},#{good})
     </insert>
 
     <!-- 根据id更新用户 分析： 需要传入用户的id 需要传入用户的更新信息 parameterType指定user对象，包括 id和更新信息，注意：id必须存在
         #{id}：从输入 user对象中获取id属性值 -->
     <update id="updateUser" parameterType="com.frame.kernel.user.model.User">
-		update frame_user set
-		user_name=#{user_name},
-		emp_number=#{emp_number},
-		sex=#{sex},
-		work_space=#{work_space},
-		id_card=#{id_card},
-		emp_name=#{emp_name},
-		english_name=#{english_name},
-		birth=#{birth},
-		email=#{email},
-		telphone=#{telphone},
-		mobile=#{mobile},
-		alternate_contact=#{alternate_contact},
-		alternate_contact_mobile=#{alternate_contact_mobile},
-		org_id=#{org_id},
-		dept_id=#{dept_id},
-		supervisor=#{supervisor},
-		job=#{job},
-		last_updated_date=now(),
-		last_updated_by=#{last_updated_by}
-		where user_id=#{user_id}
-	</update>
+        update frame_user set
+        user_name=#{user_name},
+        emp_number=#{emp_number},
+        isLive=#{isLive},
+        sex=#{sex},
+        work_space=#{work_space},
+        id_card=#{id_card},
+        emp_name=#{emp_name},
+        english_name=#{english_name},
+        birth=#{birth},
+        email=#{email},
+        telephone=#{telephone},
+        mobile=#{mobile},
+        alternate_contact=#{alternate_contact},
+        alternate_contact_mobile=#{alternate_contact_mobile},
+        org_id=#{org_id},
+        dept_id=#{dept_id},
+        attribute1=#{attribute1},
+        attribute2=#{attribute2},
+        attribute3=#{attribute3},
+        attribute4=#{attribute4},
+        attribute5=#{attribute5},
+        last_updated_date=now(),
+        last_updated_by=#{last_updated_by},
+        photo=#{photo},
+        role=#{role},
+        province=#{province},
+        city=#{city},
+        address=#{address},
+        interests=#{interests},
+        good=#{good}
+        where user_id=#{user_id}
+    </update>
     <update id="updateUserHasPs" parameterType="com.frame.kernel.user.model.User">
-		update frame_user set
-		user_name=#{user_name},
-		emp_name=#{emp_name},
-		sex=#{sex},
-		work_space=#{work_space},
-		english_name=#{english_name},
-		birth=#{birth},
-		email=#{email},
-		telphone=#{telphone},
-		mobile=#{mobile},
-		password=#{password},
-		alternate_contact=#{alternate_contact},
-		alternate_contact_mobile=#{alternate_contact_mobile},
-		org_id=#{org_id},
-		dept_id=#{dept_id},
-		supervisor=#{supervisor},
-		job=#{job},
-		last_updated_date=now(),
-		last_updated_by=#{last_updated_by}
-		where user_id=#{user_id}
-	</update>
+        update frame_user set
+        user_name=#{user_name},
+        emp_name=#{emp_name},
+        sex=#{sex},
+        work_space=#{work_space},
+        english_name=#{english_name},
+        birth=#{birth},
+        email=#{email},
+        telephone=#{telephone},
+        mobile=#{mobile},
+        password=#{password},
+        alternate_contact=#{alternate_contact},
+        alternate_contact_mobile=#{alternate_contact_mobile},
+        org_id=#{org_id},
+        dept_id=#{dept_id},
+
+        last_updated_date=now(),
+        last_updated_by=#{last_updated_by},
+        photo=#{photo},
+        role=#{role},
+        province=#{province},
+        city=#{city},
+        address=#{address},
+        interests=#{interests},
+        good=#{good}
+        where user_id=#{user_id}
+    </update>
     <update id="disableUser">
         update frame_user set user_status= 'close'
         <foreach collection="ids" item="user_id" open="where user_id IN("
@@ -190,59 +193,25 @@
     <select id="findUserById" resultType="user">
 
         SELECT
-        a.*, b.emp_name supervisor_name,
-        (
-        SELECT
-        org_name
-        FROM
-        frame_org
-        WHERE
-        org_id = 0
-        LIMIT 0,
-        1
-        )AS company_name,
-        c.org_name dept_name
+        *
         FROM
         frame_user a
-        INNER JOIN(
-        SELECT
-        e.user_id,
-        f.*
-        FROM
-        frame_user_org e
-        LEFT JOIN frame_org f ON e.org_id = f.org_id
-        )c ON a.user_id = c.user_id
-        LEFT JOIN frame_user b ON a.supervisor = b.user_id
+
         WHERE
         1 = 1
         <if test="user_id!=null and user_id!=''">
             and a.user_id = #{user_id}
         </if>
-        <if test="org_id!=null and org_id!=''">
-            and c.org_id = #{org_id}
-        </if>
+
     </select>
     <select id="findUserInfoById" resultType="user">
-
         SELECT
-        a.*, b.emp_name supervisor_name,
-        (
-        SELECT
-        org_name
-        FROM
-        frame_org
-        WHERE
-        org_id = 0
-        LIMIT 0,
-        1
-        )AS company_name
+        *
         FROM
         frame_user a
 
-        LEFT JOIN frame_user b ON a.supervisor = b.user_id
         WHERE
         1 = 1
-
         <if test="user_id!=null and user_id!=''">
             and a.user_id = #{user_id}
         </if>

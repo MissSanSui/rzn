@@ -103,7 +103,7 @@ function userValide(oldName) {
                     }
                 }
             },
-            telphone: {
+            telephone: {
                 validators: {
                     notEmpty: {
                         message: '工作电话不能为空!'
@@ -185,7 +185,7 @@ function cleanChooseOldUser(obj) {
     $('#english_name').val('');
     //$('#birth_temp').val('');
     $('#email').val('');
-    $('#telphone').val('');
+    $('#telephone').val('');
     $('#mobile').val('');
     $('#alternate_contact').val('');
     $('#alternate_contact_mobile').val('');
@@ -272,7 +272,7 @@ function showSupervisor(obj,type) {
                     sortable: false,
                     width: '10%'
                 }, {
-                    field: 'telphone',
+                    field: 'telephone',
                     title: '手机号码',
                     sortable: false,
                     width: '10%'
@@ -292,7 +292,7 @@ function showSupervisor(obj,type) {
                 offset: params.offset, // 页码
                 emp_name: $("#query_emp_name").val(),
                 email: $("#query_email").val(),
-                telphone: $("#query_telphone").val(),
+                telephone: $("#query_telephone").val(),
                 user_status: $("#query_userStatues").val(),
                 choose_user_type: $("#choose_user_type").val(),
                 org_id: $("#org_id").val(),
@@ -396,7 +396,7 @@ function confirmSupervisor() {
         $('#english_name').val(aArray[0].english_name);
         //$('#birth_temp').val(aArray[0].birth_temp);
         $('#email').val(aArray[0].email);
-        $('#telphone').val(aArray[0].telphone);
+        $('#telephone').val(aArray[0].telephone);
         $('#mobile').val(aArray[0].mobile);
         $('#alternate_contact').val(aArray[0].alternate_contact);
         $('#alternate_contact_mobile').val(aArray[0].alternate_contact_mobile);
@@ -544,8 +544,8 @@ $(document)
                              .val(),
                             email: $('#email')
                                 .val(),
-                            telphone: $(
-                                '#telphone')
+                            telephone: $(
+                                '#telephone')
                                 .val(),
                             mobile: $('#mobile')
                                 .val(),

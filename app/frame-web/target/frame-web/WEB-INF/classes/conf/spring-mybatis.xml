@@ -108,18 +108,18 @@
 	  <bean id="transactionManager" 
         class="org.springframework.jdbc.datasource.DataSourceTransactionManager"
         p:dataSource-ref="dataSource"/>
-        
-                <!--  使用annotation定义事务-->    
-    <tx:annotation-driven transaction-manager="transactionManager"   />  
+
+    <tx:annotation-driven transaction-manager="transactionManager"   />
+
     <!-- mybatis文件配置，扫描所有mapper文件 -->
       <bean id="sqlSessionFactory"
           class="org.mybatis.spring.SqlSessionFactoryBean"
           p:dataSource-ref="dataSource"
           p:configLocation="classpath:conf/mybatis-config.xml" /><!-- configLocation为mybatis属性 mapperLocations为所有mapper-->
-      
-   <!-- spring与mybatis整合配置，扫描所有dao -->
+    <!--  使用annotation定义事务-->
+    <!-- spring与mybatis整合配置，扫描所有dao -->
  <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer"
-        p:basePackage="com.frame.kernel.*.dao,com.frame.business.*.dao"
+        p:basePackage="com.frame.*.service,com.frame.kernel.*.dao,com.frame.business.*.dao"
         p:sqlSessionFactoryBeanName="sqlSessionFactory"/>
 
 

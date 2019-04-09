@@ -6,8 +6,10 @@ import java.sql.Timestamp;
 
 public class Rooms extends BaseModelImpl {
     private static final long serialVersionUID = 1L;
+    private int room_id;
     private String room_no;
-    private String room_owner;
+    private String emp_name_owner;
+    private int room_owner;
     private String white_id;
     private String video_id;
     private String room_grade;
@@ -25,6 +27,17 @@ public class Rooms extends BaseModelImpl {
     private int created_by;
     private Timestamp last_updated_date;
     private int last_updated_by;
+    private String coursewares_nos;
+    private String user_ids;
+
+
+    public int getRoom_id() {
+        return room_id;
+    }
+
+    public void setRoom_id(int room_id) {
+        this.room_id = room_id;
+    }
 
     public String getRoom_no() {
         return room_no;
@@ -34,11 +47,19 @@ public class Rooms extends BaseModelImpl {
         this.room_no = room_no;
     }
 
-    public String getRoom_owner() {
+    public String getEmp_name_owner() {
+        return emp_name_owner;
+    }
+
+    public void setEmp_name_owner(String emp_name_owner) {
+        this.emp_name_owner = emp_name_owner;
+    }
+
+    public int getRoom_owner() {
         return room_owner;
     }
 
-    public void setRoom_owner(String room_owner) {
+    public void setRoom_owner(int room_owner) {
         this.room_owner = room_owner;
     }
 
@@ -176,5 +197,21 @@ public class Rooms extends BaseModelImpl {
 
     public void setLast_updated_by(int last_updated_by) {
         this.last_updated_by = last_updated_by;
+    }
+
+    public String getCoursewares_nos() {
+        return coursewares_nos;
+    }
+
+    public void setCoursewares_nos(String coursewares_nos) {
+        this.coursewares_nos = coursewares_nos;
+    }
+
+    public String getUser_ids() {
+        return user_ids;
+    }
+
+    public void setUser_ids(String user_ids) {
+        this.user_ids = user_ids;
     }
 }

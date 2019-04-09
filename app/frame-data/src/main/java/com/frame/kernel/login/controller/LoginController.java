@@ -84,13 +84,13 @@ public class LoginController {
         JSONObject ret = new JSONObject();
         String errorMessage = "";
 
-
         Subject subject = SecurityUtils.getSubject();
         Session session = subject.getSession();
         session.setAttribute("errorMessage", errorMessage);
         UsernamePasswordToken usernamePasswordToken = new
                 UsernamePasswordToken(username, password);
         try {
+
             subject.login(usernamePasswordToken);
 
             logger.info("======登陆成功=======");
@@ -129,7 +129,7 @@ public class LoginController {
 
             Serializable sessionId = session.getId();
             // 判断登录session队列是否存在该sessionid
-            if (deque.contains(sessionId)) {
+            if (null!=deque && deque.contains(sessionId)) {
                 ret.put("retCode", "200");
                 // return SystemProperties.get("arch.index");
             }

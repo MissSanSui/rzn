@@ -70,7 +70,7 @@
 								class="control-label frame-control-label frame-sm-label  "
 								for="query_userPhone">手机：</label> <input type="text"
 								class="form-control input-sm frame-form-control frame-input-sm  "
-								id="query_telphone" />
+								id="query_telephone" />
 						</div>
 						<div class="form-group frame-form-group form-inline col-md-4">
 							<label
@@ -205,9 +205,9 @@
 										</div>
 										<div class="form-group">
 											<small><span style="color: red">*</span><label
-												for="telphone" style="font-weight: normal">工作电话</label></small> <input
+												for="telephone" style="font-weight: normal">工作电话</label></small> <input
 												type="text" class="form-control frame-form-control input-sm"
-												id="telphone" />
+												id="telephone" />
 										</div>
 										<div class="form-group">
 											<small><span style="color: red">*</span><label
@@ -331,10 +331,10 @@
 									</div>
 									<div class="form-group">
 										<small><span style="color: red">*</span><label
-											for="update_telphone" style="font-weight: normal">工作电话</label></small>
+											for="update_telephone" style="font-weight: normal">工作电话</label></small>
 										<input type="text"
 											class="form-control frame-form-control input-sm"
-											id="update_telphone" />
+											id="update_telephone" />
 									</div>
 									<div class="form-group">
 										<small><span style="color: red">*</span><label

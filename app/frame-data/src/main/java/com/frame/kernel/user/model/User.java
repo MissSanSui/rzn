@@ -31,7 +31,7 @@ public class User extends BaseModelImpl {
     private Date birth;
     private String birth_temp;
     private String email;
-    private String telphone;
+    private String telephone;
     private String mobile;
     private String alternate_contact;
     private String alternate_contact_mobile;
@@ -54,6 +54,7 @@ public class User extends BaseModelImpl {
     private String address;
     private String interests;
     private String good;
+    private String isLive;
 
     private Timestamp created_date;
     private int created_by;
@@ -235,12 +236,12 @@ public class User extends BaseModelImpl {
         this.email = email;
     }
 
-    public String getTelphone() {
-        return telphone;
+    public String getTelephone() {
+        return telephone;
     }
 
-    public void setTelphone(String telphone) {
-        this.telphone = telphone;
+    public void setTelephone(String telephone) {
+        this.telephone = telephone;
     }
 
     public String getMobile() {
@@ -438,6 +439,13 @@ public class User extends BaseModelImpl {
         this.page_end = page_end;
     }
 
+    public String getIsLive() {
+        return isLive;
+    }
+
+    public void setIsLive(String isLive) {
+        this.isLive = isLive;
+    }
 
     public String getRole() {
         return role;

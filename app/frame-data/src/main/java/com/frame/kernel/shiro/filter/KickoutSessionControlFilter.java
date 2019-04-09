@@ -14,6 +14,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import java.io.Serializable;
 import java.util.Deque;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 /**
@@ -75,12 +76,29 @@ public class KickoutSessionControlFilter extends AccessControlFilter {
             cache.put(username, deque);
         }
 
+        Iterator<Serializable> dequeIte =  deque.iterator();
+        while(dequeIte.hasNext()){
+            Serializable dequeIteSessionId = dequeIte.next();
+            try{
+                Session dequeIteSession =   sessionManager.getSession(new DefaultSessionKey(dequeIteSessionId));
+                if(dequeIteSession == null) {
+                    deque.removeLastOccurrence(dequeIteSessionId);
+                }
+            }catch (Exception e){
+                deque.removeLastOccurrence(dequeIteSessionId);
+            }
+
+
+        }
+
         //如果队列里没有此sessionId，且用户没有被踢出；放入队列
         if(!deque.contains(sessionId) && session.getAttribute("kickout") == null) {
             deque.push(sessionId);
             cache.put(username, deque);
         }
 
+
+        Serializable kickoutSessionIdLastOut = null;
         //如果队列里的sessionId数超出最大会话数，开始踢人
         while(deque.size() > maxSession) {
             Serializable kickoutSessionId = null;
@@ -95,13 +113,15 @@ public class KickoutSessionControlFilter extends AccessControlFilter {
                 if(kickoutSession != null) {
                     //设置会话的kickout属性表示踢出了
                     kickoutSession.setAttribute("kickout", true);
+                    kickoutSessionIdLastOut = kickoutSession.getId();
+
                 }
             } catch (Exception e) {//ignore exception
             }
         }
 
         //如果被踢出了，直接退出，重定向到踢出后的地址
-        if (session.getAttribute("kickout") != null) {
+        if ( null != session.getAttribute("kickout")||(null!=kickoutSessionIdLastOut &&session.getId().equals(kickoutSessionIdLastOut))) {
             //会话被踢出了
             try {
                 subject.logout();

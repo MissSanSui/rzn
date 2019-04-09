@@ -7,9 +7,32 @@ import java.util.List;
 import java.util.Set;
 
 public interface UserService {
-    public List<User> getList(int limit, int offset, String sortName, String sortOrder, String emp_name, String email, String telphone, String user_status, String org_id, String choose_user_type, String user_id, String type) throws Exception;
+    public List<User> getList(int limit, int offset, String sortName, String sortOrder,
+                              String user_id,
+                              String emp_name,
+                              String address,
+                              String email,
+                              String telephone,
+                              String user_status,
+                              String english_name,
+                              String id_card,
+                              String sex,
+                              String role,
+                              String province,
+                              String city) throws Exception;
 
-    public int findUserCount(String emp_name, String email, String telphone, String user_status, String org_id, String choose_user_type, String user_id, String type) throws Exception;
+    public int findUserCount(String user_id,
+                             String emp_name,
+                             String address,
+                             String email,
+                             String telephone,
+                             String user_status,
+                             String english_name,
+                             String id_card,
+                             String sex,
+                             String role,
+                             String province,
+                             String city) throws Exception;
 
     public void saveUser(User user) throws Exception;
 

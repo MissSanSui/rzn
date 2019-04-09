@@ -9,11 +9,13 @@ public interface ContractsService {
             , String sortName, String sortOrder,
                                    String contract_no,
                                    String contract_stu,
-                                   String contract_tea) throws Exception;
+                                  String contract_room_no,
+                                   String contract_stu_name) throws Exception;
 
     public int findCount(String contract_no,
-                             String contract_stu,
-                             String contract_tea) throws Exception;
+                         String contract_stu,
+                         String contract_room_no,
+                         String contract_stu_name) throws Exception;
 
     public void saveContracts(Contracts contracts) throws Exception;
 
@@ -23,5 +25,10 @@ public interface ContractsService {
 
     public Contracts findContracts(String contract_no,
                                    String contract_stu,
-                                   String contract_tea) throws Exception;
+                                   String contract_room_no,
+                                   String contract_stu_name) throws Exception;
+    public List<Contracts> findContractsList(String contract_no,
+                                   String contract_stu,
+                                   String contract_room_no,
+                                   String contract_stu_name) throws Exception;
 }
