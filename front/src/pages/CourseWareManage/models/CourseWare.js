@@ -1,4 +1,9 @@
+<<<<<<< HEAD
 import { queryCourseWares, addCourseWare,updateCourseWare,deleteCourseWare } from '@/services/api';
+=======
+import { queryCourseWares, addCourseWare,updateCourseWare,deleteCourseWare,
+  saveCourseWareImage,deleteCoursewareImage,queryCoursewareImages } from '@/services/api';
+>>>>>>> courseware image
 import { getUserId } from '@/utils/authority';
 
 export default {
@@ -52,6 +57,19 @@ export default {
       console.log("courseWare update payload==", payload)
       let response = yield call(updateCourseWare, payload.params);
       
+      if (!response.flag) {
+        if (success && typeof success === 'function') {
+          success();
+        }
+      } else {
+        if (fail && typeof fail === 'function') {
+          fail(response.msg);
+        }
+      }
+    },
+    *saveImage({ payload, success, fail }, { call, put }) {
+      console.log("courseWare update payload==", payload)
+      let response = yield call(saveCourseWareImage, payload.params);
       if (!response.flag) {
         if (success && typeof success === 'function') {
           success();
