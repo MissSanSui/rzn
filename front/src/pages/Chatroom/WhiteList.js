@@ -12,9 +12,9 @@ class WhiteList extends PureComponent {
     render() {
         return (
             <div className="whiteList">
-                <div className="whiteBtn">
-                    <Button type="primary" onClick={this.props.add.bind(this)}>创建画板</Button>
-                </div>
+
+
+
 
                 <List
                     grid={{column: 1, gutter: 0}}

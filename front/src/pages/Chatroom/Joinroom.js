@@ -2,40 +2,31 @@ import React, {PureComponent} from "react";
 import {RoomWhiteboard} from "white-react-sdk";
 import {WhiteWebSdk} from "white-web-sdk";
 import * as serviceWorker from "./serviceWorker";
-import {Row, Col, Button, Icon, Modal} from "antd";
+import {Row, Col, Button, Icon, Modal,Tooltip,Drawer,Input} from "antd";
 import "white-web-sdk/style/index.css";
-import Camera from "./Camera";
 import Courseware from "./Courseware";
 import WhiteList from "./WhiteList";
+import Camera from "./Camera";
 
 let room = null;
-const whiteImg = [
-    {
-        key: 0,
-        url: 'https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png'
-    },
-    {
-        key: 1,
-        url: 'https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png'
-    },
-    {
-        key: 2,
-        url: 'https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png'
-    },
-];
+let miniToken = 'WHITEcGFydG5lcl9pZD1scGMxOEtuU3JaUlE3YWFmUm1wZFNFaEFhM3J3TzB5T01pOTYmc2lnPTM5ZWQxYWY3ZjE3OGE5MTU1ZThmNDFhNmMyNThiYWExNTU0MDA5MmE6YWRtaW5JZD0xMjQmcm9sZT1taW5pJmV4cGlyZV90aW1lPTE1ODI5NzQ5NTAmYWs9bHBjMThLblNyWlJRN2FhZlJtcGRTRWhBYTNyd08weU9NaTk2JmNyZWF0ZV90aW1lPTE1NTE0MTc5OTgmbm9uY2U9MTU1MTQxNzk5ODMxMDAw';
+
+const whiteImg = [];
 
 class Chatroom extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
             room: null,
+            visible: false,
+            modalVisible: false,
+            confirmLoading: false,
             whiteImgList: whiteImg
         }
     }
 
 
     async componentWillMount() {
-        const miniToken = 'WHITEcGFydG5lcl9pZD1scGMxOEtuU3JaUlE3YWFmUm1wZFNFaEFhM3J3TzB5T01pOTYmc2lnPTM5ZWQxYWY3ZjE3OGE5MTU1ZThmNDFhNmMyNThiYWExNTU0MDA5MmE6YWRtaW5JZD0xMjQmcm9sZT1taW5pJmV4cGlyZV90aW1lPTE1ODI5NzQ5NTAmYWs9bHBjMThLblNyWlJRN2FhZlJtcGRTRWhBYTNyd08weU9NaTk2JmNyZWF0ZV90aW1lPTE1NTE0MTc5OTgmbm9uY2U9MTU1MTQxNzk5ODMxMDAw';
 
         const whiteWebSdk = new WhiteWebSdk();
         const url = 'https://cloudcapiv4.herewhite.com/room?token=' + miniToken;
@@ -60,7 +51,9 @@ class Chatroom extends PureComponent {
         });
 
         room.putScenes("/math", [{name: "geometry"}]);
-        //room.setScenePath("/math");
+        room.setScenePath("/math/geometry");
+
+
         function onWindowResize() {
             room.refreshViewSize();
         }
@@ -71,6 +64,30 @@ class Chatroom extends PureComponent {
         this.setState({
             room: room,
         });
+
+
+        //获取封面
+        const url1 = 'https://cloudcapiv4.herewhite.com/handle/rooms/snapshots?roomToken=' +
+            room.roomToken;
+        const pageRes = await fetch(url1, {
+            method: 'POST',
+            headers: {
+                "content-type": "application/json",
+            },
+            body: JSON.stringify({
+                width: '150px',
+                height: '120px',
+                scenePath: '/math/geometry',
+                uuid: room.uuid
+            }),
+        });
+        const pageJson = await pageRes.json();
+        this.setState({
+            whiteImgList: pageJson.msg,
+        });
+
+        console.log(this.state.whiteImgList);
+
         // 加载直播间信息
         // const enterChatUrl = '/api/chat/enterChat';
         // const enterChatInit = {
@@ -144,10 +161,85 @@ class Chatroom extends PureComponent {
     };
 
     add = ()=> {
-        //this.state.room.putScenes("/init");
+
+        const that = this;
+        const url = 'https://cloudcapiv4.herewhite.com/room?token=' + miniToken;
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                "content-type": "application/json",
+            },
+            body: JSON.stringify({
+                name: 'no2',
+                limit: '100',
+                mode: 'historied'
+            }),
+        }).then(res=>res.clone().json()).then(res=> {
+
+            const msg = res.msg;
+            console.log(msg)
+
+
+            /*
+            fetch('https://cloudcapiv4.herewhite.com/handle/rooms/snapshots?roomToken=' +
+                that.state.room.roomToken, {
+                method: 'POST',
+                headers: {
+                    "content-type": "application/json",
+                },
+                body: JSON.stringify({
+                    width: '100px',
+                    height: '100px',
+                    uuid: msg.room.uuid,
+                    scenePath: '/math',
+                }),
+            }).then(res=>{
+                res.clone().json();
+                console.log(res)
+            }).then(res=> {
+                console.log(res)
+            }).catch(error=>console.error('Error:', error))
+            */
+        }).catch(error => console.error('Error:', error))
+
+
+    };
+    showDrawer = () => {
+        this.setState({
+            visible: true,
+        });
     };
 
+    onClose = () => {
+        this.setState({
+            visible: false,
+        });
+    };
+    showModal = () => {
+        this.setState({
+            modalVisible: true,
+        });
+    };
+
+    handleOk = () => {
+        this.setState({
+            confirmLoading: true,
+        });
+        setTimeout(() => {
+            this.setState({
+                modalVisible: false,
+                confirmLoading: false,
+            });
+        }, 1000);
+    };
+    handleCancel = () => {
+
+        this.setState({
+            modalVisible: false,
+        });
+    };
     render() {
+        const { modalVisible, confirmLoading } = this.state;
         return (
             this.state.room ?
                 <div className="joinRoomStyle">
@@ -170,22 +262,48 @@ class Chatroom extends PureComponent {
                             </li>
                         </ul>
 
+                        <div className="video-icon">
+                            <Tooltip placement="topLeft" title="开启直播">
+                                <Icon type="play-circle" theme="filled" />
+                            </Tooltip>
+                            <Tooltip placement="topLeft" title="关闭直播">
+                                <Icon type="close-circle" theme="filled" onClick={this.showModal} />
+                            </Tooltip>
+                            <Modal
+                                title="是否保存当前课程"
+                                visible={modalVisible}
+                                onOk={this.handleOk}
+                                confirmLoading={confirmLoading}
+                                onCancel={this.handleCancel}
+                            >
+                                <Input placeholder="课程描述" />
+                            </Modal>
+                        </div>
+                        <div className="menu-icon">
+                            <Icon type="menu-fold" onClick={this.showDrawer}/>
+                        </div>
                         <Col span={24}>
                             <RoomWhiteboard room={this.state.room}
                                             style={{width: '100%', height: '100vh'}}/>
                         </Col>
 
                     </div>
-                    <div className="room-right">
-                        <Col span={24} style={{paddingLeft: '5px'}}>
-                            <Camera />
+                    <Drawer
+                        mask={false}
+                        placement="right"
+                        closable={true}
+                        onClose={this.onClose}
+                        visible={this.state.visible}
+                    >
+                        <Camera />
+                        <div className="whiteBtn">
+                            <Button type="primary" onClick={this.add.bind(this)}>创建画板</Button>
+                        </div>
+                        <WhiteList add={this.add.bind(this)} whiteList={this.state.whiteImgList}/>
+
+                    </Drawer>
 
 
-                            <WhiteList add={this.add.bind(this)} whiteList={this.state.whiteImgList}/>
-
-                        </Col>
-
-                    </div>
 
 
                 </div>
