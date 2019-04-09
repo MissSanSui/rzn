@@ -12,7 +12,7 @@ import java.util.Properties;
  * @date 2019年3月22日
  */
 public class SystemProperties {
-	private static String resources = "/config.properties";
+	private static String resources = "/conf/config.properties";
 
 
 	private static Properties properties = null;
