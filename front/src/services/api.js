@@ -104,7 +104,7 @@ export async function saveCourseWareImage(params) {
     body: params,
   });
 }
-export async function deleteCoursewareImage(params) {
+export async function deleteCourseWareImage(params) {
   return request(`/frame-web/coursewaresImags/deleteCoursewaresImags?${stringify(params)}`)
 }
 

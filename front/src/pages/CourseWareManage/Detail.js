@@ -15,8 +15,9 @@ const { Option } = Select;
 const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 
-@connect(({ loading }) => ({
+@connect(({ loading, courseWare }) => ({
   submitting: loading.effects[''],
+  data: courseWare.data
 }))
 @Form.create()
 
@@ -28,14 +29,28 @@ class Detail extends PureComponent {
       fileList: []
     }
   }
+  componentDidMount() {
+    const { dispatch } = this.props;
+     
+
+  }
+  componentWillReceiveProps() {
+    console.log("componentWillReceiveProps ==")
+    console.log("componentWillReceiveProps = props=", this.props)
+    var data = this.props.data
+    this.setState({
+      fileList: data.fileList || []
+    })
+  }
   handleUpdate = fields => {
     let { dispatch, modifyCourseWare } = this.props;
-    modifyCourseWare.coursewares_content = fields["coursewares_content"]
+    let params = {}
+    params.coursewares_content = fields["coursewares_content"]
+    params.coursewares_no = modifyCourseWare.coursewares_no
+    params.coursewares_tea = modifyCourseWare.coursewares_tea
     dispatch({
       type: 'courseWare/update',
-      payload: {
-        params: modifyCourseWare
-      },
+      payload: params,
       success: () => {
         message.success('修改成功！');
         console.log("this.props===", this.props)
@@ -72,32 +87,62 @@ class Detail extends PureComponent {
   handleChange = ({ file, fileList, event }) => {
     console.log("handleChange file==", file)
     console.log("handleChange fileList==", fileList)
-    // if (file.response && file.response.code) {
-    //   let fileAdress = file.response.data[file.name]["fileAdress"]
-    //   console.log("fileAdress===", fileAdress)
-    //   for (let i in fileList) {
-    //     fileList[i].url = fileAdress
-    //     fileList[i].status = "done"
-    //   }
-    //   console.log("fileList==", fileList)
-    //   this.setState({ fileList })
-    // } else if (file.response && !file.response.code) {
-    //   message.warn("上传失败" + file.response.message)
-    // }
     fileList = fileList.map((file) => {
-      if (file.response && file.response.code ) {
+      if (file.response && !file.response.code) {
         // Component will show file.url as link
         let fileAdress = file.response.data[file.name]["fileAdress"]
         console.log("fileAdress===", fileAdress)
         file.url = fileAdress
+        const { dispatch, modifyCourseWare } = this.props;
+        var data = {}
+        data.coursewares_images = file.url
+        data.coursewares_no = modifyCourseWare.coursewares_no
+        dispatch({
+          type: 'courseWare/saveImage',
+          payload: data,
+          success: (data) => {
+            message.success("上传成功！")
+            dispatch({
+              type: 'courseWare/fetchImages',
+              payload: {
+                coursewares_no: modifyCourseWare.coursewares_no
+              },
+              success: (data) => {
+              }
+            })
+          },
+          fail: () => {
+            message.warn("fail")
+          }
+        });
       }
       return file;
     });
     console.log("fileList===", fileList)
     this.setState({ fileList })
   }
-  onFileRemove=(file)=>{
-    console.log("onFileRemove file===",file)
+  onFileRemove = (file) => {
+    const { dispatch, modifyCourseWare } = this.props;
+    var data = {}
+    data.id = file.id
+    dispatch({
+      type: 'courseWare/deleteImage',
+      payload: data,
+      success: (data) => {
+        message.success("删除成功！")
+        dispatch({
+          type: 'courseWare/fetchImages',
+          payload: {
+            coursewares_no: modifyCourseWare.coursewares_no
+          },
+          success: (data) => {
+          }
+        })
+      },
+      fail: () => {
+        message.warn("fail")
+      }
+    });
   }
   okHandle = () => {
     const { form, type } = this.props

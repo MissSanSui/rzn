@@ -12,7 +12,8 @@ import router from 'umi/router';
 
 const FormItem = Form.Item;
 const Step = Steps.Step;
-@connect(({ }) => ({
+@connect(({ courseWare }) => ({
+    data: courseWare.data
 }))
 @Form.create()
 class BasicForms extends PureComponent {
@@ -21,6 +22,18 @@ class BasicForms extends PureComponent {
         previewImage: '',
         fileList: [],
         current: 1
+    }
+    componentDidMount() {
+        console.log("componentDidMount ==")
+        const { dispatch } = this.props;
+
+    }
+    componentWillReceiveProps() {
+        var data = this.props.data
+        console.log("componentWillReceiveProps =this.props=", this.props)
+        // this.setState({
+        //     fileList: data.fileList || []
+        // })
     }
     handleSubmit = e => {
         const { dispatch, form } = this.props;
@@ -32,6 +45,16 @@ class BasicForms extends PureComponent {
                     type: 'courseWare/add',
                     payload: values,
                     success: (data) => {
+                        dispatch({
+                            type: 'courseWare/fetchImages',
+                            payload: {
+                                coursewares_no: data.coursewaresId
+                            },
+                            success: (fileList) => {
+                                console.log("fetchImages  fileList==", fileList)
+                                this.setState({ fileList: fileList })
+                            }
+                        })
                         this.setState({
                             current: 2,
                             coursewaresId: data.coursewaresId,
@@ -40,9 +63,6 @@ class BasicForms extends PureComponent {
                     },
                     fail: () => {
                         message.warn("fail")
-                        this.setState({
-                            current: 2
-                        })
                     }
                 });
             }
@@ -71,14 +91,59 @@ class BasicForms extends PureComponent {
 
     handleChange = ({ file, fileList, event }) => {
         console.log("handleChange file==", file)
-        fileList = fileList.map((file) => {
-            if (file.response && file.response.code == 0) {
-                // Component will show file.url as link
-                file.url = file.response.data[file.name]["fileAdress"]
-            }
-            return file;
-        });
+        if (file.response && file.response.code == 0&&file.status=="done") {
+            // Component will show file.url as link
+            file.url = file.response.data[file.name]["fileAdress"]
+            const { dispatch } = this.props;
+            var data = {}
+            data.coursewares_images = file.url
+            data.coursewares_no = this.state.coursewaresId
+            dispatch({
+                type: 'courseWare/saveImage',
+                payload: data,
+                success: (data) => {
+                    message.success("上传成功！")
+                    dispatch({
+                        type: 'courseWare/fetchImages',
+                        payload: {
+                            coursewares_no: this.state.coursewaresId
+                        },
+                        success: (resList) => {
+                            console.log("fetchImages  resList===", resList)
+                            this.setState({ fileList: resList })
+                        }
+                    })
+                },
+                fail: () => {
+                    message.warn("fail")
+                }
+            });
+        }
         this.setState({ fileList })
+    }
+    onFileRemove = (file) => {
+        const { dispatch, modifyCourseWare } = this.props;
+        var data = {}
+        data.id = file.id
+        dispatch({
+            type: 'courseWare/deleteImage',
+            payload: data,
+            success: (data) => {
+                message.success("删除成功！")
+                dispatch({
+                    type: 'courseWare/fetchImages',
+                    payload: {
+                        coursewares_no: modifyCourseWare.coursewares_no
+                    },
+                    success: (fileList) => {
+                        // this.setState({ fileList })
+                    }
+                })
+            },
+            fail: () => {
+                message.warn("fail")
+            }
+        });
     }
     beforeUpload = (file) => {
         let { fileList } = this.state
@@ -97,9 +162,7 @@ class BasicForms extends PureComponent {
             return false
         }
     }
-    onFileRemove = (file) => {
-        console.log("onFileRemove file==", file)
-    }
+
     render() {
         const { submitting } = this.props;
         const {

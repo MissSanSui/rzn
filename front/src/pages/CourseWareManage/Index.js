@@ -93,6 +93,17 @@ class CourseWare extends PureComponent {
     router.push('/courseWare-manage/add');
   }
   handleModalVisible = (flag, courseWare) => {
+    if (flag) {
+      const { dispatch } = this.props;
+      dispatch({
+        type: 'courseWare/fetchImages',
+        payload: {
+          coursewares_no: courseWare.coursewares_no
+        },
+        success: (data) => {
+        }
+      })
+    }
     this.setState({
       modalVisible: !!flag,
       modifyCourseWare: courseWare
