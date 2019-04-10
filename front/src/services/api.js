@@ -109,7 +109,22 @@ export async function deleteCourseWareImage(params) {
 }
 
 
-
+//room
+export async function saveRoomCourseWare(params) {
+  return request('/frame-web/roomsCoursewares/saveRoomsCoursewares', {
+    method: 'POST',
+    body: params,
+  });
+}
+export async function queryRoomCoursewares(params) {
+  return request(`/frame-web/roomsCoursewares/roomsCoursewaresList?${stringify(params)}`)
+}
+export async function deleteRoomCourseWare(params) {
+  return request('/frame-web/roomsCoursewares/deleteRoomsCoursewares', {
+    method: 'POST',
+    body: params,
+  });
+}
 
 
 export async function queryProjectNotice() {

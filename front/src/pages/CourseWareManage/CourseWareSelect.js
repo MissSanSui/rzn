@@ -1,15 +1,10 @@
 import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'dva';
-import moment from 'moment';
 import router from 'umi/router';
 import {
   Row, Col, Card, Form, Input, Select, Icon, Button, Dropdown, Menu, InputNumber, DatePicker, Modal,
   message, Table,
 } from 'antd';
-import PageHeaderWrapper from '@/components/PageHeaderWrapper';
-import UserSelectInput from '@/pages/UserManage/UserSelectInput';
-
-import Detail from './Detail';
 import styles from './Index.less';
 
 const FormItem = Form.Item;
@@ -28,7 +23,6 @@ class CourseWare extends PureComponent {
   state = {
     modalVisible: false,
     formValues: {},
-    modalType: "add",
     pagination: {
       current: 1,
       pageSize: 2
@@ -46,7 +40,6 @@ class CourseWare extends PureComponent {
     console.log("pagination====", pagination);
     const { dispatch } = this.props;
     const { formValues } = this.state;
-
     const filters = Object.keys(filtersArg).reduce((obj, key) => {
       const newObj = { ...obj };
       newObj[key] = getValue(filtersArg[key]);
@@ -68,16 +61,17 @@ class CourseWare extends PureComponent {
       payload: params,
     });
   };
-
+  selectCourseWare = (record) => {
+    this.props.onSelect(record)
+  }
   handleSearch = e => {
     console.log("handleSearch===")
     // e.preventDefault();
     const { dispatch, form } = this.props;
     form.validateFields((err, fieldsValue) => {
       if (err) return;
-      const values = {
+      const params = {
         ...fieldsValue,
-
       };
       // this.setState({
       //   formValues: values,
@@ -92,50 +86,11 @@ class CourseWare extends PureComponent {
   onAddCourseWare = () => {
     router.push('/courseWare-manage/add');
   }
-  handleModalVisible = (flag, courseWare) => {
-    if (flag) {
-      const { dispatch } = this.props;
-      dispatch({
-        type: 'courseWare/fetchImages',
-        payload: {
-          coursewares_no: courseWare.coursewares_no
-        },
-        success: (data) => {
-        }
-      })
-    }
-    this.setState({
-      modalVisible: !!flag,
-      modifyCourseWare: courseWare
-    });
-  };
-
-  renderSimpleForm() {
-    const {
-      form: { getFieldDecorator },
-    } = this.props;
-    return (
-      <Form onSubmit={this.handleSearch} layout="inline">
-        <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
-          <Col md={6} sm={24}>
-            <FormItem label="教师">
-              {getFieldDecorator('coursewares_tea', {
-              })(<UserSelectInput role="TEA" placeholder="请选择教师" />)}
-            </FormItem>
-          </Col>
-          <Col md={6} sm={24}>
-            <span className={styles.submitButtons}>
-              <Button type="primary" htmlType="submit">
-                查询
-              </Button>
-            </span>
-          </Col>
-        </Row>
-      </Form>
-    );
-  }
 
   columns = [
+    {
+
+    },
     {
       title: '课件ID',
       dataIndex: 'coursewares_no',
@@ -170,41 +125,50 @@ class CourseWare extends PureComponent {
     const {
       courseWare: { data },
       loading,
+      selectType,
+      selectKeys,
     } = this.props;
     // 数据来源
+    console.log("selectKeys===", selectKeys)
     const { modalVisible, pagination, modifyCourseWare } = this.state;
+    const rowSelection = {
+      hideDefaultSelections: true,
+      selectedRowKeys: selectKeys,
+      onChange: (selectedRowKeys, selectedRows) => {
+        console.log("selectedRowKeys===", selectedRowKeys)
+      },
+      onSelect: (record, selected, selectedRows, nativeEvent) => {
+        if (selected) {
+          this.props.onSelect(record)
+        }else{
+          this.props.onRemove(record)
+        }
+      }
+    }
     return (
-      <PageHeaderWrapper title="查询课件">
-        <Card bordered={false}>
-          {/* <div className={styles.tableListForm}>{this.renderSimpleForm()}</div> */}
-          <div className={styles.tableListOperator}>
-            <Button icon="plus" type="primary" onClick={this.onAddCourseWare}>
-              新建
-              </Button>
-          </div>
-        </Card>
-        <Card bordered={false} className={styles.tableList}>
-          <Table
-            loading={loading}
-            dataSource={data.list}
-            // key={item.id}
-            rowKey={record => record.coursewares_no}
-            columns={this.columns}
-            pagination={data.pagination}
-            onChange={this.handleStandardTableChange}
-            onRow={(record) => {
+      <Card bordered={false} className={styles.tableList}>
+        <Table
+          loading={loading}
+          dataSource={data.list}
+          // key={item.id}
+          rowKey={record => record.coursewares_no}
+          columns={this.columns}
+          pagination={data.pagination}
+          onChange={this.handleStandardTableChange}
+          rowSelection={selectType == "one" ? null : rowSelection}
+          onRow={(record) => {
+            if (selectType == "one") {
               return {
                 onClick: () => {
-                  this.handleModalVisible(true, record)
+                  this.selectCourseWare(record)
                 },
               };
-            }}
-          />
-        </Card>
-        <Detail modalVisible={modalVisible} onCancel={() => this.handleModalVisible(false)}
-          modifyCourseWare={modifyCourseWare}
-          onSearch={this.handleSearch} />
-      </PageHeaderWrapper>
+            } else {
+              return null
+            }
+          }}
+        />
+      </Card>
     );
   }
 }
