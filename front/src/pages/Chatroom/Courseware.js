@@ -1,6 +1,6 @@
 import React, {PureComponent} from "react";
 import "./Joinroom.less";
-import {Col, Button, Modal, Checkbox, Card, List, Avatar} from "antd";
+import {Col, Button, Modal, Checkbox, Card, List, Avatar,Popover} from "antd";
 
 const plainOptions = [
     {
@@ -126,19 +126,6 @@ class Courseware extends PureComponent {
         });
     };
 
-    imgclick = (img)=> {
-
-        this.setState({
-            visible1: true,
-            bigImg: img,
-            modal: {
-                title: "",
-                width: '600px',
-            }
-        });
-        console.log(this.state)
-    };
-
     render() {
 
         const modalShow = ()=> {
@@ -169,6 +156,7 @@ class Courseware extends PureComponent {
 
         };
 
+
         return (
             <div>
                 <Col span={19} className="cardStyle">
@@ -184,7 +172,12 @@ class Courseware extends PureComponent {
                         dataSource={pushOption}
                         renderItem={item => (
                             <List.Item>
-                                <img src={item.img} alt="" onClick={this.imgclick.bind(this, item.img)}/>
+                                <Popover placement="rightTop" title=''
+                                         content={(<img src={item.img} alt=""/>)} trigger="click">
+                                    <img src={item.img} alt=""/>
+
+                                </Popover>
+
                             </List.Item>
 
                         )}

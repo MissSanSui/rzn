@@ -2,7 +2,7 @@ import React, {PureComponent} from "react";
 import {RoomWhiteboard} from "white-react-sdk";
 import {WhiteWebSdk} from "white-web-sdk";
 import * as serviceWorker from "./serviceWorker";
-import {Row, Col, Button, Icon, Modal,Tooltip,Drawer,Input} from "antd";
+import {Row, Col, Button, Icon, Modal, Tooltip, Drawer, Input} from "antd";
 import "white-web-sdk/style/index.css";
 import Courseware from "./Courseware";
 import WhiteList from "./WhiteList";
@@ -10,8 +10,6 @@ import Camera from "./Camera";
 
 let room = null;
 let miniToken = 'WHITEcGFydG5lcl9pZD1scGMxOEtuU3JaUlE3YWFmUm1wZFNFaEFhM3J3TzB5T01pOTYmc2lnPTM5ZWQxYWY3ZjE3OGE5MTU1ZThmNDFhNmMyNThiYWExNTU0MDA5MmE6YWRtaW5JZD0xMjQmcm9sZT1taW5pJmV4cGlyZV90aW1lPTE1ODI5NzQ5NTAmYWs9bHBjMThLblNyWlJRN2FhZlJtcGRTRWhBYTNyd08weU9NaTk2JmNyZWF0ZV90aW1lPTE1NTE0MTc5OTgmbm9uY2U9MTU1MTQxNzk5ODMxMDAw';
-
-const whiteImg = [];
 
 class Chatroom extends PureComponent {
     constructor(props) {
@@ -21,7 +19,8 @@ class Chatroom extends PureComponent {
             visible: false,
             modalVisible: false,
             confirmLoading: false,
-            whiteImgList: whiteImg
+            creatWhiteLoading: true,
+            whiteImgList: []
         }
     }
 
@@ -50,7 +49,7 @@ class Chatroom extends PureComponent {
             roomToken: json.msg.roomToken
         });
 
-        
+
         function onWindowResize() {
             room.refreshViewSize();
         }
@@ -61,44 +60,8 @@ class Chatroom extends PureComponent {
         this.setState({
             room: room,
         });
-        this.state.room.putScenes("/record", [{name: "class1"}]);
-        this.state.room.setScenePath("/record/class1");
-
-        // 加载直播间信息
-        // const enterChatUrl = '/api/chat/enterChat';
-        // const enterChatInit = {
-        //   method: 'POST',
-        //   headers: {
-        //     "content-type": "application/json",
-        //   },
-        //   body: JSON.stringify({
-        //     account: 'gaohe'
-        //   }),
-        // };
-        // const resChat = await fetch(enterChatUrl, enterChatInit);
-        // const jsonChat = await resChat.json();
-        // console.log(jsonChat);
-
-        // 获取电子白板token
-        // const joinWhiteUrl = 'https://cloudcapiv4.herewhite.com/room/join?uuid=' + jsonChat.data.white_id + '&token=' + jsonChat.miniToken;
-        // const joinWhiteUrl = 'https://cloudcapiv4.herewhite.com/room/join?uuid=4a4050bb2bd04f58a456301891036f3a&token=' + miniToken;
-
-        // const joinWhiteInit = {
-        //   method: 'POST',
-        //   headers: {
-        //     "content-type": "application/json",
-        //   }
-        // };
-        // const resWhite = await fetch(joinWhiteUrl, joinWhiteInit);
-        // const jsonWhite = await resWhite.json();
-        // // 加入电子白板
-        // const whiteWebSdk = new WhiteWebSdk();
-        // room = await whiteWebSdk.joinRoom({uuid: '4a4050bb2bd04f58a456301891036f3a', roomToken: jsonWhite.msg.roomToken});
-        // room.setViewMode("broadcaster");
-        // // room.removeScenes("/");
-        // this.setState({room: room});
-
-
+        this.state.room.putScenes("/record", [{name: "class" + this.state.whiteImgList.length}]);
+        this.state.room.setScenePath("/record/class" + this.state.whiteImgList.length);
     }
 
     eraser = ()=> {
@@ -136,14 +99,10 @@ class Chatroom extends PureComponent {
         });
     };
 
-    add = ()=> {
-        const that = this;
-        this.state.room.putScenes("/record", [{name: "class2"}]);
-        this.state.room.setScenePath("/record/class2");
-        console.log(this.state.room.roomToken)
-        //获取封面
+    classList = ()=> {
         const url1 = 'https://cloudcapiv4.herewhite.com/handle/rooms/snapshots?roomToken=' +
             this.state.room.roomToken;
+
         fetch(url1, {
             method: 'POST',
             headers: {
@@ -156,56 +115,32 @@ class Chatroom extends PureComponent {
                 uuid: this.state.room.uuid
             }),
         }).then(res=>res.clone().json()).then(res=> {
-            that.setState({
+
+            this.setState({
                 whiteImgList: res.msg,
+                creatWhiteLoading: true
             });
+
         });
         console.log(this.state.whiteImgList);
+    };
+    add = ()=> {
+        const num = this.state.whiteImgList.length;
+        console.log(num)
+        this.setState({
+            creatWhiteLoading: false
+        });
 
-        // const that = this;
-        // const url = 'https://cloudcapiv4.herewhite.com/room?token=' + miniToken;
-        // fetch(url, {
-        //     method: 'POST',
-        //     headers: {
-        //         "content-type": "application/json",
-        //     },
-        //     body: JSON.stringify({
-        //         name: 'no2',
-        //         limit: '100',
-        //         mode: 'historied'
-        //     }),
-        // }).then(res=>res.clone().json()).then(res=> {
-
-        //     const msg = res.msg;
-
-            /*
-            fetch('https://cloudcapiv4.herewhite.com/handle/rooms/snapshots?roomToken=' +
-                that.state.room.roomToken, {
-                method: 'POST',
-                headers: {
-                    "content-type": "application/json",
-                },
-                body: JSON.stringify({
-                    width: '100px',
-                    height: '100px',
-                    uuid: msg.room.uuid,
-                    scenePath: '/math',
-                }),
-            }).then(res=>{
-                res.clone().json();
-                console.log(res)
-            }).then(res=> {
-                console.log(res)
-            }).catch(error=>console.error('Error:', error))
-            */
-        // }).catch(error => console.error('Error:', error))
-
+        this.classList();
+        this.state.room.putScenes("/record", [{name: "class" + num}]);
+        this.state.room.setScenePath("/record/class" + num);
 
     };
     showDrawer = () => {
         this.setState({
             visible: true,
         });
+        this.classList();
     };
 
     onClose = () => {
@@ -236,8 +171,9 @@ class Chatroom extends PureComponent {
             modalVisible: false,
         });
     };
+
     render() {
-        const { modalVisible, confirmLoading } = this.state;
+        const {modalVisible, confirmLoading} = this.state;
         return (
             this.state.room ?
                 <div className="joinRoomStyle">
@@ -263,10 +199,10 @@ class Chatroom extends PureComponent {
 
                         <div className="video-icon">
                             <Tooltip placement="topLeft" title="开启直播">
-                                <Icon type="play-circle" theme="filled" />
+                                <Icon type="play-circle" theme="filled"/>
                             </Tooltip>
                             <Tooltip placement="topLeft" title="关闭直播">
-                                <Icon type="close-circle" theme="filled" onClick={this.showModal} />
+                                <Icon type="close-circle" theme="filled" onClick={this.showModal}/>
                             </Tooltip>
                             <Modal
                                 title="是否保存当前课程"
@@ -275,7 +211,7 @@ class Chatroom extends PureComponent {
                                 confirmLoading={confirmLoading}
                                 onCancel={this.handleCancel}
                             >
-                                <Input placeholder="课程描述" />
+                                <Input placeholder="课程描述"/>
                             </Modal>
                         </div>
                         <div className="menu-icon">
@@ -290,19 +226,21 @@ class Chatroom extends PureComponent {
                     <Drawer
                         mask={false}
                         placement="right"
+                        width="200"
                         closable={true}
                         onClose={this.onClose}
                         visible={this.state.visible}
                     >
 
                         <div className="whiteBtn">
-                            <Button type="primary" onClick={this.add.bind(this)}>创建画板</Button>
+                            <Button type="primary"
+                                    disabled={this.state.creatWhiteLoading ? '' : 'disabled'}
+                                    onClick={this.state.creatWhiteLoading ? this.add.bind(this) : null}
+                            >创建画板</Button>
                         </div>
                         <WhiteList add={this.add.bind(this)} whiteList={this.state.whiteImgList}/>
 
                     </Drawer>
-
-
 
 
                 </div>
