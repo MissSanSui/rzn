@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 import "./Joinroom.less";
 import { connect } from "dva";
-import { Col, Button, Modal, Checkbox, Card, List, Avatar, message } from "antd";
+import { Col, Button, Modal, Checkbox, Card, List, Avatar, message,Popover } from "antd";
 import CourseWareSelect from "./../CourseWareManage/CourseWareSelect"
 
 const pushOption = [];
@@ -106,22 +106,10 @@ class Courseware extends PureComponent {
             visible1: false,
         });
     };
-    imgclick = (img) => {
-        this.setState({
-            visible1: true,
-            bigImg: img,
-            modal: {
-                title: "",
-                width: '600px',
-            }
-        });
-        console.log(this.state)
-    };
     render() {
 
         const { imageList,courseWareIds } = this.props.room
 
-        console.log("this.props.room==", this.props.room)
         return (
             <div>
                 <Col span={19} className="cardStyle">
@@ -135,7 +123,10 @@ class Courseware extends PureComponent {
                         dataSource={imageList}
                         renderItem={item => (
                             <List.Item>
-                                <img src={item.coursewares_images} alt="" onClick={this.imgclick.bind(this, item.coursewares_images)} />
+                                <Popover placement="rightTop" title=''
+                                         content={(<img src={item.coursewares_images} alt=""/>)} trigger="click">
+                                    <img src={item.coursewares_images} alt=""/>
+                                </Popover>
                             </List.Item>
                         )}
                     />

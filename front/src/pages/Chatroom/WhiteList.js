@@ -10,15 +10,12 @@ class WhiteList extends PureComponent {
     }
 
     render() {
+
         return (
             <div className="whiteList">
-
-
-
-
                 <List
                     grid={{column: 1, gutter: 0}}
-
+                    className="white-lists"
                     dataSource={this.props.whiteList}
                     renderItem={item => (
                         <List.Item>
@@ -26,7 +23,7 @@ class WhiteList extends PureComponent {
                                 hoverable
 
                                 bodyStyle={{display:'none'}}
-                                cover={<img alt='' src={item.url}/>}
+                                cover={<img alt={item.url} src={item.url}/>}
                             >
                             </Card>
 
