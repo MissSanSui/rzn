@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 import "./Joinroom.less";
 import { connect } from "dva";
-import { Col, Button, Modal, Checkbox, Card, List, Avatar, message,Popover } from "antd";
+import { Col, Button, Modal, Checkbox, Card, List, Avatar, Popover, message } from "antd";
 import CourseWareSelect from "./../CourseWareManage/CourseWareSelect"
 
 const pushOption = [];
@@ -74,7 +74,6 @@ class Courseware extends PureComponent {
             },
         });
     }
-    
     showModal = () => {
         this.setState({
             visible1: true,
@@ -124,8 +123,8 @@ class Courseware extends PureComponent {
                         renderItem={item => (
                             <List.Item>
                                 <Popover placement="rightTop" title=''
-                                         content={(<img src={item.coursewares_images} alt=""/>)} trigger="click">
-                                    <img src={item.coursewares_images} alt=""/>
+                                    content={(<img src={item.coursewares_images} alt="" />)} trigger="click">
+                                    <img src={item.coursewares_images} alt="" />
                                 </Popover>
                             </List.Item>
                         )}
@@ -140,8 +139,8 @@ class Courseware extends PureComponent {
                 >
                     {this.state.bigImg == null ?
                         <CourseWareSelect onSelect={(courseWare) => this.onSelect(courseWare)}
-                        onRemove ={(courseWare)=>this.onRemove(courseWare)}
-                        selectKeys={courseWareIds} />
+                            onRemove={(courseWare) => this.onRemove(courseWare)}
+                            selectKeys={courseWareIds} />
                         : <img alt="" src={this.state.bigImg} />}
                 </Modal>
             </div>
