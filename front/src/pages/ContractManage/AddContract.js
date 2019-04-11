@@ -3,7 +3,7 @@ import { connect } from 'dva';
 import { formatMessage, FormattedMessage } from 'umi-plugin-react/locale';
 import {
     Form, Input, DatePicker, Select, Button, Card, InputNumber, Radio,
-    Icon, Tooltip, Modal,
+    Icon, Tooltip, Modal, message
 } from 'antd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import UserSelectInput from '@/pages/UserManage/UserSelectInput';
@@ -13,7 +13,7 @@ import router from 'umi/router';
 
 const FormItem = Form.Item;
 
-@connect(({  }) => ({
+@connect(({ }) => ({
 }))
 @Form.create()
 class BasicForms extends PureComponent {
@@ -26,12 +26,27 @@ class BasicForms extends PureComponent {
                 dispatch({
                     type: 'contract/add',
                     payload: values,
+                    success: () => {
+                        form.resetFields();
+                        message.success("添加成功！")
+                    },
+                    fail: () => {
+                        message.warn("添加失败！")
+                    }
                 });
             }
         });
     };
     onToList = () => {
         router.push('/contract-manage/search');
+    }
+
+    restHourValidate = (rule, value, callback) => {
+        const { getFieldValue } = this.props.form
+        if (Number(value) > Number(getFieldValue('contract_hour'))) {
+            callback('剩余时间大于总时间')
+        }
+        callback()
     }
     render() {
         const { submitting } = this.props;
@@ -68,27 +83,27 @@ class BasicForms extends PureComponent {
                                 rules: [
                                     {
                                         required: true,
-                                        message: formatMessage({ id: 'validation.title.required' }),
+                                        message: "请选择学生",
                                     },
                                 ],
-                            })(<UserSelectInput role="STU" placeholder={formatMessage({ id: 'form.title.placeholder' })} />)}
+                            })(<UserSelectInput role="STU" placeholder="选择学生" />)}
                         </FormItem>
                         <FormItem {...formItemLayout} label="直播间">
                             {getFieldDecorator('contract_room_no', {
                                 rules: [
                                     {
                                         required: true,
-                                        message: formatMessage({ id: 'validation.title.required' }),
+                                        message: "请选择直播间",
                                     },
                                 ],
-                            })(<Input placeholder={formatMessage({ id: 'form.title.placeholder' })} />)}
+                            })(<Input placeholder="请选择直播间" />)}
                         </FormItem>
                         <FormItem {...formItemLayout} label="总课时">
                             {getFieldDecorator('contract_hour', {
                                 rules: [
                                     {
                                         required: true,
-                                        message: formatMessage({ id: 'validation.title.required' }),
+                                        message: "请输入总课时",
                                     },
                                     {
                                         type: "number",
@@ -100,14 +115,14 @@ class BasicForms extends PureComponent {
                                         message: "请输入正确的格式"
                                     }
                                 ],
-                            })(<Input placeholder={formatMessage({ id: 'form.title.placeholder' })} />)}
+                            })(<Input placeholder="请输入总课时" />)}
                         </FormItem>
                         <FormItem {...formItemLayout} label="剩余课时">
                             {getFieldDecorator('contract_rest_hour', {
                                 rules: [
                                     {
                                         required: true,
-                                        message: formatMessage({ id: 'validation.title.required' }),
+                                        message: "请输入剩余课时",
                                     },
                                     {
                                         type: "number",
@@ -117,16 +132,20 @@ class BasicForms extends PureComponent {
                                             }
                                         },
                                         message: "请输入正确的格式"
+                                    },
+                                    {
+                                        validator: this.restHourValidate
                                     }
+
                                 ],
-                            })(<Input placeholder={formatMessage({ id: 'form.title.placeholder' })} />)}
+                            })(<Input placeholder="请输入剩余课时" />)}
                         </FormItem>
                         <FormItem {...formItemLayout} label="金额">
                             {getFieldDecorator('contract_amount', {
                                 rules: [
                                     {
                                         required: true,
-                                        message: formatMessage({ id: 'validation.title.required' }),
+                                        message: "请输入金额",
                                     },
                                     {
                                         type: "number",
@@ -138,7 +157,7 @@ class BasicForms extends PureComponent {
                                         message: "请输入正确的格式"
                                     }
                                 ],
-                            })(<Input placeholder={formatMessage({ id: 'form.title.placeholder' })} />)}
+                            })(<Input placeholder="请输入金额" />)}
                         </FormItem>
                         <FormItem {...submitFormLayout} style={{ marginTop: 32 }}>
                             <Button type="primary" htmlType="submit" loading={submitting}>

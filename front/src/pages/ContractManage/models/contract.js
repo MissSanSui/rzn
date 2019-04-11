@@ -1,4 +1,4 @@
-import { queryContracts, addContract, updateUser, validateUserName,ableUser,disableUser } from '@/services/api';
+import { queryContracts, addContract, updateContract, deleteContract } from '@/services/api';
 
 export default {
   namespace: 'contract',
@@ -26,7 +26,7 @@ export default {
         list: [],
         pagination: {},
       }
-      if (response.code ==0&& response.rows.length > 0) {
+      if (response.rows && response.rows.length > 0) {
         result.list = response.rows
         result.pagination.total = response.total
       }
@@ -46,9 +46,8 @@ export default {
           formData.append(key, payload[key])
         }
       });
-      console.log("contract add formData==", formData)
       let response = yield call(addContract, formData)
-      if (!response || response.flag != "0") {
+      if (response.code) {
         response = response || {}
         console.log(" addUser  fail==", response)
         if (fail && typeof fail === 'function') {
@@ -69,8 +68,8 @@ export default {
           formData.append(key, payload.params[key])
         }
       });
-      let response = yield call(updateUser, formData);
-      if (response.flag == "0") {
+      let response = yield call(updateContract, formData);
+      if (!response.code) {
         if (success && typeof success === 'function') {
           success();
         }
@@ -80,6 +79,27 @@ export default {
           fail(response.msg);
         }
       }
+    },
+    *delete({ payload, success, fail }, { call, put }) {
+      yield put({
+        type: 'changeLoading',
+        payload: true,
+      });
+      console.log("contract delete payload==", payload)
+      let response = yield call(deleteContract, payload);
+      if (!response.code) {
+        if (success && typeof success === 'function') {
+          success();
+        }
+      } else {
+        if (fail && typeof fail === 'function') {
+          fail(response.msg);
+        }
+      }
+      yield put({
+        type: 'changeLoading',
+        payload: false,
+      });
     },
     *validate({ payload, callback }, { call, put }) {
       console.log("contract validate payload==", payload)
