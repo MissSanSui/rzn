@@ -57,12 +57,15 @@ class Chatroom extends PureComponent {
 
         window.addEventListener("resize", onWindowResize);
 
+        const classNum = 1;
 
         this.setState({
             room: room,
+            classNum: classNum
         });
-        this.state.room.putScenes("/record", [{name: "class" + this.state.whiteImgList.length}]);
-        this.state.room.setScenePath("/record/class" + this.state.whiteImgList.length);
+
+        this.state.room.putScenes("/record", [{name: "class" + classNum}]);
+        this.state.room.setScenePath("/record/class" + classNum);
     }
 
     eraser = ()=> {
@@ -95,7 +98,6 @@ class Chatroom extends PureComponent {
     text = ()=> {
         this.state.room.setMemberState({
             currentApplianceName: "text",
-
             textSize: 14
         });
     };
@@ -116,27 +118,57 @@ class Chatroom extends PureComponent {
                 uuid: this.state.room.uuid
             }),
         }).then(res=>res.clone().json()).then(res=> {
-
+            const datetime = (new Date()).getTime();
+            res.msg.forEach((element, index) => {
+                res.msg[index].url = res.msg[index].url + '?_v=' + datetime;
+            });
             this.setState({
                 whiteImgList: res.msg,
                 creatWhiteLoading: true
             });
 
         });
-        console.log(this.state.whiteImgList);
+       
     };
+
     add = ()=> {
-        const num = this.state.whiteImgList.length;
-        console.log(num)
+
+        const classNum = this.state.classNum + 1;
         this.setState({
-            creatWhiteLoading: false
+            creatWhiteLoading: false,
+            classNum: classNum
         });
+        console.log(classNum)
+        this.state.room.putScenes("/record", [{name: "class" + classNum}]);
+        this.state.room.setScenePath("/record/class" + classNum);
 
-        this.classList();
-        this.state.room.putScenes("/record", [{name: "class" + num}]);
-        this.state.room.setScenePath("/record/class" + num);
-
+        const url1 = 'https://cloudcapiv4.herewhite.com/handle/rooms/snapshots?roomToken=' +
+            this.state.room.roomToken;
+           
+        fetch(url1, {
+            method: 'POST',
+            headers: {
+                "content-type": "application/json",
+            },
+            body: JSON.stringify({
+                width: '150px',
+                height: '120px',
+                scenePath: '/record',
+                uuid: this.state.room.uuid
+            }),
+        }).then(res=>res.clone().json()).then(res=> {
+            console.log(res.msg)
+            const datetime = (new Date()).getTime();
+            res.msg.forEach((element, index) => {
+                res.msg[index].url = res.msg[index].url + '?_v=' + datetime;
+            });
+            this.setState({
+                whiteImgList: res.msg,
+                creatWhiteLoading: true
+            });
+        });
     };
+
     showDrawer = () => {
         this.setState({
             visible: true,

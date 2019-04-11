@@ -109,6 +109,7 @@ class Courseware extends PureComponent {
 
         const { imageList,courseWareIds } = this.props.room
 
+
         return (
             <div>
                 <Col span={19} className="cardStyle">
