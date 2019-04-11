@@ -101,6 +101,44 @@ export default [
         // authority: ['admin', 'sys', 'teacher', 'student'],
         component: './Chatroom/Joinroom',
       },
+      // 聊天室界面
+      {
+        name: 'my-chatroom',
+        icon: 'video-camera',
+        path: '/my-chat-room',
+        routes: [
+          {
+            path: '/my-chat-room/search',
+            name: 'search',
+            component: './Mychatroom/List',
+            routes: [
+              {
+                path: '/my-chat-room/search',
+                redirect: '/my-chat-room/search',
+              },
+              {
+                path: '/my-chat-room/search',
+                component: './Mychatroom/List',
+              },
+            ],
+          },
+          {
+            path: '/my-chat-room/add',
+            name: 'add',
+            component: './Mychatroom/Add',
+            routes: [
+              {
+                path: '/my-chat-room/add',
+                redirect: '/my-chat-room/add',
+              },
+              {
+                path: '/my-chat-room/add',
+                component: './Mychatroom/Add',
+              },
+            ],
+          },
+        ],
+      },
       {
         name: 'account',
         icon: 'user',
