@@ -64,6 +64,7 @@ class Chatroom extends PureComponent {
             classNum: classNum
         });
 
+        // 插入场景，并切换到最新场景
         this.state.room.putScenes("/record", [{name: "class" + classNum}]);
         this.state.room.setScenePath("/record/class" + classNum);
     }
@@ -105,7 +106,7 @@ class Chatroom extends PureComponent {
     classList = ()=> {
         const url1 = 'https://cloudcapiv4.herewhite.com/handle/rooms/snapshots?roomToken=' +
             this.state.room.roomToken;
-
+            
         fetch(url1, {
             method: 'POST',
             headers: {
@@ -126,9 +127,7 @@ class Chatroom extends PureComponent {
                 whiteImgList: res.msg,
                 creatWhiteLoading: true
             });
-
         });
-       
     };
 
     add = ()=> {
@@ -168,6 +167,7 @@ class Chatroom extends PureComponent {
             });
         });
     };
+    
 
     showDrawer = () => {
         this.setState({
@@ -271,7 +271,7 @@ class Chatroom extends PureComponent {
                                     onClick={this.state.creatWhiteLoading ? this.add.bind(this) : null}
                             >创建画板</Button>
                         </div>
-                        <WhiteList add={this.add.bind(this)} whiteList={this.state.whiteImgList}/>
+                        <WhiteList add={this.add.bind(this)} whiteList={this.state.whiteImgList} room={this.state.room}/>
 
                     </Drawer>
 
