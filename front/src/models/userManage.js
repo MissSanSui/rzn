@@ -83,7 +83,7 @@ export default {
     * changeStatus({ payload, success, fail }, { call, put }) {
       console.log("changeStatus=payload=", payload)
       let formData = {}
-      formData.id=payload.id
+      formData.ids=payload.ids
       let response = {}
       if (payload.status) {
         response = yield call(ableUser, formData);

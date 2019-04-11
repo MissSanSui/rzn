@@ -16,6 +16,7 @@ class Chatroom extends PureComponent {
         super(props);
         this.state = {
             room: null,
+            roomId:1,
             visible: false,
             modalVisible: false,
             confirmLoading: false,
@@ -205,13 +206,13 @@ class Chatroom extends PureComponent {
     };
 
     render() {
-        const {modalVisible, confirmLoading} = this.state;
+        const { modalVisible, confirmLoading ,roomId} = this.state;
         return (
             this.state.room ?
                 <div className="joinRoomStyle">
                     <div className="room-left">
                         <Camera />
-                        <Courseware />
+                        <Courseware roomId={roomId}/>
                     </div>
                     <div className="room-middle">
                         <ul className="room-icon">

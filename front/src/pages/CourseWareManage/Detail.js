@@ -15,8 +15,9 @@ const { Option } = Select;
 const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 
-@connect(({ loading }) => ({
+@connect(({ loading, courseWare }) => ({
   submitting: loading.effects[''],
+  data: courseWare.data
 }))
 @Form.create()
 
@@ -28,15 +29,28 @@ class Detail extends PureComponent {
       fileList: []
     }
   }
+  componentDidMount() {
+    const { dispatch } = this.props;
+     
+
+  }
+  componentWillReceiveProps() {
+    console.log("componentWillReceiveProps ==")
+    console.log("componentWillReceiveProps = props=", this.props)
+    var data = this.props.data
+    this.setState({
+      fileList: data.fileList || []
+    })
+  }
   handleUpdate = fields => {
-    const { dispatch, modifyCourseWare } = this.props;
-    fields.user_id = modifyUser.user_id
-    fields.user_status = fields.status ? "open" : "close"
+    let { dispatch, modifyCourseWare } = this.props;
+    let params = {}
+    params.coursewares_content = fields["coursewares_content"]
+    params.coursewares_no = modifyCourseWare.coursewares_no
+    params.coursewares_tea = modifyCourseWare.coursewares_tea
     dispatch({
       type: 'courseWare/update',
-      payload: {
-        params: fields
-      },
+      payload: params,
       success: () => {
         message.success('修改成功！');
         console.log("this.props===", this.props)
@@ -49,33 +63,97 @@ class Detail extends PureComponent {
       },
     });
   };
+  onDelete = () => {
+    let { dispatch, modifyCourseWare } = this.props;
+    dispatch({
+      type: 'courseWare/delete',
+      payload: {
+        params: {
+          coursewares_no: modifyCourseWare.coursewares_no
+        }
+      },
+      success: () => {
+        message.success('删除成功！');
+        console.log("this.props===", this.props)
+        this.props.onCancel();
+        this.props.onSearch()
+      },
+      fail: (res) => {
+        console.log("fail====", res)
+        message.error('删除失败！');
+      },
+    });
+  }
   handleChange = ({ file, fileList, event }) => {
     console.log("handleChange file==", file)
     console.log("handleChange fileList==", fileList)
-    console.log("handleChange event==", event)
-    for (let i in fileList) {
-      fileList[i].url = fileList[i].thumbUrl
-    }
+    fileList = fileList.map((file) => {
+      if (file.response && !file.response.code) {
+        // Component will show file.url as link
+        let fileAdress = file.response.data[file.name]["fileAdress"]
+        console.log("fileAdress===", fileAdress)
+        file.url = fileAdress
+        const { dispatch, modifyCourseWare } = this.props;
+        var data = {}
+        data.coursewares_images = file.url
+        data.coursewares_no = modifyCourseWare.coursewares_no
+        dispatch({
+          type: 'courseWare/saveImage',
+          payload: data,
+          success: (data) => {
+            message.success("上传成功！")
+            dispatch({
+              type: 'courseWare/fetchImages',
+              payload: {
+                coursewares_no: modifyCourseWare.coursewares_no
+              },
+              success: (data) => {
+              }
+            })
+          },
+          fail: () => {
+            message.warn("fail")
+          }
+        });
+      }
+      return file;
+    });
+    console.log("fileList===", fileList)
     this.setState({ fileList })
   }
-
+  onFileRemove = (file) => {
+    const { dispatch, modifyCourseWare } = this.props;
+    var data = {}
+    data.id = file.id
+    dispatch({
+      type: 'courseWare/deleteImage',
+      payload: data,
+      success: (data) => {
+        message.success("删除成功！")
+        dispatch({
+          type: 'courseWare/fetchImages',
+          payload: {
+            coursewares_no: modifyCourseWare.coursewares_no
+          },
+          success: (data) => {
+          }
+        })
+      },
+      fail: () => {
+        message.warn("fail")
+      }
+    });
+  }
   okHandle = () => {
     const { form, type } = this.props
     form.validateFields((err, fieldsValue) => {
-      console.log("fieldsValue===", fieldsValue)
       if (err) return;
-      if (fieldsValue.citys && fieldsValue.citys.length == 3) {
-        fieldsValue.province = fieldsValue.citys[0]
-        fieldsValue.city = fieldsValue.citys[1]
-        fieldsValue.county = fieldsValue.citys[2]
-      }
       this.handleUpdate(fieldsValue);
     });
   };
   render() {
     const { submitting, modalVisible, onCancel, } = this.props;
     let modifyCourseWare = this.props.modifyCourseWare || {}
-    console.log("modifyCourseWare===", modifyCourseWare)
     const {
       form: { getFieldDecorator, getFieldValue },
     } = this.props;
@@ -96,14 +174,10 @@ class Detail extends PureComponent {
         sm: { span: 18 },
       },
     };
-    const formItemLayoutOne = {
-      labelCol: {
-        xs: { span: 24 },
-        sm: { span: 4 },
-      },
+    const submitFormLayout = {
       wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 20 },
+        xs: { span: 24, offset: 0 },
+        sm: { span: 10, offset: 7 },
       },
     };
     return (
@@ -117,7 +191,7 @@ class Detail extends PureComponent {
         <Form onSubmit={this.handleSubmit} hideRequiredMark={false} style={{ marginTop: 8 }}>
           {/* 姓名 */}
           <FormItem {...formItemLayout} label="课件描述">
-            {getFieldDecorator('coursewares_content ', {
+            {getFieldDecorator('coursewares_content', {
               initialValue: modifyCourseWare.coursewares_content,
               rules: [
                 {
@@ -127,10 +201,10 @@ class Detail extends PureComponent {
               ],
             })(<Input placeholder="课件描述" />)}
           </FormItem>
-
           <FormItem {...formItemLayout} label="课件描述">
             <Upload
-              action="/frame-web/uploadApi/upload"
+              action={"/frame-web/uploadApi/upload?teaId="
+                + modifyCourseWare.coursewares_tea + "&coursewaresId=" + modifyCourseWare.coursewares_no}
               listType="picture-card"
               fileList={fileList}
               onPreview={this.handlePreview}
@@ -140,6 +214,11 @@ class Detail extends PureComponent {
             >
               {fileList.length >= 3 ? null : uploadButton}
             </Upload>
+          </FormItem>
+          <FormItem {...submitFormLayout} style={{ marginTop: 32 }}>
+            <Button type="danger" style={{ marginLeft: 8 }} icon="delete" onClick={this.onDelete}>
+              删除课件
+            </Button>
           </FormItem>
         </Form>
       </Modal >

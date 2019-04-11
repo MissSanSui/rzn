@@ -99,15 +99,12 @@ class UserManage extends PureComponent {
     dispatch({
       type: 'userManage/changeStatus',
       payload: {
-        id: id,
+        ids: id,
         status: checked
       },
       success: () => {
-        message("成功")
-        dispatch({
-          type: 'userManage/fetch',
-          payload: params,
-        });
+        message.success("成功")
+        this.handleSearch()
       }
     });
   }

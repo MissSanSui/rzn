@@ -52,10 +52,11 @@ export async function ableUser(params) {
 export async function disableUser(params) {
   return request(`/frame-web/user/disableUser?${stringify(params)}`)
 }
+
+
 export async function queryRoomList(params) {
   return request(`/frame-web/rooms/roomsList?${stringify(params)}`)
 }
-
 
 export async function addContract(params) {
   return request('/frame-web/contracts/saveContracts', {
@@ -73,6 +74,8 @@ export async function queryContracts(params) {
   return request(`/frame-web/contracts/contractsList?${stringify(params)}`)
 }
 
+
+//CourseWare
 export async function addCourseWare(params) {
   return request('/frame-web/coursewares/saveCoursewares', {
     method: 'POST',
@@ -80,7 +83,7 @@ export async function addCourseWare(params) {
   });
 }
 export async function updateCourseWare(params) {
-  return request('/frame-web/user/UpdateUserInfo', {
+  return request('/frame-web/coursewares/UpdateCoursewaresInfo', {
     method: 'POST',
     body: params,
   });
@@ -88,6 +91,42 @@ export async function updateCourseWare(params) {
 export async function queryCourseWares(params) {
   return request(`/frame-web/coursewares/coursewaresList?${stringify(params)}`)
 }
+export async function deleteCourseWare(params) {
+  return request(`/frame-web/coursewares/deleteCoursewaresByNo?${stringify(params)}`)
+}
+
+export async function queryCoursewareImages(params) {
+  return request(`/frame-web/coursewaresImags/coursewaresImagsList?${stringify(params)}`)
+}
+export async function saveCourseWareImage(params) {
+  return request('/frame-web/coursewaresImags/saveCoursewaresImags', {
+    method: 'POST',
+    body: params,
+  });
+}
+export async function deleteCourseWareImage(params) {
+  return request(`/frame-web/coursewaresImags/deleteCoursewaresImags?${stringify(params)}`)
+}
+
+
+//room
+export async function saveRoomCourseWare(params) {
+  return request('/frame-web/roomsCoursewares/saveRoomsCoursewares', {
+    method: 'POST',
+    body: params,
+  });
+}
+export async function queryRoomCoursewares(params) {
+  return request(`/frame-web/roomsCoursewares/roomsCoursewaresList?${stringify(params)}`)
+}
+export async function deleteRoomCourseWare(params) {
+  return request('/frame-web/roomsCoursewares/deleteRoomsCoursewares', {
+    method: 'POST',
+    body: params,
+  });
+}
+
+
 export async function queryProjectNotice() {
   return request('/api/project/notice');
 }

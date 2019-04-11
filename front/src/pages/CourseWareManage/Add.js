@@ -3,7 +3,7 @@ import { connect } from 'dva';
 import { formatMessage, FormattedMessage } from 'umi-plugin-react/locale';
 import {
     Form, Input, DatePicker, Select, Button, Card, InputNumber,
-    Icon, Tooltip, Modal, Upload, Row, Col, Steps,message
+    Icon, Tooltip, Modal, Upload, Row, Col, Steps, message
 } from 'antd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import styles from './Index.less';
@@ -12,7 +12,8 @@ import router from 'umi/router';
 
 const FormItem = Form.Item;
 const Step = Steps.Step;
-@connect(({ }) => ({
+@connect(({ courseWare }) => ({
+    data: courseWare.data
 }))
 @Form.create()
 class BasicForms extends PureComponent {
@@ -21,6 +22,18 @@ class BasicForms extends PureComponent {
         previewImage: '',
         fileList: [],
         current: 1
+    }
+    componentDidMount() {
+        console.log("componentDidMount ==")
+        const { dispatch } = this.props;
+
+    }
+    componentWillReceiveProps() {
+        var data = this.props.data
+        console.log("componentWillReceiveProps =this.props=", this.props)
+        // this.setState({
+        //     fileList: data.fileList || []
+        // })
     }
     handleSubmit = e => {
         const { dispatch, form } = this.props;
@@ -31,16 +44,25 @@ class BasicForms extends PureComponent {
                 dispatch({
                     type: 'courseWare/add',
                     payload: values,
-                    success:()=>{
+                    success: (data) => {
+                        dispatch({
+                            type: 'courseWare/fetchImages',
+                            payload: {
+                                coursewares_no: data.coursewaresId
+                            },
+                            success: (fileList) => {
+                                console.log("fetchImages  fileList==", fileList)
+                                this.setState({ fileList: fileList })
+                            }
+                        })
                         this.setState({
-                            current: 2
+                            current: 2,
+                            coursewaresId: data.coursewaresId,
+                            teaId: data.teaId
                         })
                     },
-                    fail:()=>{
+                    fail: () => {
                         message.warn("fail")
-                        this.setState({
-                            current: 2
-                        })
                     }
                 });
             }
@@ -69,29 +91,84 @@ class BasicForms extends PureComponent {
 
     handleChange = ({ file, fileList, event }) => {
         console.log("handleChange file==", file)
-        console.log("handleChange fileList==", fileList)
-        console.log("handleChange event==", event)
-        for (let i in fileList) {
-            fileList[i].url = fileList[i].thumbUrl
+        if (file.response && file.response.code == 0&&file.status=="done") {
+            // Component will show file.url as link
+            file.url = file.response.data[file.name]["fileAdress"]
+            const { dispatch } = this.props;
+            var data = {}
+            data.coursewares_images = file.url
+            data.coursewares_no = this.state.coursewaresId
+            dispatch({
+                type: 'courseWare/saveImage',
+                payload: data,
+                success: (data) => {
+                    message.success("上传成功！")
+                    dispatch({
+                        type: 'courseWare/fetchImages',
+                        payload: {
+                            coursewares_no: this.state.coursewaresId
+                        },
+                        success: (resList) => {
+                            console.log("fetchImages  resList===", resList)
+                            this.setState({ fileList: resList })
+                        }
+                    })
+                },
+                fail: () => {
+                    message.warn("fail")
+                }
+            });
         }
         this.setState({ fileList })
-
-    }
-    beforeUpload = (file, fileList, event) => {
-        console.log("beforeUpload file==", file)
-        console.log("beforeUpload fileList==", fileList)
-        console.log("beforeUpload event==", event)
-
     }
     onFileRemove = (file) => {
-        console.log("onFileRemove file==", file)
+        const { dispatch, modifyCourseWare } = this.props;
+        var data = {}
+        data.id = file.id
+        dispatch({
+            type: 'courseWare/deleteImage',
+            payload: data,
+            success: (data) => {
+                message.success("删除成功！")
+                dispatch({
+                    type: 'courseWare/fetchImages',
+                    payload: {
+                        coursewares_no: modifyCourseWare.coursewares_no
+                    },
+                    success: (fileList) => {
+                        // this.setState({ fileList })
+                    }
+                })
+            },
+            fail: () => {
+                message.warn("fail")
+            }
+        });
     }
+    beforeUpload = (file) => {
+        let { fileList } = this.state
+        console.log("beforeUpload file==", file)
+        let flag = true
+        fileList.forEach(
+            (item) => {
+                if (item.name == file.name) {
+                    flag = false
+                    return
+                }
+            }
+        )
+        if (!flag) {
+            message.warn("文件名重复！")
+            return false
+        }
+    }
+
     render() {
         const { submitting } = this.props;
         const {
             form: { getFieldDecorator, getFieldValue },
         } = this.props;
-        const { previewVisible, previewImage, fileList, current } = this.state;
+        const { previewVisible, previewImage, fileList, current, coursewaresId, teaId } = this.state;
         const uploadButton = (
             <div>
                 <Icon type="plus" />
@@ -143,7 +220,7 @@ class BasicForms extends PureComponent {
                                     {/* <Button type="primary" htmlType="submit" loading={submitting}>
                                         <FormattedMessage id="form.save" />
                                     </Button> */}
-                                    <Button type="primary"  style={{ marginLeft: 8 }} htmlType="submit">
+                                    <Button type="primary" style={{ marginLeft: 8 }} htmlType="submit">
                                         保存并添加图片
                                      </Button>
                                 </FormItem>
@@ -156,7 +233,8 @@ class BasicForms extends PureComponent {
                                 <Form onSubmit={this.handleSubmit} style={{ marginTop: 8 }}>
                                     <FormItem {...formItemLayout} label="课件描述">
                                         <Upload
-                                            action="/frame-web/uploadApi/upload"
+                                            action={"/frame-web/uploadApi/upload?coursewaresId="
+                                                + coursewaresId + "&teaId=" + teaId}
                                             listType="picture-card"
                                             fileList={fileList}
                                             onPreview={this.handlePreview}
@@ -164,7 +242,7 @@ class BasicForms extends PureComponent {
                                             beforeUpload={this.beforeUpload}
                                             onRemove={this.onFileRemove}
                                         >
-                                            {fileList.length >= 3 ? null : uploadButton}
+                                            {fileList.length >= 5 ? null : uploadButton}
                                         </Upload>
                                     </FormItem>
                                 </Form>
