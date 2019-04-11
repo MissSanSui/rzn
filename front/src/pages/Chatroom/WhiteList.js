@@ -9,6 +9,11 @@ class WhiteList extends PureComponent {
         super(props);
     }
 
+    // 进入到缩略图的场景
+    changeClass = (index) => {
+       this.props.room.setScenePath("/record/class" + (index + 1));
+    };
+
     render() {
 
         return (
@@ -17,18 +22,16 @@ class WhiteList extends PureComponent {
                     grid={{column: 1, gutter: 0}}
                     className="white-lists"
                     dataSource={this.props.whiteList}
-                    renderItem={item => (
-                        <List.Item>
+                    renderItem={(item, index) => (
+                        <List.Item >
                             <Card
                                 hoverable
-
                                 bodyStyle={{display:'none'}}
                                 cover={<img alt={item.url} src={item.url}/>}
+                                onClick={() => this.changeClass(index)}
                             >
                             </Card>
-
                         </List.Item>
-
                     )}
                 />
             </div>

@@ -10,11 +10,15 @@ class Camera extends PureComponent {
 
     }
 
-
     async componentWillMount() {
         // 加入视频直播间
         const appleId = '4c2508e4a3b94c72a5c56e80281760fd';
         const client = AgoraRTC.createClient({mode: 'live', codec: "h264"});
+        
+        this.setState({
+            client: client
+        });
+
         client.init(appleId, function () {
             console.log("AgoraRTC client initialized");
             // 初始化成功后加入频道
@@ -49,6 +53,9 @@ class Camera extends PureComponent {
 
             client.on('stream-added', function (evt) {
                 var stream = evt.stream;
+                this.setState({
+                    stream: stream
+                });
                 console.log("New stream added: " + stream.getId());
                 console.log(stream.getId() == '1');
                 if (stream.getId() == '1') {
@@ -63,12 +70,11 @@ class Camera extends PureComponent {
                     console.log("Subscribe stream failed", err);
                 });
             });
+
             client.on('stream-subscribed', function (evt) {
                 var remoteStream = evt.stream;
                 console.log("Subscribe remote stream successfully: " + remoteStream.getId());
                 remoteStream.play('agora_remote');
-
-
             })
 
 
@@ -76,8 +82,18 @@ class Camera extends PureComponent {
             console.log("AgoraRTC client init failed", err);
         });
 
+       
+
 
     }
+
+    leaveVideo = ()=> {
+        this.state.client.unpublish(function () {
+            console.log("Leave channel successfully");
+          }, function (err) {
+            console.log("Leave channel failed");
+          });
+    };
 
     render() {
         return (
@@ -85,7 +101,7 @@ class Camera extends PureComponent {
                 <div id='agora_local' style={{width: '50%', height: '120px',float:'left'}}></div>
                 <div id='agora_remote' style={{width: '50%', height: '120px',float:'left'}}/>
 
-                <Icon type="video-camera" theme="filled" />
+                <Icon type="video-camera" theme="filled" onClick={() => this.leaveVideo()}/>
             </div>
         )
     }
