@@ -131,7 +131,12 @@ class UserManage extends PureComponent {
               })(<UserSelectInput role="STU" placeholder="选择学生" />)}
             </FormItem>
           </Col>
-
+          <Col md={6} sm={24}>
+            <FormItem {...formItemLayout} label="直播间号">
+              {getFieldDecorator('contract_room_no', {
+              })(<Input  placeholder="请输入直播间号" />)}
+            </FormItem>
+          </Col>
           <Col md={6} sm={24}>
             <span className={styles.submitButtons}>
               <Button type="primary" htmlType="submit">
@@ -168,6 +173,10 @@ class UserManage extends PureComponent {
     {
       title: '课时费用',
       dataIndex: 'contract_amount',
+      align:'right',
+      render:(text)=>{
+        return ("￥"+text)
+      }
     },
   ];
   render() {

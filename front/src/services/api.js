@@ -1,7 +1,6 @@
 import { stringify } from 'qs';
 import request from '@/utils/request';
 const { NODE_ENV, APP_TYPE, TEST } = process.env;
-
 // const backendAddr = (() => {
 //   const env = NODE_ENV
 //   console.log(env)
@@ -21,7 +20,7 @@ const { NODE_ENV, APP_TYPE, TEST } = process.env;
 //   }
 // })();
 export async function fakeAccountLogin(params) {
-  return request('/api/login/account', {
+  return request('/frame-web/sso', {
     // return request('api/entry/login', {
     method: 'POST',
     body: params,

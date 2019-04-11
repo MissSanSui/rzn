@@ -13,7 +13,8 @@ export function getAuthority(str) {
   if (typeof authority === 'string') {
     return [authority];
   }
-  return authority || ['admin'];
+  return ['admin'];
+  //  authority ||
 }
 
 export function setAuthority(authority) {

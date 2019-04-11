@@ -32,10 +32,9 @@ class AddUser extends PureComponent {
 
   handleUpdate = fields => {
     const { dispatch, modifyContract } = this.props;
-    let params = {
-      ...modifyContract,
-      fields
-    }
+    let params = modifyContract
+    params.contract_rest_hour = fields.contract_rest_hour
+    params.contract_amount = fields.contract_amount
     params.created_date = ""
     params.last_updated_date = ""
 
@@ -134,17 +133,38 @@ class AddUser extends PureComponent {
           <Row >
             <Col span={12}>
               <FormItem {...formItemLayout} label="学生">
-                {modifyContract.emp_name_fus}
+                {getFieldDecorator('emp_name_fus', {
+                  initialValue: modifyContract.emp_name_fus,
+                })(<Input disabled />)}
               </FormItem>
             </Col>
             <Col span={12}>
               <FormItem {...formItemLayout} label="直播间">
-                {modifyContract.contract_room_no}
+                {getFieldDecorator('emp_name_fus', {
+                  initialValue: modifyContract.contract_room_no,
+                })(<Input disabled />)}
               </FormItem>
             </Col>
             <Col span={12}>
               <FormItem {...formItemLayout} label="总课时">
-                {modifyContract.contract_hour}
+                {getFieldDecorator('contract_hour', {
+                  initialValue: modifyContract.contract_hour,
+                  rules: [
+                    {
+                        required: true,
+                        message: "请输入总课时",
+                    },
+                    {
+                        type: "number",
+                        transform(value) {
+                            if (value) {
+                                return Number(value);
+                            }
+                        },
+                        message: "请输入正确的格式"
+                    }
+                ],
+            })(<Input placeholder="请输入总课时" />)}
               </FormItem>
             </Col>
             <Col span={12}>
@@ -169,15 +189,32 @@ class AddUser extends PureComponent {
                       validator: this.resetHourValidate
                     }
                   ],
-                })(<InputNumber min={0} max={10} step={0.1} />)}
+                })(<InputNumber min={0} max={10} step={0.1} style={{ width: "100%" }} />)}
               </FormItem>
             </Col>
             <Col span={12}>
               <FormItem {...formItemLayout} label="课时金额">
-                {modifyContract.contract_amount}
+                {getFieldDecorator('contract_amount', {
+                  initialValue: (modifyContract.contract_amount),
+                  rules: [
+                    {
+                        required: true,
+                        message: "请输入金额",
+                    },
+                    {
+                        type: "number",
+                        transform(value) {
+                            if (value) {
+                                return Number(value);
+                            }
+                        },
+                        message: "请输入正确的格式"
+                    }
+                ],
+            })(<Input placeholder="请输入金额" />)}
               </FormItem>
             </Col>
-            <Col span={24}>
+            <Col span={0}>
               <FormItem {...submitFormLayout} style={{ marginTop: 32 }}>
                 <Button type="danger" style={{ marginLeft: 8 }} icon="delete" onClick={this.onDelete}>
                   删除课时

@@ -3,7 +3,7 @@ import { stringify } from 'qs';
 import { fakeAccountLogin, getFakeCaptcha } from '@/services/api';
 import { setAuthority } from '@/utils/authority';
 import { getPageQuery } from '@/utils/utils';
-import { reloadAuthorized } from '@/utils/Authorized';
+import { reloadAuthorized,setUserId } from '@/utils/Authorized';
 
 export default {
   namespace: 'login',
@@ -17,11 +17,11 @@ export default {
       const response = yield call(fakeAccountLogin, payload);
       yield put({
         type: 'changeLoginStatus',
-        payload: response,
+        payload: response.data,
       });
       // Login successfully
       console.log("response===", response)
-      if (response.status === 'ok') {
+      if (response.data) {
         reloadAuthorized();
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
@@ -54,8 +54,8 @@ export default {
         type: 'changeLoginStatus',
         payload: {
           user_status: false,
-          currentAuthority: 'guest',
-          user_id:""
+          role: 'guest',
+          currentUserId:""
         },
       });
       reloadAuthorized();
@@ -74,8 +74,8 @@ export default {
     changeLoginStatus(state, {payload}) {
       console.log("payload==",payload);
       console.log("payload.currentAuthority==",payload.currentAuthority);
-      setAuthority(payload.currentAuthority);
-      setUserId(payload.user_id)
+      setAuthority(payload.role||"TEA");
+      setUserId(payload.currentUserId)
       return {
         ...state,
         status: payload.user_status,
