@@ -1,27 +1,29 @@
 import { routerRedux } from 'dva/router';
 import { stringify } from 'qs';
 import { fakeAccountLogin, getFakeCaptcha } from '@/services/api';
-import { setAuthority } from '@/utils/authority';
+import { setAuthority, setUserId } from '@/utils/authority';
 import { getPageQuery } from '@/utils/utils';
-import { reloadAuthorized,setUserId } from '@/utils/Authorized';
+import { reloadAuthorized } from '@/utils/Authorized';
 
 export default {
   namespace: 'login',
 
   state: {
     status: undefined,
+    currentUser: {}
   },
 
   effects: {
     *login({ payload }, { call, put }) {
       const response = yield call(fakeAccountLogin, payload);
-      yield put({
-        type: 'changeLoginStatus',
-        payload: response.data,
-      });
+
       // Login successfully
       console.log("response===", response)
       if (response.data) {
+        yield put({
+          type: 'changeLoginStatus',
+          payload: response.data.currentUser,
+        });
         reloadAuthorized();
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
@@ -55,7 +57,7 @@ export default {
         payload: {
           user_status: false,
           role: 'guest',
-          currentUserId:""
+          user_id:"",
         },
       });
       reloadAuthorized();
@@ -71,15 +73,13 @@ export default {
   },
 
   reducers: {
-    changeLoginStatus(state, {payload}) {
-      console.log("payload==",payload);
-      console.log("payload.currentAuthority==",payload.currentAuthority);
-      setAuthority(payload.role||"TEA");
-      setUserId(payload.currentUserId)
+    changeLoginStatus(state, { payload }) {
+      console.log("payload==", payload);
+      setAuthority(payload.role || "TEA");
+      setUserId(payload.user_id)
       return {
         ...state,
-        status: payload.user_status,
-        type: payload.type,
+        currentUser: payload,
       };
     },
   },

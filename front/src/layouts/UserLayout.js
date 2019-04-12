@@ -7,26 +7,27 @@ import GlobalFooter from '@/components/GlobalFooter';
 import DocumentTitle from 'react-document-title';
 import SelectLang from '@/components/SelectLang';
 import styles from './UserLayout.less';
-import logo from '../assets/logo.svg';
+import logo from '../assets/logo.png';
 import getPageTitle from '@/utils/getPageTitle';
 
-const links = [
-  {
-    key: 'help',
-    title: formatMessage({ id: 'layout.user.link.help' }),
-    href: '',
-  },
-  {
-    key: 'privacy',
-    title: formatMessage({ id: 'layout.user.link.privacy' }),
-    href: '',
-  },
-  {
-    key: 'terms',
-    title: formatMessage({ id: 'layout.user.link.terms' }),
-    href: '',
-  },
-];
+const links =[]
+//  [
+//   {
+//     key: 'help',
+//     title: formatMessage({ id: 'layout.user.link.help' }),
+//     href: '',
+//   },
+//   {
+//     key: 'privacy',
+//     title: formatMessage({ id: 'layout.user.link.privacy' }),
+//     href: '',
+//   },
+//   {
+//     key: 'terms',
+//     title: formatMessage({ id: 'layout.user.link.terms' }),
+//     href: '',
+//   },
+// ];
 
 const copyright = (
   <Fragment>

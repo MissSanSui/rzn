@@ -1,12 +1,10 @@
 import request from '@/utils/request';
+import { stringify } from 'qs';
 
 export async function query() {
   return request('/api/users');
 }
 
-export async function queryCurrent() {
-  // return request('/api/userManage/queryUser');
-  return request('/api/userManage/queryUser', {
-    method: 'POST'
-  });
+export async function queryCurrent(params) {
+  return request(`/frame-web/user/userEditView?${stringify(params)}`)
 }

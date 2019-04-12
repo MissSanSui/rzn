@@ -18,15 +18,26 @@ export default {
       });
     },
     *fetchCurrent(_, { call, put }) {
-      // const response = yield call(queryCurrent);
       let data = {}
-      data.currentUser
-      data.currentUserId = getUserId()
-      yield put({
-        type: 'saveCurrentUser',
-        payload: data,
-      });
+      data.user_id = getUserId()
+      console.log("fetchCurrent==data",data)
+      if(data.user_id!=""){
+        console.log("fetchCurrent==data",data)
+        const response = yield call(queryCurrent,data);
+        console.log("fetchCurrent==response",response)
+        yield put({
+          type: 'saveCurrentUser',
+          payload: response.data,
+        });
+      }else{
+        yield put({
+          type: 'saveCurrentUser',
+          payload: {},
+        });
+      }
     },
+
+
   },
 
   reducers: {

@@ -21,39 +21,25 @@ export default [
     Routes: ['src/pages/Authorized'],
     routes: [
       // 系统配置页面
-      { path: '/', redirect: '/user-manage', authority: ['admin', 'user', 'guest'] },
-      // {
-      //   name: 'sys',
-      //   icon: 'sys',
-      //   path: '/sys',
-      //   authority: ['admin', 'sys',],
-      //   routes: [
-      //     {
-      //       path: '/sys/users',
-      //       name: 'usersManage',
-      //       component: './Sys/Users/UsersManage',
-      //     }
-      //   ],
-      // },
       {
         name: 'courseWareManage',
         icon: 'courseWareManage',
         path: '/courseware-manage',
-        authority: ['admin', 'sys',],
+        authority: ['ASS', 'TEA'],
         // component: './CourseWareManage/Index',
         routes: [
           {
-          name: 'add',
-          icon: 'courseWareManage',
-          path: '/courseware-manage/add',
-          component: './CourseWareManage/Add',
-        },
-        {
-          name: 'search',
-          icon: 'courseWareManage',
-          path: '/courseware-manage/search',
-          component: './CourseWareManage/Index',
-        }
+            name: 'add',
+            icon: 'courseWareManage',
+            path: '/courseware-manage/add',
+            component: './CourseWareManage/Add',
+          },
+          {
+            name: 'search',
+            icon: 'courseWareManage',
+            path: '/courseware-manage/search',
+            component: './CourseWareManage/Index',
+          }
         ]
       },
       // 用户信息管理
@@ -63,7 +49,7 @@ export default [
         path: '/user-manage',
         component: './UserManage/UserManage',
         Routes: ['src/pages/Authorized'],
-        authority: ['admin', 'sys',],
+        authority: ['SYS','LEA'],
       },
       //  课时管理
       {
@@ -71,20 +57,20 @@ export default [
         icon: 'contractManage',
         path: '/contract-manage',
         Routes: ['src/pages/Authorized'],
-        authority: ['admin', 'sys',],
+        authority: ['ASS'],
         routes: [
           {
-          name: 'add',
-          icon: '',
-          path: '/contract-manage/add',
-          component: './ContractManage/AddContract',
-        },
-        {
-          name: 'search',
-          icon: '',
-          path: '/contract-manage/search',
-          component: './ContractManage/Index',
-        }
+            name: 'add',
+            icon: '',
+            path: '/contract-manage/add',
+            component: './ContractManage/AddContract',
+          },
+          {
+            name: 'search',
+            icon: '',
+            path: '/contract-manage/search',
+            component: './ContractManage/Index',
+          }
         ]
       },
       // 聊天室界面
@@ -98,7 +84,7 @@ export default [
         name: 'joinroom',
         icon: 'video-camera',
         path: '/join-room',
-        // authority: ['admin', 'sys', 'teacher', 'student'],
+        authority: [ 'TEA', 'STU'],
         component: './Chatroom/Joinroom',
       },
       // 聊天室界面
@@ -106,6 +92,7 @@ export default [
         name: 'my-chatroom',
         icon: 'video-camera',
         path: '/my-chat-room',
+        authority: [ 'TEA', 'STU'],
         routes: [
           {
             path: '/my-chat-room/search',
@@ -134,63 +121,6 @@ export default [
               {
                 path: '/my-chat-room/add',
                 component: './Mychatroom/Add',
-              },
-            ],
-          },
-        ],
-      },
-      {
-        name: 'account',
-        icon: 'user',
-        path: '/account',
-        routes: [
-          {
-            path: '/account/center',
-            name: 'center',
-            component: './Account/Center/Center',
-            routes: [
-              {
-                path: '/account/center',
-                redirect: '/account/center/articles',
-              },
-              {
-                path: '/account/center/articles',
-                component: './Account/Center/Articles',
-              },
-              {
-                path: '/account/center/applications',
-                component: './Account/Center/Applications',
-              },
-              {
-                path: '/account/center/projects',
-                component: './Account/Center/Projects',
-              },
-            ],
-          },
-          {
-            path: '/account/settings',
-            name: 'settings',
-            component: './Account/Settings/Info',
-            routes: [
-              {
-                path: '/account/settings',
-                redirect: '/account/settings/base',
-              },
-              {
-                path: '/account/settings/base',
-                component: './Account/Settings/BaseView',
-              },
-              {
-                path: '/account/settings/security',
-                component: './Account/Settings/SecurityView',
-              },
-              {
-                path: '/account/settings/binding',
-                component: './Account/Settings/BindingView',
-              },
-              {
-                path: '/account/settings/notification',
-                component: './Account/Settings/NotificationView',
               },
             ],
           },
