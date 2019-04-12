@@ -76,7 +76,9 @@ export async function queryContracts(params) {
 export async function deleteContract(params) {
   return request(`/frame-web/contracts/deleteContractByNo?${stringify(params)}`)
 }
-
+export async function findContracts(params) {
+  return request(`/frame-web/contracts/findContractList?${stringify(params)}`)
+}
 
 //CourseWare
 export async function addCourseWare(params) {
@@ -128,7 +130,12 @@ export async function deleteRoomCourseWare(params) {
     body: params,
   });
 }
-
+export async function saveRoomCourseWareAndUser(params) {
+  return request('/frame-web/roomsCoursewares/saveRoomsCoursewaresAndUser', {
+    method: 'POST',
+    body: params,
+  });
+}
 
 export async function queryProjectNotice() {
   return request('/api/project/notice');

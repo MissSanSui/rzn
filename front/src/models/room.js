@@ -1,6 +1,7 @@
 import {
   queryRoomList, removeFakeList, addFakeList, updateFakeList, saveRoomCourseWare,
-  queryRoomCoursewares, queryCoursewareImages, deleteRoomCourseWare
+  queryRoomCoursewares, queryCoursewareImages, deleteRoomCourseWare, findContracts,
+  saveRoomCourseWareAndUser
 } from '@/services/api';
 
 export default {
@@ -9,7 +10,9 @@ export default {
   state: {
     list: [],
     imageList: [],
-    courseWareIds: []
+    courseWareIds: [],
+    userIds: [],
+    contractList: [],
   },
 
   effects: {
@@ -144,6 +147,49 @@ export default {
         }
       }
     },
+    *fetchContracts({ payload, success, fail }, { call, put, select }) {
+      console.log("room fetchContracts payload==", payload)
+      let response = yield call(findContracts, payload);
+      console.log("fetchContracts==response=", response)
+      if (!response.code) {
+        yield put({
+          type: 'save',
+          payload: {
+            contractList: response.data,
+          },
+        });
+      }
+    },
+    *selectUsers({ payload, }, { put }) {
+      yield put({
+        type: 'save',
+        payload: {
+          userIds: payload,
+        },
+      });
+    },
+    *saveCourseWareAndUser({ payload, success, fail }, { call, put, select }) {
+      console.log("room saveCourseWareAndUser payload==", payload)
+      let { courseWareIds,userIds } = yield select(state => state.room)
+      payload.coursewares_nos = courseWareIds.join(',')
+      payload.user_ids  = userIds.join(',')
+      let formData = new FormData()
+      Object.keys(payload).forEach((key) => {
+        if (payload[key]) {
+          formData.append(key, payload[key])
+        }
+      });
+      let response = yield call(saveRoomCourseWareAndUser, formData);
+      if (!response.code) {
+        if (success && typeof success === 'function') {
+          success();
+        }
+      } else {
+        if (fail && typeof fail === 'function') {
+          fail(response.msg);
+        }
+      }
+    },
 
 
   },
@@ -171,5 +217,14 @@ export default {
         list: state.list.concat(action.payload),
       };
     },
+    subscriptions: {
+      //监听地址，如果地址含有app则跳转到登陆页
+      setup({ dispatch, history }) {
+        history.listen(path => {
+          console.log("subscriptions  path==", path)
+        });
+      },
+    },
+
   },
 };
