@@ -1,10 +1,10 @@
 import React, { PureComponent } from "react";
 import "./Joinroom.less";
 import { connect } from "dva";
-import { Col, Button, Modal, Checkbox, Card, List, Avatar, Popover, message } from "antd";
+import { Col, Button, Modal, Checkbox, Card, List, Avatar, Popover, message, Select } from "antd";
 import CourseWareSelect from "./../CourseWareManage/CourseWareSelect"
 
-const pushOption = [];
+const Option = Select.Option;
 
 @connect(({ room }) => ({
     room
@@ -15,13 +15,12 @@ class Courseware extends PureComponent {
         this.state = {
             visible1: false,
             roomId: 1,
-            indeterminate: true,
-            checkAll: false,
             bigImg: null,
             modal: {
                 title: "请选择您要上传的课件",
                 width: '60%',
-            }
+            },
+            user_ids:[],
         }
     }
     componentDidMount() {
@@ -32,6 +31,12 @@ class Courseware extends PureComponent {
             type: 'room/fetchImages',
             payload: {
                 room_id: roomId
+            }
+        })
+        dispatch({
+            type: 'room/fetchContracts',
+            payload: {
+                contract_room_no: roomId
             }
         })
     }
@@ -55,7 +60,7 @@ class Courseware extends PureComponent {
         });
     }
     onRemove = (courseWare) => {
-        console.log("onRemove courseWare== ",courseWare)
+        console.log("onRemove courseWare== ", courseWare)
         const { roomId, dispatch } = this.props
         var data = {}
         data.room_id = roomId;
@@ -85,19 +90,8 @@ class Courseware extends PureComponent {
         });
     };
     handleOk = (e) => {
-        const brr = [];
         this.setState({
             visible1: false,
-            checkedList: []
-        });
-        this.state.checkedList.map(item => {
-            pushOption.push(plainOptions[item]);
-            for (let i = 0; i < plainOptions.length; i++) {
-                if (i != item) {
-                    brr.push(plainOptions[i])
-                }
-            }
-            //plainOptions.splice(plainOptions[item],1);
         });
     };
     handleCancel = (e) => {
@@ -105,16 +99,33 @@ class Courseware extends PureComponent {
             visible1: false,
         });
     };
+    onSelectStu = (value) => {
+        console.log("onSelectStu value==", value)
+        const {dispatch}= this.props
+        dispatch({
+            type: 'room/selectUsers',
+            payload: value,
+        });
+    }
     render() {
-
-        const { imageList,courseWareIds } = this.props.room
-
-
+        const { imageList, courseWareIds, contractList } = this.props.room
+        const children = []
+        contractList.forEach(contract => {
+            children.push(<Option key={contract.contract_stu}>{contract.emp_name_fus}</Option>);
+        });
         return (
             <div>
                 <Col span={19} className="cardStyle">
                     <div className="Courseware-upload">
-                        <Button type="primary" block icon="picture"
+                        <Select
+                            mode="multiple"
+                            style={{ width: '100%' }}
+                            placeholder="请选择学生"
+                            onChange={this.onSelectStu}
+                        >
+                            {children}
+                        </Select>
+                        <Button type="primary" block icon="picture" style={{ marginTop: "10px" }}
                             onClick={this.showModal.bind(this)}>上传课件</Button>
                     </div>
                     <List

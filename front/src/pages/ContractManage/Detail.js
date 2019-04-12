@@ -214,7 +214,7 @@ class AddUser extends PureComponent {
             })(<Input placeholder="请输入金额" />)}
               </FormItem>
             </Col>
-            <Col span={0}>
+            <Col span={24}>
               <FormItem {...submitFormLayout} style={{ marginTop: 32 }}>
                 <Button type="danger" style={{ marginLeft: 8 }} icon="delete" onClick={this.onDelete}>
                   删除课时

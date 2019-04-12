@@ -1,22 +1,26 @@
-import React, {PureComponent} from "react";
-import {RoomWhiteboard} from "white-react-sdk";
-import {WhiteWebSdk} from "white-web-sdk";
+import React, { PureComponent } from "react";
+import { RoomWhiteboard } from "white-react-sdk";
+import { WhiteWebSdk } from "white-web-sdk";
 import * as serviceWorker from "./serviceWorker";
-import {Row, Col, Button, Icon, Modal, Tooltip, Drawer, Input} from "antd";
+import { Row, Col, Button, Icon, Modal, Tooltip, Drawer, Input, Select, message } from "antd";
 import "white-web-sdk/style/index.css";
 import Courseware from "./Courseware";
 import WhiteList from "./WhiteList";
 import Camera from "./Camera";
+import { connect } from "dva";
+
 
 let room = null;
 let miniToken = 'WHITEcGFydG5lcl9pZD1scGMxOEtuU3JaUlE3YWFmUm1wZFNFaEFhM3J3TzB5T01pOTYmc2lnPTM5ZWQxYWY3ZjE3OGE5MTU1ZThmNDFhNmMyNThiYWExNTU0MDA5MmE6YWRtaW5JZD0xMjQmcm9sZT1taW5pJmV4cGlyZV90aW1lPTE1ODI5NzQ5NTAmYWs9bHBjMThLblNyWlJRN2FhZlJtcGRTRWhBYTNyd08weU9NaTk2JmNyZWF0ZV90aW1lPTE1NTE0MTc5OTgmbm9uY2U9MTU1MTQxNzk5ODMxMDAw';
-
+@connect(({ room }) => ({
+    room
+}))
 class Chatroom extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
             room: null,
-            roomId:1,
+            roomId: 1,
             visible: false,
             modalVisible: false,
             confirmLoading: false,
@@ -64,45 +68,45 @@ class Chatroom extends PureComponent {
             classNum: classNum
         });
 
-        this.state.room.putScenes("/record", [{name: "class" + classNum}]);
+        this.state.room.putScenes("/record", [{ name: "class" + classNum }]);
         this.state.room.setScenePath("/record/class" + classNum);
     }
 
-    eraser = ()=> {
+    eraser = () => {
         this.state.room.setMemberState({
             currentApplianceName: "eraser"
         });
     };
-    selector = ()=> {
+    selector = () => {
         this.state.room.setMemberState({
             currentApplianceName: "selector"
         });
     };
-    pencil = ()=> {
+    pencil = () => {
         this.state.room.setMemberState({
             currentApplianceName: "pencil",
             strokeColor: [255, 0, 0],
             strokeWidth: 2,
         });
     };
-    rectangle = ()=> {
+    rectangle = () => {
         this.state.room.setMemberState({
             currentApplianceName: "rectangle"
         });
     };
-    ellipse = ()=> {
+    ellipse = () => {
         this.state.room.setMemberState({
             currentApplianceName: "ellipse"
         });
     };
-    text = ()=> {
+    text = () => {
         this.state.room.setMemberState({
             currentApplianceName: "text",
             textSize: 14
         });
     };
 
-    classList = ()=> {
+    classList = () => {
         const url1 = 'https://cloudcapiv4.herewhite.com/handle/rooms/snapshots?roomToken=' +
             this.state.room.roomToken;
 
@@ -117,7 +121,7 @@ class Chatroom extends PureComponent {
                 scenePath: '/record',
                 uuid: this.state.room.uuid
             }),
-        }).then(res=>res.clone().json()).then(res=> {
+        }).then(res => res.clone().json()).then(res => {
             const datetime = (new Date()).getTime();
             res.msg.forEach((element, index) => {
                 res.msg[index].url = res.msg[index].url + '?_v=' + datetime;
@@ -128,10 +132,10 @@ class Chatroom extends PureComponent {
             });
 
         });
-       
+
     };
 
-    add = ()=> {
+    add = () => {
 
         const classNum = this.state.classNum + 1;
         this.setState({
@@ -139,12 +143,12 @@ class Chatroom extends PureComponent {
             classNum: classNum
         });
         console.log(classNum)
-        this.state.room.putScenes("/record", [{name: "class" + classNum}]);
+        this.state.room.putScenes("/record", [{ name: "class" + classNum }]);
         this.state.room.setScenePath("/record/class" + classNum);
 
         const url1 = 'https://cloudcapiv4.herewhite.com/handle/rooms/snapshots?roomToken=' +
             this.state.room.roomToken;
-           
+
         fetch(url1, {
             method: 'POST',
             headers: {
@@ -156,7 +160,7 @@ class Chatroom extends PureComponent {
                 scenePath: '/record',
                 uuid: this.state.room.uuid
             }),
-        }).then(res=>res.clone().json()).then(res=> {
+        }).then(res => res.clone().json()).then(res => {
             console.log(res.msg)
             const datetime = (new Date()).getTime();
             res.msg.forEach((element, index) => {
@@ -181,6 +185,36 @@ class Chatroom extends PureComponent {
             visible: false,
         });
     };
+    onStart = () => {
+        const { userIds } = this.props.room
+        const { dispatch } = this.props
+        const { roomId } = this.state
+        if (userIds.length == 0) {
+            message.warn("请选择学生！")
+            return
+        }
+        Modal.confirm({
+            title: '是否开始直播?',
+            content: '请确认已经选择好学生和课件！',
+            onOk() {
+                dispatch({
+                    type: 'room/saveCourseWareAndUser',
+                    payload: {
+                        room_id:roomId,
+                    },
+                    success: () => {
+                        message.success("成功开播！")
+                    },
+                    fail: (msg) => {
+                        message.warn("操作失败！"+msg)
+                    },
+                })
+            },
+            onCancel() {
+
+            },
+        });
+    }
     showModal = () => {
         this.setState({
             modalVisible: true,
@@ -199,43 +233,42 @@ class Chatroom extends PureComponent {
         }, 1000);
     };
     handleCancel = () => {
-
         this.setState({
             modalVisible: false,
         });
     };
 
     render() {
-        const { modalVisible, confirmLoading ,roomId} = this.state;
+        const { modalVisible, confirmLoading, roomId } = this.state;
         return (
             this.state.room ?
                 <div className="joinRoomStyle">
                     <div className="room-left">
                         <Camera />
-                        <Courseware roomId={roomId}/>
+                        <Courseware roomId={roomId} />
                     </div>
                     <div className="room-middle">
                         <ul className="room-icon">
                             <li>
-                                <Icon type="delete" theme="filled" onClick={this.eraser.bind(this)}/>
+                                <Icon type="delete" theme="filled" onClick={this.eraser.bind(this)} />
                             </li>
                             <li>
-                                <Icon type="edit" theme="filled" onClick={this.pencil.bind(this)}/>
+                                <Icon type="edit" theme="filled" onClick={this.pencil.bind(this)} />
                             </li>
                             <li>
-                                <Icon type="font-size" onClick={this.text.bind(this)}/>
+                                <Icon type="font-size" onClick={this.text.bind(this)} />
                             </li>
                             <li>
-                                <Icon type="border" onClick={this.rectangle.bind(this)}/>
+                                <Icon type="border" onClick={this.rectangle.bind(this)} />
                             </li>
                         </ul>
 
                         <div className="video-icon">
                             <Tooltip placement="topLeft" title="开启直播">
-                                <Icon type="play-circle" theme="filled"/>
+                                <Icon type="play-circle" theme="filled" onClick={this.onStart} />
                             </Tooltip>
                             <Tooltip placement="topLeft" title="关闭直播">
-                                <Icon type="close-circle" theme="filled" onClick={this.showModal}/>
+                                <Icon type="close-circle" theme="filled" onClick={this.showModal} />
                             </Tooltip>
                             <Modal
                                 title="是否保存当前课程"
@@ -244,15 +277,15 @@ class Chatroom extends PureComponent {
                                 confirmLoading={confirmLoading}
                                 onCancel={this.handleCancel}
                             >
-                                <Input placeholder="课程描述"/>
+                                <Input placeholder="课程描述" />
                             </Modal>
                         </div>
                         <div className="menu-icon">
-                            <Icon type="menu-fold" onClick={this.showDrawer}/>
+                            <Icon type="menu-fold" onClick={this.showDrawer} />
                         </div>
                         <Col span={24}>
                             <RoomWhiteboard room={this.state.room}
-                                            style={{width: '100%', height: '100vh'}}/>
+                                style={{ width: '100%', height: '100vh' }} />
                         </Col>
 
                     </div>
@@ -267,11 +300,11 @@ class Chatroom extends PureComponent {
 
                         <div className="whiteBtn">
                             <Button type="primary"
-                                    disabled={this.state.creatWhiteLoading ? '' : 'disabled'}
-                                    onClick={this.state.creatWhiteLoading ? this.add.bind(this) : null}
+                                disabled={this.state.creatWhiteLoading ? '' : 'disabled'}
+                                onClick={this.state.creatWhiteLoading ? this.add.bind(this) : null}
                             >创建画板</Button>
                         </div>
-                        <WhiteList add={this.add.bind(this)} whiteList={this.state.whiteImgList}/>
+                        <WhiteList add={this.add.bind(this)} whiteList={this.state.whiteImgList} />
 
                     </Drawer>
 

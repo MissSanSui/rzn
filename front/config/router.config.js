@@ -21,11 +21,12 @@ export default [
     Routes: ['src/pages/Authorized'],
     routes: [
       // 系统配置页面
+      { path: '/', redirect: '/chat-room' },
       {
         name: 'courseWareManage',
         icon: 'courseWareManage',
         path: '/courseware-manage',
-        authority: ['ASS', 'TEA'],
+        authority: ['TEA'],
         // component: './CourseWareManage/Index',
         routes: [
           {
@@ -33,13 +34,13 @@ export default [
             icon: 'courseWareManage',
             path: '/courseware-manage/add',
             component: './CourseWareManage/Add',
-          },
+            authority: ['TEA'], },
           {
             name: 'search',
             icon: 'courseWareManage',
             path: '/courseware-manage/search',
             component: './CourseWareManage/Index',
-          }
+            authority: ['TEA'], }
         ]
       },
       // 用户信息管理
@@ -49,7 +50,7 @@ export default [
         path: '/user-manage',
         component: './UserManage/UserManage',
         Routes: ['src/pages/Authorized'],
-        authority: ['SYS','LEA'],
+        authority: ['SYS', 'LEA'],
       },
       //  课时管理
       {
@@ -84,7 +85,7 @@ export default [
         name: 'joinroom',
         icon: 'video-camera',
         path: '/join-room',
-        authority: [ 'TEA', 'STU'],
+        authority: ['TEA', 'STU'],
         component: './Chatroom/Joinroom',
       },
       // 聊天室界面
@@ -92,7 +93,7 @@ export default [
         name: 'my-chatroom',
         icon: 'video-camera',
         path: '/my-chat-room',
-        authority: [ 'TEA', 'STU'],
+        authority: ['TEA', 'STU'],
         routes: [
           {
             path: '/my-chat-room/search',
