@@ -10,6 +10,20 @@ class Camera extends PureComponent {
 
     }
 
+    componentWillUnmount(){
+        this.state.client && this.state.client.unpublish(this.state.localStream);
+        this.state.localStream && this.state.localStream.close();
+        this.state.client &&
+        this.state.client.leave(
+            () => {
+                localLog('Client succeed to leave.');
+            },
+            () => {
+                localLog('Client failed to leave.');
+                }
+            );
+    }
+
     async componentWillMount() {
         // 加入视频直播间
         const appleId = '4c2508e4a3b94c72a5c56e80281760fd';
@@ -18,6 +32,7 @@ class Camera extends PureComponent {
         this.setState({
             client: client
         });
+        var that = this;
 
         client.init(appleId, function () {
             console.log("AgoraRTC client initialized");
@@ -31,6 +46,11 @@ class Camera extends PureComponent {
                         screen: false
                     }
                 );
+
+                that.setState({
+                    localStream: localStream
+                });
+
                 localStream.init(function () {
                     console.log("getUserMedia successfully");
                     localStream.play('agora_local');
@@ -46,6 +66,8 @@ class Camera extends PureComponent {
                 }, function (err) {
                     console.log("getUserMedia failed", err);
                 });
+
+                
 
             }, function (err) {
                 console.log("Join channel failed", err);
@@ -77,23 +99,18 @@ class Camera extends PureComponent {
                 remoteStream.play('agora_remote');
             })
 
-
         }, function (err) {
             console.log("AgoraRTC client init failed", err);
         });
 
-       
-
-
     }
 
+    // 开启或者关闭摄像头
     leaveVideo = ()=> {
-        this.state.client.unpublish(function () {
-            console.log("Leave channel successfully");
-          }, function (err) {
-            console.log("Leave channel failed");
-          });
+        this.state.localStream.isVideoOn() ? this.state.localStream.disableVideo() : this.state.localStream.enableVideo();
     };
+
+
 
     render() {
         return (
