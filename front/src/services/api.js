@@ -1,7 +1,6 @@
 import { stringify } from 'qs';
 import request from '@/utils/request';
 const { NODE_ENV, APP_TYPE, TEST } = process.env;
-
 // const backendAddr = (() => {
 //   const env = NODE_ENV
 //   console.log(env)
@@ -21,7 +20,7 @@ const { NODE_ENV, APP_TYPE, TEST } = process.env;
 //   }
 // })();
 export async function fakeAccountLogin(params) {
-  return request('/api/login/account', {
+  return request('/frame-web/sso', {
     // return request('api/entry/login', {
     method: 'POST',
     body: params,
@@ -58,6 +57,7 @@ export async function queryRoomList(params) {
   return request(`/frame-web/rooms/roomsList?${stringify(params)}`)
 }
 
+//Contract
 export async function addContract(params) {
   return request('/frame-web/contracts/saveContracts', {
     method: 'POST',
@@ -72,6 +72,9 @@ export async function updateContract(params) {
 }
 export async function queryContracts(params) {
   return request(`/frame-web/contracts/contractsList?${stringify(params)}`)
+}
+export async function deleteContract(params) {
+  return request(`/frame-web/contracts/deleteContractByNo?${stringify(params)}`)
 }
 
 

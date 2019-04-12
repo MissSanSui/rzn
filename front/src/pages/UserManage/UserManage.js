@@ -194,11 +194,8 @@ class UserManage extends PureComponent {
           case "PRE":
             roleName = "准学生"
             break;
-            case "LEA":
-            roleName = "管理员"
-            break;
           case "SYS":
-            roleName = "超级管理员"
+            roleName = "管理员"
             break;
           default:
             break;

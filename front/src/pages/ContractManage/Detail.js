@@ -29,33 +29,24 @@ class AddUser extends PureComponent {
     super(props);
     this.state = {}
   }
-  handleAdd = fields => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'contract/add',
-      payload: {
-        params: fields,
-      },
-      success: () => {
-        message.success('配置成功');
-        console.log("this.props===", this.props)
-        this.props.onCancel();
-        this.props.onSearch()
-      },
-      fail: (res) => {
-        console.log("fail====", res)
-        message.error('添加失败！');
-      },
-    });
-  };
+
   handleUpdate = fields => {
-    const { dispatch, modifyUser } = this.props;
-    fields.user_id = modifyUser.user_id
-    fields.user_status = fields.status ? "open" : "close"
+    const { dispatch, modifyContract } = this.props;
+    let params = modifyContract
+    params.contract_rest_hour = fields.contract_rest_hour
+    params.contract_amount = fields.contract_amount
+    params.created_date = ""
+    params.last_updated_date = ""
+
+    //     created_by: 10001
+    // created_date: "20190411 16:33:33"
+    // emp_name_fus: null
+    // last_updated_by: 10001
+    // last_updated_date: "20190411 16:37:35"
     dispatch({
       type: 'contract/update',
       payload: {
-        params: fields
+        params: params
       },
       success: () => {
         message.success('修改成功！');
@@ -69,62 +60,50 @@ class AddUser extends PureComponent {
       },
     });
   };
-  onUsenameValidate = (rule, value, callback) => {
-    const { dispatch, modifyUser, type } = this.props;
-    if (!value) {
-      callback()
-    } else if (type == "modify" && modifyUser.user_name == value) {
-      callback()
-    } else {
-      console.log(":validate===")
-      dispatch({
-        type: 'contract/validate',
-        payload: {
-          user_name: value
-        },
-        callback: (status) => {
-          if (!status) {
-            callback("重复！")
-          } else {
-            callback()
-          }
-        },
-      });
-    }
-  }
 
   okHandle = () => {
     const { form, type } = this.props
     form.validateFields((err, fieldsValue) => {
       console.log("fieldsValue===", fieldsValue)
       if (err) return;
-      if (fieldsValue.citys && fieldsValue.citys.length == 3) {
-        fieldsValue.province = fieldsValue.citys[0]
-        fieldsValue.city = fieldsValue.citys[1]
-        fieldsValue.county = fieldsValue.citys[2]
-      }
-      if (type == "add") {
-        this.handleAdd(fieldsValue);
-      } else {
-        this.handleUpdate(fieldsValue);
-      }
+      this.handleUpdate(fieldsValue);
     });
   };
+
+  onDelete = () => {
+    let { dispatch, modifyContract } = this.props;
+    dispatch({
+      type: 'contract/delete',
+      payload: {
+        contract_no: modifyContract.contract_no
+      },
+      success: () => {
+        message.success('删除成功！');
+        console.log("this.props===", this.props)
+        this.props.onCancel();
+        this.props.onSearch()
+      },
+      fail: (res) => {
+        console.log("fail====", res)
+        message.error('删除失败！');
+      },
+    });
+  }
+  resetHourValidate = (rule, value, callback) => {
+    let modifyContract = this.props.modifyContract || {}
+    if (Number(value) > modifyContract.contract_hour) {
+      callback("剩余时间大于总时间")
+    }
+    callback()
+  }
   render() {
     const { size } = this.state;
     const { submitting, modalVisible, onCancel, type } = this.props;
-    let modifyUser = this.props.modifyUser || {}
-    // console.log("modifyUser===", modifyUser)
-    if (type == "add") {
-      modifyUser = {}
-    }
+    let modifyContract = this.props.modifyContract || {}
+    console.log("modifyContract===", modifyContract)
     const {
       form: { getFieldDecorator, getFieldValue },
     } = this.props;
-    let title = "添加用户"
-    if (type != "add") {
-      title = "修改用户"
-    }
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
@@ -135,20 +114,16 @@ class AddUser extends PureComponent {
         sm: { span: 16 },
       },
     };
-    const formItemLayoutOne = {
-      labelCol: {
-        xs: { span: 24 },
-        sm: { span: 4 },
-      },
+    const submitFormLayout = {
       wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 20 },
+        xs: { span: 24, offset: 0 },
+        sm: { span: 10, offset: 7 },
       },
     };
     return (
       <Modal
         destroyOnClose
-        title={title}
+        title="课时详情"
         visible={modalVisible}
         onOk={this.okHandle}
         onCancel={this.props.onCancel}
@@ -157,66 +132,100 @@ class AddUser extends PureComponent {
           {/* 姓名 */}
           <Row >
             <Col span={12}>
-              <FormItem {...formItemLayout} label={<FormattedMessage id="form.name" />}>
-                {getFieldDecorator('emp_name', {
-                  initialValue: modifyUser.emp_name,
-                  rules: [
-                    {
-                      required: true,
-                      message: formatMessage({ id: 'validation.name.required' }),
-                    },
-                  ],
-                })(<Input placeholder={formatMessage({ id: 'form.name' })} />)}
+              <FormItem {...formItemLayout} label="学生">
+                {getFieldDecorator('emp_name_fus', {
+                  initialValue: modifyContract.emp_name_fus,
+                })(<Input disabled />)}
               </FormItem>
             </Col>
             <Col span={12}>
-              <FormItem {...formItemLayout} label="邮箱">
-                {getFieldDecorator('email', {
-                  initialValue: modifyUser.email,
+              <FormItem {...formItemLayout} label="直播间">
+                {getFieldDecorator('emp_name_fus', {
+                  initialValue: modifyContract.contract_room_no,
+                })(<Input disabled />)}
+              </FormItem>
+            </Col>
+            <Col span={12}>
+              <FormItem {...formItemLayout} label="总课时">
+                {getFieldDecorator('contract_hour', {
+                  initialValue: modifyContract.contract_hour,
+                  rules: [
+                    {
+                        required: true,
+                        message: "请输入总课时",
+                    },
+                    {
+                        type: "number",
+                        transform(value) {
+                            if (value) {
+                                return Number(value);
+                            }
+                        },
+                        message: "请输入正确的格式"
+                    }
+                ],
+            })(<Input placeholder="请输入总课时" />)}
+              </FormItem>
+            </Col>
+            <Col span={12}>
+              <FormItem {...formItemLayout} label="剩余课时">
+                {getFieldDecorator('contract_rest_hour', {
+                  initialValue: modifyContract.contract_rest_hour,
                   rules: [
                     {
                       required: false,
-                      message: "请输入邮箱",
+                      message: "请输入剩余课时",
                     },
                     {
-                      type: "email",
-                      message: "请输入正确的邮箱地址",
+                      type: "number",
+                      transform(value) {
+                        if (value) {
+                          return Number(value);
+                        }
+                      },
+                      message: "请输入正确的格式"
                     },
+                    {
+                      validator: this.resetHourValidate
+                    }
                   ],
-                })(<Input placeholder="邮箱" />)}
+                })(<InputNumber min={0} max={10} step={0.1} style={{ width: "100%" }} />)}
               </FormItem>
             </Col>
             <Col span={12}>
-                <FormItem {...formItemLayout} label="兴趣">
-                  {getFieldDecorator('interests', {
-                    initialValue: modifyUser.interests,
-                    rules: [
-                      {
-                        required: false,
-                        message: "请输入兴趣",
-                      },
-                    ],
-                  })(<Input placeholder="兴趣" />)}
-                </FormItem>
-              </Col>
-              <Col span={12}>
-                <FormItem {...formItemLayout} label="擅长">
-                  {getFieldDecorator('good', {
-                    initialValue: modifyUser.good,
-                    rules: [
-                      {
-                        required: false,
-                        message: "请输入擅长",
-                      },
-                    ],
-                  })(<Input placeholder="擅长" />)}
-                </FormItem>
-              </Col>
+              <FormItem {...formItemLayout} label="课时金额">
+                {getFieldDecorator('contract_amount', {
+                  initialValue: (modifyContract.contract_amount),
+                  rules: [
+                    {
+                        required: true,
+                        message: "请输入金额",
+                    },
+                    {
+                        type: "number",
+                        transform(value) {
+                            if (value) {
+                                return Number(value);
+                            }
+                        },
+                        message: "请输入正确的格式"
+                    }
+                ],
+            })(<Input placeholder="请输入金额" />)}
+              </FormItem>
+            </Col>
+            <Col span={0}>
+              <FormItem {...submitFormLayout} style={{ marginTop: 32 }}>
+                <Button type="danger" style={{ marginLeft: 8 }} icon="delete" onClick={this.onDelete}>
+                  删除课时
+            </Button>
+              </FormItem>
+            </Col>
           </Row>
         </Form>
       </Modal >
-        )
-      }
-    }
-    
+    )
+  }
+}
+
 export default AddUser;

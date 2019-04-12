@@ -67,7 +67,6 @@ export default class SelectInput extends React.Component {
                     value={empName}
                     onClick={this.showModal}
                     placeholder={placeholder}
-                    style={{ width: '65%', marginRight: '3%' }}
                 />
                 <Modal
                     destroyOnClose

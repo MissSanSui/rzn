@@ -8,6 +8,7 @@ import HeaderSearch from '../HeaderSearch';
 import HeaderDropdown from '../HeaderDropdown';
 import SelectLang from '../SelectLang';
 import styles from './index.less';
+import router from 'umi/router';
 
 export default class GlobalHeaderRight extends PureComponent {
   getNoticeData() {
@@ -76,7 +77,9 @@ export default class GlobalHeaderRight extends PureComponent {
       },
     });
   };
-
+  login = () => {
+    router.push('/user/login');
+  }
   render() {
     const {
       currentUser,
@@ -91,7 +94,7 @@ export default class GlobalHeaderRight extends PureComponent {
     } = this.props;
     const menu = (
       <Menu className={styles.menu} selectedKeys={[]} onClick={onMenuClick}>
-        <Menu.Item key="userCenter">
+        {/* <Menu.Item key="userCenter">
           <Icon type="user" />
           <FormattedMessage id="menu.account.center" defaultMessage="account center" />
         </Menu.Item>
@@ -103,7 +106,7 @@ export default class GlobalHeaderRight extends PureComponent {
           <Icon type="close-circle" />
           <FormattedMessage id="menu.account.trigger" defaultMessage="Trigger Error" />
         </Menu.Item>
-        <Menu.Divider />
+        <Menu.Divider /> */}
         <Menu.Item key="logout">
           <Icon type="logout" />
           <FormattedMessage id="menu.account.logout" defaultMessage="logout" />
@@ -123,9 +126,9 @@ export default class GlobalHeaderRight extends PureComponent {
     }
     return (
       <div className={className}>
-        
+
         {/* 帮助文档 */}
-        <Tooltip title={formatMessage({ id: 'component.globalHeader.help' })}>
+        {/* <Tooltip title={formatMessage({ id: 'component.globalHeader.help' })}>
           <a
             target="_blank"
             href="https://pro.ant.design/docs/getting-started"
@@ -134,24 +137,25 @@ export default class GlobalHeaderRight extends PureComponent {
           >
             <Icon type="question-circle-o" />
           </a>
-        </Tooltip>
-        
-        {currentUser.name ? (
+        </Tooltip> */}
+
+        {currentUser.user_id ? (
           <HeaderDropdown overlay={menu}>
             <span className={`${styles.action} ${styles.account}`}>
-              <Avatar
+              {/* <Avatar
                 size="small"
                 className={styles.avatar}
                 src={currentUser.avatar}
                 alt="avatar"
-              />
-              <span className={styles.name}>{currentUser.name}</span>
+              /> */}
+              <span className={styles.name}><Icon type="user" />{currentUser.user_name||currentUser.user_id}</span>
             </span>
           </HeaderDropdown>
         ) : (
-          <Spin size="small" style={{ marginLeft: 8, marginRight: 8 }} />
-        )}
-        
+            // <Spin size="small" style={{ marginLeft: 8, marginRight: 8 }} />
+            <a onClick={this.login}  className={styles.action}> <div style={{ height:"2em",  lineHeight: "2em" }}><Icon type="user" />登录</div></a>
+          )}
+
       </div>
     );
   }
