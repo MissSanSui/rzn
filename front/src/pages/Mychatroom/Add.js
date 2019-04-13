@@ -1,210 +1,149 @@
-import React, {PureComponent} from "react";
-import {List, Card, Form, Row, Col, Select, Typography, Switch, Button} from "antd";
-import {connect} from "dva";
-import {FormattedMessage} from "umi-plugin-react/locale";
-import TagSelect from "@/components/TagSelect";
-import StandardFormRow from "@/components/StandardFormRow";
+import React, { PureComponent } from 'react';
+import { connect } from 'dva';
+import { formatMessage, FormattedMessage } from 'umi-plugin-react/locale';
+import {
+    Form, Input, DatePicker, Select, Button, Card, InputNumber, Radio,
+    Icon, Tooltip, Modal, message
+} from 'antd';
+import PageHeaderWrapper from '@/components/PageHeaderWrapper';
+import UserSelectInput from '@/pages/UserManage/UserSelectInput';
+import styles from './Index.less';
+import router from 'umi/router';
 
-const {Option} = Select;
+
 const FormItem = Form.Item;
-const {Title} = Typography;
 
-const listData = [
-    {
-        name: '小学组',
-        data: [
-
-            {
-                title: '数学',
-                avatar: "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png",
-                subDescription: "那是一种内在的东西， 他们到达不了，也无法触及的",
-            },
-            {
-                title: '数学',
-                avatar: "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png",
-                subDescription: "那是一种内在的东西， 他们到达不了，也无法触及的",
-            },
-            {
-                title: '数学',
-                avatar: "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png",
-                subDescription: "那是一种内在的东西， 他们到达不了，也无法触及的",
-            },
-            {
-                title: '数学',
-                avatar: "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png",
-                subDescription: "那是一种内在的东西， 他们到达不了，也无法触及的",
-            },
-            {
-                title: '数学',
-                avatar: "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png",
-                subDescription: "那是一种内在的东西， 他们到达不了，也无法触及的",
-            },
-            {
-                title: '数学',
-                avatar: "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png",
-                subDescription: "那是一种内在的东西， 他们到达不了，也无法触及的",
-            },
-        ]
-
-    },
-    {
-        name: '初中组',
-        data: [
-
-            {
-                title: '数学',
-                avatar: "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png",
-                subDescription: "那是一种内在的东西， 他们到达不了，也无法触及的",
-            },
-            {
-                title: '数学',
-                avatar: "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png",
-                subDescription: "那是一种内在的东西， 他们到达不了，也无法触及的",
-            },
-            {
-                title: '数学',
-                avatar: "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png",
-                subDescription: "那是一种内在的东西， 他们到达不了，也无法触及的",
-            },
-            {
-                title: '数学',
-                avatar: "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png",
-                subDescription: "那是一种内在的东西， 他们到达不了，也无法触及的",
-            },
-            {
-                title: '数学',
-                avatar: "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png",
-                subDescription: "那是一种内在的东西， 他们到达不了，也无法触及的",
-            },
-            {
-                title: '数学',
-                avatar: "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png",
-                subDescription: "那是一种内在的东西， 他们到达不了，也无法触及的",
-            },
-        ]
-    },
-    {
-        name: '高中组',
-        data: [
-            {
-                title: '数学',
-                avatar: "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png",
-                subDescription: "那是一种内在的东西， 他们到达不了，也无法触及的",
-            },
-            {
-                title: '数学',
-                avatar: "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png",
-                subDescription: "那是一种内在的东西， 他们到达不了，也无法触及的",
-            },
-            {
-                title: '数学',
-                avatar: "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png",
-                subDescription: "那是一种内在的东西， 他们到达不了，也无法触及的",
-            },
-            {
-                title: '数学',
-                avatar: "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png",
-                subDescription: "那是一种内在的东西， 他们到达不了，也无法触及的",
-            },
-            {
-                title: '数学',
-                avatar: "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png",
-                subDescription: "那是一种内在的东西， 他们到达不了，也无法触及的",
-            },
-            {
-                title: '数学',
-                avatar: "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png",
-                subDescription: "那是一种内在的东西， 他们到达不了，也无法触及的",
-            },
-        ]
-    },
-]
-
-
-@connect(({room}) => ({
-    list: room.list,
+@connect(({ }) => ({
 }))
-@Form.create({
-    onValuesChange({dispatch}, changedValues, allValues) {
-        // 表单项变化时请求数据
-        // eslint-disable-next-line
-        console.log(changedValues, allValues);
-        // 模拟查询表单生效
-        dispatch({
-            type: 'room/fetch',
-            payload: {
-                count: 8,
-            },
+@Form.create()
+class BasicForms extends PureComponent {
+    handleSubmit = e => {
+        const { dispatch, form } = this.props;
+        e.preventDefault();
+        form.validateFieldsAndScroll((err, values) => {
+            if (!err) {
+                console.log("values===", values)
+                dispatch({
+                    type: 'mychatroom/add',
+                    payload: values,
+                    success: () => {
+                        form.resetFields();
+                        message.success("添加成功！")
+                    },
+                    fail: () => {
+                        message.warn("添加失败！")
+                    }
+                });
+            }
         });
-    },
-})
-class Center extends PureComponent {
-
-    componentDidMount() {
-        const {dispatch} = this.props;
-        dispatch({
-            type: 'room/fetch',
-            payload: {
-                count: 8,
-            },
-        });
+    };
+    onToList = () => {
+        router.push('/mychatroom/search');
     }
-
+  
     render() {
+        const { submitting } = this.props;
         const {
-            list: {list},
-            form,
+            form: { getFieldDecorator, getFieldValue },
         } = this.props;
-        const {getFieldDecorator} = form;
         const formItemLayout = {
+            labelCol: {
+                xs: { span: 24 },
+                sm: { span: 7 },
+            },
             wrapperCol: {
-                xs: {span: 24},
-                sm: {span: 16},
+                xs: { span: 24 },
+                sm: { span: 12 },
+                md: { span: 10 },
             },
         };
-        const actionsTextMap = {
-            expandText: <FormattedMessage id="component.tagSelect.expand" defaultMessage="Expand"/>,
-            collapseText: (
-                <FormattedMessage id="component.tagSelect.collapse" defaultMessage="Collapse"/>
-            ),
-            selectAllText: <FormattedMessage id="component.tagSelect.all" defaultMessage="All"/>,
+
+        const submitFormLayout = {
+            wrapperCol: {
+                xs: { span: 24, offset: 0 },
+                sm: { span: 10, offset: 7 },
+            },
         };
+
         return (
-            <div>
-                <List
-                    className="listData"
-                    grid={{column: 1, gutter: 100}}
-
-                    dataSource={listData}
-                    renderItem={item => (
-                        <List.Item>
-                            <Title level={3}>{item.name}</Title>
-                            <List
-                                grid={{column: 6, gutter: 15}}
-                                dataSource={item.data}
-                                renderItem={item1 => (
-                                    <List.Item>
-                                        <Card
-                                            hoverable
-                                            cover={<img alt={item1.title} src={item1.avatar}/>}
-                                        >
-                                            <Card.Meta description={item1.subDescription}/>
-                                            <Button className="Chatroom-btn">进入房间</Button>
-                                        </Card>
-                                    </List.Item>
-                                )}
-                            />
-
-
-                        </List.Item>
-
-                    )}
-                />
-            </div>
-
-
+            <PageHeaderWrapper
+                title="添加直播间"
+            >
+                <Card bordered={false}>
+                    <Form onSubmit={this.handleSubmit} style={{ marginTop: 8 }}>
+                        <FormItem {...formItemLayout} label="老师">
+                            {getFieldDecorator('room_owner', {
+                                rules: [
+                                    {
+                                        required: true,
+                                        message: "请选择老师",
+                                    },
+                                ],
+                            })(<UserSelectInput role="TEA" placeholder="选择老师" />)}
+                        </FormItem>
+                        <FormItem {...formItemLayout} label="直播间号">
+                            {getFieldDecorator('room_no', {
+                                rules: [
+                                    {
+                                        required: true,
+                                        message: "直播间号",
+                                    },
+                                ],
+                            })(<Input placeholder="请输入直播间号" />)}
+                        </FormItem>
+                        <FormItem {...formItemLayout} label="白名单">
+                            {getFieldDecorator('white_id', {
+                                rules: [
+                                    {
+                                        required: true,
+                                        message: "请输入白名单",
+                                    },
+                                ],
+                            })(<Input placeholder="输入白名单" />)}
+                        </FormItem>
+                        <FormItem {...formItemLayout} label="年级">
+                            {getFieldDecorator('room_grade', {
+                                rules: [
+                                    {
+                                        required: true,
+                                        message: "请选择年级",
+                                    },
+                                ],
+                            })(<Input placeholder="选择年级" />)}
+                        </FormItem>
+                        <FormItem {...formItemLayout} label="课程">
+                            {getFieldDecorator('room_course', {
+                                rules: [
+                                    {
+                                        required: true,
+                                        message: "请选择课程",
+                                    },
+                                ],
+                            })(<Input placeholder="请选择课程" />)}
+                        </FormItem>
+                        <FormItem {...formItemLayout} label="描述">
+                            {getFieldDecorator('room_introduce', {
+                                rules: [
+                                    {
+                                        required: true,
+                                        message: "直播间描述",
+                                    },
+                                ],
+                            })(<Input placeholder="直播间描述" />)}
+                        </FormItem>
+                        <FormItem {...submitFormLayout} style={{ marginTop: 32 }}>
+                            <Button type="primary" htmlType="submit" loading={submitting}>
+                                <FormattedMessage id="form.save" />
+                            </Button>
+                            <Button style={{ marginLeft: 8 }} onClick={this.onToList}>
+                                查看列表
+                            </Button>
+                        </FormItem>
+                    </Form>
+                </Card>
+            </PageHeaderWrapper>
         );
     }
 }
 
-export default Center;
+export default BasicForms;

@@ -51,12 +51,9 @@ export async function ableUser(params) {
 export async function disableUser(params) {
   return request(`/frame-web/user/disableUser?${stringify(params)}`)
 }
-
-
 export async function queryRoomList(params) {
   return request(`/frame-web/rooms/roomsList?${stringify(params)}`)
 }
-
 //Contract
 export async function addContract(params) {
   return request('/frame-web/contracts/saveContracts', {
@@ -253,4 +250,13 @@ export async function queryNotices(params = {}) {
 
 export async function getFakeCaptcha(mobile) {
   return request(`/api/captcha?mobile=${mobile}`);
+}
+
+
+export async function addMyroom(params) {
+  console.log("111111",params)
+  return request('/frame-web/rooms/saveRooms', {
+    method: 'POST',
+    body: params,
+  });
 }
