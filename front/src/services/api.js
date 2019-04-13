@@ -254,3 +254,12 @@ export async function queryNotices(params = {}) {
 export async function getFakeCaptcha(mobile) {
   return request(`/api/captcha?mobile=${mobile}`);
 }
+
+
+export async function addMyroom(params) {
+  console.log("111111",params)
+  return request('/frame-web/rooms/saveRooms', {
+    method: 'POST',
+    body: params,
+  });
+}

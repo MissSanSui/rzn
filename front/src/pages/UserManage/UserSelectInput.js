@@ -58,6 +58,8 @@ export default class SelectInput extends React.Component {
         var title = "选择用户"
         if (role == "STU") {
             title = "选择学生"
+        }else if (role == "TEA") {
+            title = "选择老师"
         }
         return (
             <span>
