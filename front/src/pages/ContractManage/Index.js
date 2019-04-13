@@ -44,7 +44,6 @@ class UserManage extends PureComponent {
     dispatch({
       type: 'contract/fetch',
       payload: {
-        sortName:"contract_room_no"
       }
     })
   }
@@ -77,17 +76,9 @@ class UserManage extends PureComponent {
 
   handleSearch = e => {
     console.log("handleSearch===")
-    // e.preventDefault();
     const { dispatch, form } = this.props;
     form.validateFields((err, fieldsValue) => {
       if (err) return;
-      fieldsValue.sortName = "contract_room_no"
-      console.log("fieldsValue==", fieldsValue)
-     
-      // this.setState({
-      //   formValues: values,
-      // });
-      // 分页查询
       dispatch({
         type: 'contract/fetch',
         payload: fieldsValue,
@@ -133,8 +124,8 @@ class UserManage extends PureComponent {
           </Col>
           <Col md={6} sm={24}>
             <FormItem {...formItemLayout} label="直播间号">
-              {getFieldDecorator('contract_room_no', {
-              })(<Input  placeholder="请输入直播间号" />)}
+              {getFieldDecorator('contract_room_id', {
+              })(<Input placeholder="请输入直播间号" />)}
             </FormItem>
           </Col>
           <Col md={6} sm={24}>
@@ -160,7 +151,7 @@ class UserManage extends PureComponent {
     },
     {
       title: '直播间ID',
-      dataIndex: 'contract_room_no',
+      dataIndex: 'contract_room_id',
     },
     {
       title: '总课时',
@@ -173,9 +164,9 @@ class UserManage extends PureComponent {
     {
       title: '课时费用',
       dataIndex: 'contract_amount',
-      align:'right',
-      render:(text)=>{
-        return ("￥"+text)
+      align: 'right',
+      render: (text) => {
+        return ("￥" + text)
       }
     },
   ];

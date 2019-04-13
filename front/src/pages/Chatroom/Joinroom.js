@@ -1,4 +1,4 @@
-import React, { PureComponent } from "react";
+﻿import React, { PureComponent } from "react";
 import { RoomWhiteboard } from "white-react-sdk";
 import { WhiteWebSdk } from "white-web-sdk";
 import * as serviceWorker from "./serviceWorker";
@@ -10,10 +10,11 @@ import Camera from "./Camera";
 import { connect } from "dva";
 
 
-let room = null;
+// let room = null;
 let miniToken = 'WHITEcGFydG5lcl9pZD1scGMxOEtuU3JaUlE3YWFmUm1wZFNFaEFhM3J3TzB5T01pOTYmc2lnPTM5ZWQxYWY3ZjE3OGE5MTU1ZThmNDFhNmMyNThiYWExNTU0MDA5MmE6YWRtaW5JZD0xMjQmcm9sZT1taW5pJmV4cGlyZV90aW1lPTE1ODI5NzQ5NTAmYWs9bHBjMThLblNyWlJRN2FhZlJtcGRTRWhBYTNyd08weU9NaTk2JmNyZWF0ZV90aW1lPTE1NTE0MTc5OTgmbm9uY2U9MTU1MTQxNzk5ODMxMDAw';
-@connect(({ room }) => ({
-    room
+@connect(({ room, user }) => ({
+    room,
+    currentUser: user.currentUser
 }))
 class Chatroom extends PureComponent {
     constructor(props) {
@@ -30,31 +31,41 @@ class Chatroom extends PureComponent {
     }
 
 
-    async componentWillMount() {
+    joinRoom = async (oldRoom) => {
+        console.log("joinRoom===oldRoom==", oldRoom)
+        const { dispatch, currentUser } = this.props
+        console.log("joinRoom===currentUser==", currentUser)
+        if (currentUser.role == "TEA") {
+            const url = 'https://cloudcapiv4.herewhite.com/room?token=' + oldRoom.miniToken;
+            const requestInit = {
+                method: 'POST',
+                headers: {
+                    "content-type": "application/json",
+                },
+                body: JSON.stringify({
+                    name: '我的第1个 White 房间',
+                    limit: 100, // 房间人数限制
+                    mode: 'historied'
+                }),
+            };
+            const res = await fetch(url, requestInit);
+            const json = await res.json();
+            console.log("joinRoom json==", json)
+            oldRoom.white_id = json.msg.room.uuid
+            oldRoom.white_token = json.msg.roomToken
+            oldRoom.created_date = ""
+            oldRoom.last_updated_date = ""
+            this.setState({
+                oldRoom: oldRoom
+            })
 
+        }
         const whiteWebSdk = new WhiteWebSdk();
-        const url = 'https://cloudcapiv4.herewhite.com/room?token=' + miniToken;
-        const requestInit = {
-            method: 'POST',
-            headers: {
-                "content-type": "application/json",
-            },
-            body: JSON.stringify({
-                name: '我的第1个 White 房间',
-                limit: 100, // 房间人数限制
-                mode: 'historied'
-            }),
-        };
 
-
-        const res = await fetch(url, requestInit);
-        const json = await res.json();
         const room = await whiteWebSdk.joinRoom({
-            uuid: json.msg.room.uuid,
-            roomToken: json.msg.roomToken
+            uuid: oldRoom.white_id,
+            roomToken: oldRoom.white_token
         });
-
-
         function onWindowResize() {
             room.refreshViewSize();
         }
@@ -66,14 +77,35 @@ class Chatroom extends PureComponent {
         });
 
         // 插入场景，并切换到最新场景
-        this.state.room.putScenes("/record", [{name: "class" + classNum}]);
+        this.state.room.putScenes("/record", [{ name: "class" + classNum }]);
         this.state.room.setScenePath("/record/class" + classNum);
     }
-    componentDidMount() {
-        console.log("componentDidMount this.props==",this.props.location.query)
+    componentWillMount() {
+        console.log("componentDidMount this.props==", this.props.location.query)
+        var query = this.props.location.query
         this.setState({
-            roomId:this.props.location.query.roomId
+            roomId: query.roomId,
         })
+        const { dispatch } = this.props
+
+        dispatch({
+            type: 'room/deleteCourseWareAndUser',
+            payload: { roomId: query.roomId },
+            success: (data) => {
+                console.log("componentDidMount data===", data)
+            }
+        });
+        dispatch({
+            type: 'room/fetchRoom',
+            payload: { room_id: query.roomId },
+            success: (data) => {
+                console.log("componentDidMount data===", data)
+                this.setState({
+                    oldRoom: data
+                })
+                this.joinRoom(data)
+            }
+        });
     }
     eraser = () => {
         this.state.room.setMemberState({
@@ -112,7 +144,6 @@ class Chatroom extends PureComponent {
     classList = () => {
         const url1 = 'https://cloudcapiv4.herewhite.com/handle/rooms/snapshots?roomToken=' +
             this.state.room.roomToken;
-            
         fetch(url1, {
             method: 'POST',
             headers: {
@@ -135,9 +166,7 @@ class Chatroom extends PureComponent {
             });
         });
     };
-
     add = () => {
-
         const classNum = this.state.classNum + 1;
         this.setState({
             creatWhiteLoading: false,
@@ -149,7 +178,6 @@ class Chatroom extends PureComponent {
 
         const url1 = 'https://cloudcapiv4.herewhite.com/handle/rooms/snapshots?roomToken=' +
             this.state.room.roomToken;
-
         fetch(url1, {
             method: 'POST',
             headers: {
@@ -173,7 +201,7 @@ class Chatroom extends PureComponent {
             });
         });
     };
-    
+
 
     showDrawer = () => {
         this.setState({
@@ -190,7 +218,7 @@ class Chatroom extends PureComponent {
     onStart = () => {
         const { userIds } = this.props.room
         const { dispatch } = this.props
-        const { roomId } = this.state
+        const { roomId, oldRoom } = this.state
         if (userIds.length == 0) {
             message.warn("请选择学生！")
             return
@@ -202,13 +230,21 @@ class Chatroom extends PureComponent {
                 dispatch({
                     type: 'room/saveCourseWareAndUser',
                     payload: {
-                        room_id:roomId,
+                        room_id: roomId,
                     },
                     success: () => {
-                        message.success("成功开播！")
+                        console.log(" oldRoom.uuid===", oldRoom.uuid)
+                        oldRoom.room_start = "Y"
+                        dispatch({
+                            type: 'room/updateRoom',
+                            payload: oldRoom,
+                            success: (data) => {
+                                message.success("成功开播！")
+                            }
+                        });
                     },
                     fail: (msg) => {
-                        message.warn("操作失败！"+msg)
+                        message.warn("操作失败！" + msg)
                     },
                 })
             },
@@ -216,6 +252,39 @@ class Chatroom extends PureComponent {
 
             },
         });
+    }
+    onClose=()=>{
+        const { dispatch } = this.props
+        const { roomId, oldRoom } = this.state
+        Modal.confirm({
+            title: '是否结束直播?',
+            content: '结束直播后将不能直接返回！',
+            onOk() {
+                dispatch({
+                    type: 'room/deleteCourseWareAndUser',
+                    payload: {
+                        room_id: roomId,
+                    },
+                    success: () => {
+                        oldRoom.room_start = "N"
+                        dispatch({
+                            type: 'room/updateRoom',
+                            payload: oldRoom,
+                            success: (data) => {
+                                message.success("直播结束！")
+                            }
+                        });
+                    },
+                    fail: (msg) => {
+                        message.warn("操作失败！" + msg)
+                    },
+                })
+            },
+            onCancel() {
+
+            },
+        });
+
     }
     showModal = () => {
         this.setState({
@@ -227,6 +296,7 @@ class Chatroom extends PureComponent {
         this.setState({
             confirmLoading: true,
         });
+        
         setTimeout(() => {
             this.setState({
                 modalVisible: false,
@@ -241,12 +311,13 @@ class Chatroom extends PureComponent {
     };
 
     render() {
-        const { modalVisible, confirmLoading, roomId } = this.state;
+        const { modalVisible, confirmLoading, roomId, oldRoom } = this.state;
+        const { currentUser } = this.props
         return (
             this.state.room ?
                 <div className="joinRoomStyle">
                     <div className="room-left">
-                        <Camera />
+                        <Camera appleId={oldRoom.appleId} vedioId={oldRoom.video_id} userId={currentUser.user_id} />
                         <Courseware roomId={roomId} />
                     </div>
                     <div className="room-middle">
@@ -270,7 +341,7 @@ class Chatroom extends PureComponent {
                                 <Icon type="play-circle" theme="filled" onClick={this.onStart} />
                             </Tooltip>
                             <Tooltip placement="topLeft" title="关闭直播">
-                                <Icon type="close-circle" theme="filled" onClick={this.showModal} />
+                                <Icon type="close-circle" theme="filled" onClick={this.onClose} />
                             </Tooltip>
                             <Modal
                                 title="是否保存当前课程"
@@ -306,7 +377,7 @@ class Chatroom extends PureComponent {
                                 onClick={this.state.creatWhiteLoading ? this.add.bind(this) : null}
                             >创建画板</Button>
                         </div>
-                        <WhiteList add={this.add.bind(this)} whiteList={this.state.whiteImgList} room={this.state.room}/>
+                        <WhiteList add={this.add.bind(this)} whiteList={this.state.whiteImgList} room={this.state.room} />
 
                     </Drawer>
 

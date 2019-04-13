@@ -1,5 +1,5 @@
 
-import { queryMyrooms, addMyroom, updateMyroom, deleteMyroom } from '@/services/api';
+import { queryMyrooms, saveRoom, updateMyroom, deleteMyroom } from '@/services/api';
 export default {
   namespace: 'mychatroom',
 
@@ -17,6 +17,7 @@ export default {
   effects: {
     *add({ payload, success, fail }, { call }) {
         console.log("2222",payload)
+	payload.white_id=1
       let formData = new FormData()
       Object.keys(payload).forEach((key) => {
         if (payload[key]) {
@@ -24,11 +25,11 @@ export default {
         }
       });
       console.log("4444",formData)
-      let response = yield call(addMyroom, formData)
+      let response = yield call(saveRoom, formData)
       console.log("5555",response)
       if (response.code) {
         response = response || {}
-        console.log(" addMyroom  fail==", response)
+        console.log(" saveRoom  fail==", response)
         if (fail && typeof fail === 'function') {
           fail(response.msg || '');
         }

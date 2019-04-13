@@ -13,7 +13,7 @@ export function getAuthority(str) {
   if (typeof authority === 'string') {
     return [authority];
   }
-  // return ['STU']
+  // return ['TEA']
   return authority ||['guest'];
 }
 
