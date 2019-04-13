@@ -9,6 +9,13 @@ export default {
 
   state: {
     list: [],
+    myRoom: {
+      list: [],
+      pagination: {
+        current: 1,
+        pageSize: 10
+      },
+    },
     imageList: [],
     courseWareIds: [],
     userIds: [],
@@ -24,6 +31,23 @@ export default {
         type: 'queryList',
         payload: Array.isArray(response) ? response : [],
       });
+    },
+    *fetchMyList({ payload }, { call, put }) {
+      console.log("room  fetch payload===", payload)
+      const response = yield call(queryRoomList, payload);
+      console.log("room  fetch response===", response)
+      if (!response.code) {
+        var result = {
+          list: response.rows,
+          pagination: {
+            total: response.total
+          },
+        }
+        yield put({
+          type: 'save',
+          payload: { myRoom: result },
+        });
+      }
     },
     *appendFetch({ payload }, { call, put }) {
       const response = yield call(queryFakeList, payload);
@@ -170,9 +194,9 @@ export default {
     },
     *saveCourseWareAndUser({ payload, success, fail }, { call, put, select }) {
       console.log("room saveCourseWareAndUser payload==", payload)
-      let { courseWareIds,userIds } = yield select(state => state.room)
-      payload.coursewares_nos = courseWareIds.join(',')
-      payload.user_ids  = userIds.join(',')
+      let { courseWareIds, userIds } = yield select(state => state.room)
+      // payload.coursewares_nos = courseWareIds.join(',')
+      payload.user_ids = userIds.join(',')
       let formData = new FormData()
       Object.keys(payload).forEach((key) => {
         if (payload[key]) {

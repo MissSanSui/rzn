@@ -13,7 +13,7 @@ export function getAuthority(str) {
   if (typeof authority === 'string') {
     return [authority];
   }
-  // return ['SYS']
+  // return ['STU']
   return authority ||['guest'];
 }
 
@@ -22,6 +22,8 @@ export function setAuthority(authority) {
   return sessionStorage.setItem('authority', JSON.stringify(proAuthority));
 }
 export function setUserId(id) {
+  // return 123
+
   return sessionStorage.setItem('userId', JSON.stringify(id));
 }
 export function getUserId() {

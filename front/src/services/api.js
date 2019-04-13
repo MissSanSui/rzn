@@ -51,12 +51,9 @@ export async function ableUser(params) {
 export async function disableUser(params) {
   return request(`/frame-web/user/disableUser?${stringify(params)}`)
 }
-
-
 export async function queryRoomList(params) {
   return request(`/frame-web/rooms/roomsList?${stringify(params)}`)
 }
-
 //Contract
 export async function addContract(params) {
   return request('/frame-web/contracts/saveContracts', {

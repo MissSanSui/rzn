@@ -58,11 +58,8 @@ class Chatroom extends PureComponent {
         function onWindowResize() {
             room.refreshViewSize();
         }
-
         window.addEventListener("resize", onWindowResize);
-
         const classNum = 1;
-
         this.setState({
             room: room,
             classNum: classNum
@@ -72,7 +69,12 @@ class Chatroom extends PureComponent {
         this.state.room.putScenes("/record", [{name: "class" + classNum}]);
         this.state.room.setScenePath("/record/class" + classNum);
     }
-
+    componentDidMount() {
+        console.log("componentDidMount this.props==",this.props.location.query)
+        this.setState({
+            roomId:this.props.location.query.roomId
+        })
+    }
     eraser = () => {
         this.state.room.setMemberState({
             currentApplianceName: "eraser"

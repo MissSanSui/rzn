@@ -6,8 +6,9 @@ import CourseWareSelect from "./../CourseWareManage/CourseWareSelect"
 
 const Option = Select.Option;
 
-@connect(({ room }) => ({
-    room
+@connect(({ room,user }) => ({
+    room,
+    currentUser:user.currentUser
 }))
 class Courseware extends PureComponent {
     constructor(props) {
@@ -116,7 +117,7 @@ class Courseware extends PureComponent {
         return (
             <div>
                 <Col span={19} className="cardStyle">
-                    <div className="Courseware-upload">
+                    <div className="Courseware-upload" style={{display:this.props.currentUser.role=="TEA"?'block':'none'}} >
                         <Select
                             mode="multiple"
                             style={{ width: '100%' }}
