@@ -15,13 +15,20 @@ export default [
     ],
   },
   // app
+
   {
     path: '/',
     component: '../layouts/BasicLayout',
     Routes: ['src/pages/Authorized'],
     routes: [
       // 系统配置页面
-      { path: '/', redirect: '/chat-room' },
+      { path: '/', redirect: '/home', },
+      {
+        name: '',
+        icon: '',
+        path: '/home',
+        component: './Home/Home',
+      },
       {
         name: 'courseWareManage',
         icon: 'courseWareManage',
@@ -34,13 +41,15 @@ export default [
             icon: 'courseWareManage',
             path: '/courseware-manage/add',
             component: './CourseWareManage/Add',
-            authority: ['TEA'], },
+            authority: ['TEA'],
+          },
           {
             name: 'search',
             icon: 'courseWareManage',
             path: '/courseware-manage/search',
             component: './CourseWareManage/Index',
-            authority: ['TEA'], }
+            authority: ['TEA'],
+          }
         ]
       },
       // 用户信息管理
@@ -75,15 +84,13 @@ export default [
         ]
       },
       // 聊天室界面
+      // {
+      //   name: 'chatroom',
+      //   icon: 'video-camera',
+      //   path: '/chat-room',
+      //   component: './Chatroom/Chatroom',
+      // },
       {
-        name: 'chatroom',
-        icon: 'video-camera',
-        path: '/chat-room',
-        component: './Chatroom/Chatroom',
-      },
-      {
-        name: 'joinroom',
-        icon: 'video-camera',
         path: '/join-room',
         authority: ['TEA', 'STU'],
         component: './Chatroom/Joinroom',
@@ -93,7 +100,7 @@ export default [
         name: 'my-chatroom',
         icon: 'video-camera',
         path: '/my-chat-room',
-        authority: ['TEA', 'STU'],
+        authority: ['TEA', 'STU', 'ASS'],
         routes: [
           {
             path: '/my-chat-room/search',
@@ -114,6 +121,7 @@ export default [
             path: '/my-chat-room/add',
             name: 'add',
             component: './Mychatroom/Add',
+            authority: ['ASS'],
             routes: [
               {
                 path: '/my-chat-room/add',

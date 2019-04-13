@@ -89,7 +89,7 @@ class BasicForms extends PureComponent {
                             })(<UserSelectInput role="STU" placeholder="选择学生" />)}
                         </FormItem>
                         <FormItem {...formItemLayout} label="直播间">
-                            {getFieldDecorator('contract_room_no', {
+                            {getFieldDecorator('contract_room_id', {
                                 rules: [
                                     {
                                         required: true,

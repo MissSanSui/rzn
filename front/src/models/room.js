@@ -1,7 +1,7 @@
 import {
   queryRoomList, removeFakeList, addFakeList, updateFakeList, saveRoomCourseWare,
   queryRoomCoursewares, queryCoursewareImages, deleteRoomCourseWare, findContracts,
-  saveRoomCourseWareAndUser
+  updateRoom,saveRoomCourseWareAndUser, queryRoom,deleteRoomCourseWareAndUser
 } from '@/services/api';
 
 export default {
@@ -24,16 +24,51 @@ export default {
 
   effects: {
     *fetch({ payload }, { call, put }) {
-      console.log("room  fetch payload===", payload)
+      // console.log("room  fetch payload===", payload)
       const response = yield call(queryRoomList, payload);
-      console.log("room  fetch response===", response)
+      // console.log("room  fetch response===", response)
       yield put({
         type: 'queryList',
         payload: Array.isArray(response) ? response : [],
       });
     },
+    *fetchRoom({ payload, success, fail }, { call, put }) {
+      // console.log("room  fetchRoom payload===", payload)
+      const response = yield call(queryRoom, payload);
+      // console.log("room  fetchRoom response===", response)
+      if (!response.code) {
+        if (success && typeof success === 'function') {
+          success(response.data);
+        }
+      }
+      // yield put({
+      //   type: 'queryList',
+      //   payload: Array.isArray(response) ? response : [],
+      // });
+    },
+    *updateRoom({ payload, success, fail }, { call }) {
+     console.log("room updateRoom payload==",payload)
+      let formData = new FormData()
+      Object.keys(payload).forEach((key) => {
+        if (payload[key]) {
+          formData.append(key, payload[key])
+        }
+      });
+      let response = yield call(updateRoom, formData)
+      if (response.code) {
+        response = response || {}
+        if (fail && typeof fail === 'function') {
+          fail(response.msg || '');
+        }
+      }
+      else {
+        if (success && typeof success === 'function') {
+          success();
+        }
+      }
+    },
     *fetchMyList({ payload }, { call, put }) {
-      console.log("room  fetch payload===", payload)
+      // console.log("room  fetch payload===", payload)
       const response = yield call(queryRoomList, payload);
       console.log("room  fetch response===", response)
       if (!response.code) {
@@ -105,11 +140,11 @@ export default {
       }
     },
     *fetchImages({ payload, success, fail }, { call, put, select }) {
-      console.log("room fetchImages payload==", payload)
+      // console.log("room fetchImages payload==", payload)
       let result = yield call(queryRoomCoursewares, payload);
       let imageList = []
       let courseWareIds = []
-      console.log("imageList===", imageList)
+      // console.log("imageList===", imageList)
       if (result.rows && result.rows.length > 0) {
         // let imageList = yield select(state => state.room.imageList)
         for (var i = 0; i < result.rows.length; i++) {
@@ -193,10 +228,11 @@ export default {
       });
     },
     *saveCourseWareAndUser({ payload, success, fail }, { call, put, select }) {
-      console.log("room saveCourseWareAndUser payload==", payload)
       let { courseWareIds, userIds } = yield select(state => state.room)
       // payload.coursewares_nos = courseWareIds.join(',')
-      payload.user_ids = userIds.join(',')
+      // payload.user_ids = userIds.join(',')
+      payload.user_ids = userIds
+      console.log("room saveCourseWareAndUser payload==", payload)
       let formData = new FormData()
       Object.keys(payload).forEach((key) => {
         if (payload[key]) {
@@ -204,6 +240,23 @@ export default {
         }
       });
       let response = yield call(saveRoomCourseWareAndUser, formData);
+      console.log("room saveCourseWareAndUser response==", response)
+
+      if (!response.code) {
+        if (success && typeof success === 'function') {
+          success();
+        }
+      } else {
+        if (fail && typeof fail === 'function') {
+          fail(response.msg);
+        }
+      }
+    },
+    *deleteCourseWareAndUser({ payload, success, fail }, { call, put, select }) {
+      console.log("room deleteCourseWareAndUser payload==", payload)
+      let response = yield call(deleteRoomCourseWareAndUser, payload);
+      console.log("room deleteCourseWareAndUser response==", response)
+
       if (!response.code) {
         if (success && typeof success === 'function') {
           success();

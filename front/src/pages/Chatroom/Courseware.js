@@ -26,6 +26,8 @@ class Courseware extends PureComponent {
     }
     componentDidMount() {
         console.log("componentDidMount==")
+        console.log("componentDidMount== this.props.currentUser.role", this.props.currentUser)
+       
         const { dispatch, roomId } = this.props;
 
         dispatch({
@@ -37,7 +39,7 @@ class Courseware extends PureComponent {
         dispatch({
             type: 'room/fetchContracts',
             payload: {
-                contract_room_no: roomId
+                contract_room_id: roomId
             }
         })
     }
@@ -117,9 +119,9 @@ class Courseware extends PureComponent {
         return (
             <div>
                 <Col span={19} className="cardStyle">
-                    <div className="Courseware-upload" style={{display:this.props.currentUser.role=="TEA"?'block':'none'}} >
+                    <div className="Courseware-upload" style={{display:(this.props.currentUser.role=="TEA"?'block':'block')}} >
                         <Select
-                            mode="multiple"
+                            // mode="multiple"
                             style={{ width: '100%' }}
                             placeholder="请选择学生"
                             onChange={this.onSelectStu}

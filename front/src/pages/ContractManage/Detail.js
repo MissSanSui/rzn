@@ -141,7 +141,7 @@ class AddUser extends PureComponent {
             <Col span={12}>
               <FormItem {...formItemLayout} label="直播间">
                 {getFieldDecorator('emp_name_fus', {
-                  initialValue: modifyContract.contract_room_no,
+                  initialValue: modifyContract.contract_room_id,
                 })(<Input disabled />)}
               </FormItem>
             </Col>

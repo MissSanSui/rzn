@@ -9,7 +9,6 @@ class Camera extends PureComponent {
         super(props);
 
     }
-
     componentWillUnmount(){
         this.state.client && this.state.client.unpublish(this.state.localStream);
         this.state.localStream && this.state.localStream.close();
@@ -24,9 +23,14 @@ class Camera extends PureComponent {
             );
     }
 
-    async componentWillMount() {
+    async componentDidMount() {
         // 加入视频直播间
-        const appleId = '4c2508e4a3b94c72a5c56e80281760fd';
+        const appleId =this.props.appleId||''
+        const vedioId =this.props.vedioId
+        const userId =this.props.userId
+        console.log("camera componentDidMount appleId==",appleId)
+        console.log("camera componentDidMount vedioId==",vedioId)
+        console.log("camera componentDidMount userId==",userId)
         const client = AgoraRTC.createClient({mode: 'live', codec: "h264"});
         
         this.setState({
@@ -37,7 +41,7 @@ class Camera extends PureComponent {
         client.init(appleId, function () {
             console.log("AgoraRTC client initialized");
             // 初始化成功后加入频道
-            client.join(null, 'fans', '1', function (uid) {
+            client.join(null, vedioId, userId, function (uid) {
                 console.log("User " + uid + " join channel successfully");
                 var localStream = AgoraRTC.createStream({
                         streamID: uid,
@@ -75,7 +79,7 @@ class Camera extends PureComponent {
 
             client.on('stream-added', function (evt) {
                 var stream = evt.stream;
-                this.setState({
+                that.setState({
                     stream: stream
                 });
                 console.log("New stream added: " + stream.getId());

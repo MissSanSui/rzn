@@ -45,7 +45,7 @@ class MyRoomList extends PureComponent {
     }
     handleStandardTableChange = (pagination, filtersArg, sorter) => {
         console.log("pagination====", pagination);
-        const { dispatch } = this.props;
+        const { dispatch, currentUser } = this.props;
         const { formValues } = this.state;
 
         const filters = Object.keys(filtersArg).reduce((obj, key) => {
@@ -62,6 +62,15 @@ class MyRoomList extends PureComponent {
         if (sorter.field) {
             params.sorter = `${sorter.field}_${sorter.order}`;
         }
+        switch (currentUser.role) {
+            case "STU":
+                break;
+            case "TEA":
+                params.room_owner = currentUser.user_id
+                break;
+            default:
+                break;
+        }
         // 分页查询
         console.log(params);
         dispatch({
@@ -70,27 +79,27 @@ class MyRoomList extends PureComponent {
         });
     };
     joinRoom = (room) => {
-        console.log("joinRoom  room===",room)
-        router.push( { pathname:'/join-room', query: { roomId:room.room_no } })
+        console.log("joinRoom  room===", room)
+        router.push({ pathname: '/join-room', query: { roomId: room.room_id} })
     }
     handleSearch = e => {
         console.log("handleSearch===")
         // e.preventDefault();
         const { dispatch, form, currentUser } = this.props;
-        switch (currentUser.role) {
-            case "STU":
-                break;
-            default:
-                break;
-        }
+
         form.validateFields((err, fieldsValue) => {
             if (err) return;
-            fieldsValue.sortName = "room_no"
             console.log("fieldsValue==", fieldsValue)
 
-            // this.setState({
-            //   formValues: values,
-            // });
+            switch (currentUser.role) {
+                case "STU":
+                    break;
+                case "TEA":
+                    fieldsValue.room_owner = currentUser.user_id
+                    break;
+                default:
+                    break;
+            }
             // 分页查询
             dispatch({
                 type: 'room/fetchMyList',
@@ -124,7 +133,7 @@ class MyRoomList extends PureComponent {
                     </Col> */}
                     <Col md={6} sm={24}>
                         <FormItem {...formItemLayout} label="直播间号">
-                            {getFieldDecorator('room_no', {
+                            {getFieldDecorator('room_id', {
                             })(<Input placeholder="请输入直播间号" />)}
                         </FormItem>
                     </Col>
@@ -143,7 +152,7 @@ class MyRoomList extends PureComponent {
     columns = [
         {
             title: '直播间ID',
-            dataIndex: 'room_no',
+            dataIndex: 'room_id',
         },
         {
             title: '直播间描述',
@@ -156,10 +165,50 @@ class MyRoomList extends PureComponent {
         {
             title: '年级',
             dataIndex: 'room_grade',
+            render: (text) => {
+                var grade = text
+                switch (text) {
+                    case "PRI":
+                        grade = "小学"
+                        break;
+                    case "JUN":
+                        grade = "初中"
+                        break;
+                    case "SEN":
+                        grade = "高中"
+                        break;
+                    default:
+                        break;
+                }
+                return grade
+            }
         },
         {
             title: '课程',
             dataIndex: 'room_course',
+            render: (text) => {
+                var course = text
+                switch (text) {
+                    case "MATH":
+                        course = "数学"
+                        break;
+                    case "ENG":
+                        course = "英语"
+                        break;
+                    case "LAN":
+                        course = "语文"
+                        break;
+                    case "MAN":
+                        course = "理综"
+                        break;
+                    case "COM":
+                        course = "文综"
+                        break;
+                    default:
+                        break;
+                }
+                return course
+            }
         },
         // {
         //     title: '剩余课时',
@@ -168,13 +217,20 @@ class MyRoomList extends PureComponent {
         {
             title: '状态',
             dataIndex: 'room_start',
+            render: (text) => {
+                if (text == "Y") {
+                    return "开播中"
+                } else {
+                    return "未开播"
+                }
+            }
         },
         {
             title: '操作',
             dataIndex: 'user_ids',
             align: 'center',
             render: (text, room) => {
-                if (room.room_start) {
+                if ((room.room_start && text) || this.props.currentUser.role == "TEA") {
                     // {this.props.currentUser.role}
                     return (<a onClick={() => this.joinRoom(room)}>进入直播间</a>)
                 } else {
@@ -197,7 +253,7 @@ class MyRoomList extends PureComponent {
                         // loading={loading}
                         dataSource={myRoom.list}
                         // key={item.id}
-                        rowKey={record => record.room_no}
+                        rowKey={record => record.room_id}
                         columns={this.columns}
                         pagination={myRoom.pagination}
                         onChange={this.handleStandardTableChange}
