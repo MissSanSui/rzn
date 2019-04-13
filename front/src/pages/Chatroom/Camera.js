@@ -16,10 +16,10 @@ class Camera extends PureComponent {
         this.state.client &&
         this.state.client.leave(
             () => {
-                localLog('Client succeed to leave.');
+                console.log('Client succeed to leave.');
             },
             () => {
-                localLog('Client failed to leave.');
+                console.log('Client failed to leave.');
                 }
             );
     }
