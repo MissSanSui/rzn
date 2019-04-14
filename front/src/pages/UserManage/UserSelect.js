@@ -25,7 +25,7 @@ const getValue = obj =>
 @connect(({ userManage, loading }) => ({
     userManage,
     loading: loading.models.userManage,
-  }))
+}))
 @Form.create()
 export default class UserSelect extends PureComponent {
     state = {
@@ -70,12 +70,12 @@ export default class UserSelect extends PureComponent {
 
     handleSearch = e => {
         // e.preventDefault();
-        const { dispatch, form,role } = this.props;
+        const { dispatch, form, role } = this.props;
         form.validateFields((err, fieldsValue) => {
             if (err) return;
             const values = {
                 ...fieldsValue,
-                role:role
+                role: role
             };
             dispatch({
                 type: 'userManage/fetch',
@@ -100,9 +100,13 @@ export default class UserSelect extends PureComponent {
                         <span className={styles.submitButtons}>
                             <Button type="primary" htmlType="submit">
                                 查询
-              </Button>
+                            </Button>
                         </span>
                     </Col>
+                    <Col md={6} sm={24}>
+                        <Button onClick={this.clear}>清空</Button>
+                    </Col>
+
                 </Row>
             </Form>
         );
@@ -156,9 +160,12 @@ export default class UserSelect extends PureComponent {
             dataIndex: 'mobile',
         },
     ];
+    clear = () => {
+        this.props.onSelect({ emp_name: "", user_id: "" })
+    }
     render() {
-      
-        console.log("this.props===",this.props)
+
+        console.log("this.props===", this.props)
         const {
             userManage: { data },
             loading,

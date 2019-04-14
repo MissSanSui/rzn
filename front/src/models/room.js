@@ -1,7 +1,7 @@
 import {
   queryRoomList, removeFakeList, addFakeList, updateFakeList, saveRoomCourseWare,
   queryRoomCoursewares, queryCoursewareImages, deleteRoomCourseWare, findContracts,
-  updateRoom,saveRoomCourseWareAndUser, queryRoom,deleteRoomCourseWareAndUser
+  updateRoom, saveRoomCourseWareAndUser, queryRoom, deleteRoomCourseWareAndUser
 } from '@/services/api';
 
 export default {
@@ -18,7 +18,7 @@ export default {
     },
     imageList: [],
     courseWareIds: [],
-    userIds: [],
+    userIds: "",
     contractList: [],
   },
 
@@ -46,8 +46,10 @@ export default {
       //   payload: Array.isArray(response) ? response : [],
       // });
     },
-    *updateRoom({ payload, success, fail }, { call }) {
-     console.log("room updateRoom payload==",payload)
+    *updateRoom({ payload, success, fail }, { call, select }) {
+      console.log("room updateRoom payload==", payload)
+      let { courseWareIds, userIds } = yield select(state => state.room)
+      payload.user_ids = userIds
       let formData = new FormData()
       Object.keys(payload).forEach((key) => {
         if (payload[key]) {
@@ -64,11 +66,16 @@ export default {
       else {
         if (success && typeof success === 'function') {
           success();
+          yield put({
+            type: 'save',
+            payload: { },
+          });
         }
       }
     },
     *fetchMyList({ payload }, { call, put }) {
       // console.log("room  fetch payload===", payload)
+      payload.sortName = "room_id"
       const response = yield call(queryRoomList, payload);
       console.log("room  fetch response===", response)
       if (!response.code) {
@@ -106,41 +113,31 @@ export default {
     },
     *saveCourseWare({ payload, success, fail }, { call, put, select }) {
       console.log("room saveCourseWare payload==", payload)
-      let formData = new FormData()
-      Object.keys(payload).forEach((key) => {
-        if (payload[key]) {
-          formData.append(key, payload[key])
-        }
-      });
-      let response = yield call(saveRoomCourseWare, formData);
-      if (!response.code) {
-        let { imageList, courseWareIds } = yield select(state => state.room)
-        let data = {}
-        data.coursewares_no = payload.coursewares_no
-        courseWareIds.push(payload.coursewares_no)
-        let response = yield call(queryCoursewareImages, data);
-        console.log("fetchImages   response==", response)
-        if (response.rows && response.rows.length > 0) {
-          imageList = imageList.concat(response.rows)
-          yield put({
-            type: 'save',
-            payload: {
-              imageList: imageList,
-              courseWareIds: courseWareIds
-            },
-          });
-        }
+      let { imageList, courseWareIds } = yield select(state => state.room)
+      let data = {}
+      data.coursewares_no = payload.coursewares_no
+      courseWareIds.push(payload.coursewares_no)
+      let response = yield call(queryCoursewareImages, data);
+      if (response.rows && response.rows.length > 0) {
+        imageList = imageList.concat(response.rows)
+        yield put({
+          type: 'save',
+          payload: {
+            imageList: imageList,
+            courseWareIds: courseWareIds
+          },
+        });
         if (success && typeof success === 'function') {
           success();
         }
       } else {
         if (fail && typeof fail === 'function') {
-          fail(response.msg);
+          fail();
         }
       }
+
     },
     *fetchImages({ payload, success, fail }, { call, put, select }) {
-      // console.log("room fetchImages payload==", payload)
       let result = yield call(queryRoomCoursewares, payload);
       let imageList = []
       let courseWareIds = []
@@ -168,43 +165,37 @@ export default {
     },
     *removeCourseWare({ payload, success, fail }, { call, put, select }) {
       console.log("room removeCourseWare payload==", payload)
-      let formData = new FormData()
-      Object.keys(payload).forEach((key) => {
-        if (payload[key]) {
-          formData.append(key, payload[key])
+      // let formData = new FormData()
+      // Object.keys(payload).forEach((key) => {
+      //   if (payload[key]) {
+      //     formData.append(key, payload[key])
+      //   }
+      // });
+      // let response = yield call(deleteRoomCourseWare, formData);
+      let { imageList, courseWareIds } = yield select(state => state.room)
+      let images = []
+      imageList.forEach(item => {
+        if (item.coursewares_no != payload.coursewares_no) {
+          images.push(item)
         }
+      })
+      let ids = []
+      courseWareIds.forEach(item => {
+        if (item != payload.coursewares_no) {
+          ids.push(item)
+        }
+      })
+      console.log("ids===", ids)
+      // if (success && typeof success === 'function') {
+      //   success();
+      // }
+      yield put({
+        type: 'save',
+        payload: {
+          imageList: images,
+          courseWareIds: ids
+        },
       });
-      let response = yield call(deleteRoomCourseWare, formData);
-      if (!response.code) {
-        let { imageList, courseWareIds } = yield select(state => state.room)
-        let images = []
-        imageList.forEach(item => {
-          if (item.coursewares_no != payload.coursewares_no) {
-            images.push(item)
-          }
-        })
-        let ids = []
-        courseWareIds.forEach(item => {
-          if (item != payload.coursewares_no) {
-            ids.push(item)
-          }
-        })
-        console.log("ids===", ids)
-        if (success && typeof success === 'function') {
-          success();
-        }
-        yield put({
-          type: 'save',
-          payload: {
-            imageList: images,
-            courseWareIds: ids
-          },
-        });
-      } else {
-        if (fail && typeof fail === 'function') {
-          fail(response.msg);
-        }
-      }
     },
     *fetchContracts({ payload, success, fail }, { call, put, select }) {
       console.log("room fetchContracts payload==", payload)
@@ -228,8 +219,11 @@ export default {
       });
     },
     *saveCourseWareAndUser({ payload, success, fail }, { call, put, select }) {
+      console.log("room saveCourseWareAndUser payload==", payload)
       let { courseWareIds, userIds } = yield select(state => state.room)
-      // payload.coursewares_nos = courseWareIds.join(',')
+      console.log("room saveCourseWareAndUser courseWareIds==", courseWareIds)
+      console.log("room saveCourseWareAndUser userIds==", userIds)
+      payload.coursewares_nos = courseWareIds.join(',')
       // payload.user_ids = userIds.join(',')
       payload.user_ids = userIds
       console.log("room saveCourseWareAndUser payload==", payload)
@@ -256,7 +250,14 @@ export default {
       console.log("room deleteCourseWareAndUser payload==", payload)
       let response = yield call(deleteRoomCourseWareAndUser, payload);
       console.log("room deleteCourseWareAndUser response==", response)
-
+      yield put({
+        type: 'save',
+        payload: {
+          userIds: "",
+          imageList: [],
+          courseWareIds: []
+        },
+      });
       if (!response.code) {
         if (success && typeof success === 'function') {
           success();

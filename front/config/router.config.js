@@ -106,16 +106,16 @@ export default [
             path: '/my-chat-room/search',
             name: 'search',
             component: './Mychatroom/List',
-            routes: [
-              {
-                path: '/my-chat-room/search',
-                redirect: '/my-chat-room/search',
-              },
-              {
-                path: '/my-chat-room/search',
-                component: './Mychatroom/List',
-              },
-            ],
+            // routes: [
+            //   {
+            //     path: '/my-chat-room/search',
+            //     redirect: '/my-chat-room/search',
+            //   },
+            //   {
+            //     path: '/my-chat-room/search',
+            //     component: './Mychatroom/List',
+            //   },
+            // ],
           },
           {
             path: '/my-chat-room/add',
