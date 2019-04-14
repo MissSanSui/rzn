@@ -27,8 +27,9 @@ class BasicForms extends PureComponent {
                     type: 'contract/add',
                     payload: values,
                     success: () => {
-                        form.resetFields();
+                        // form.resetFields();
                         message.success("添加成功！")
+                        router.push('/contract-manage/search');
                     },
                     fail: () => {
                         message.warn("添加失败！")

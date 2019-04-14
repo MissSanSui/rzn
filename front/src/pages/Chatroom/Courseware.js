@@ -6,9 +6,9 @@ import CourseWareSelect from "./../CourseWareManage/CourseWareSelect"
 
 const Option = Select.Option;
 
-@connect(({ room,user }) => ({
+@connect(({ room, user }) => ({
     room,
-    currentUser:user.currentUser
+    currentUser: user.currentUser
 }))
 class Courseware extends PureComponent {
     constructor(props) {
@@ -21,27 +21,36 @@ class Courseware extends PureComponent {
                 title: "请选择您要上传的课件",
                 width: '60%',
             },
-            user_ids:[],
+            user_ids: [],
         }
     }
     componentDidMount() {
         console.log("componentDidMount==")
         console.log("componentDidMount== this.props.currentUser.role", this.props.currentUser)
-       
-        const { dispatch, roomId } = this.props;
+        const { dispatch, roomId, currentUser } = this.props;
+        if (currentUser.role == "TEA") {
+            dispatch({
+                type: 'room/deleteCourseWareAndUser',
+                payload: { roomId: roomId },
+                success: (data) => {
+                    console.log("componentDidMount data===", data)
+                }
+            });
+            dispatch({
+                type: 'room/fetchContracts',
+                payload: {
+                    contract_room_id: roomId
+                }
+            })
+        } else {
+            dispatch({
+                type: 'room/fetchImages',
+                payload: {
+                    room_id: roomId
+                }
+            })
 
-        dispatch({
-            type: 'room/fetchImages',
-            payload: {
-                room_id: roomId
-            }
-        })
-        dispatch({
-            type: 'room/fetchContracts',
-            payload: {
-                contract_room_id: roomId
-            }
-        })
+        }
     }
     onSelect = (courseWare) => {
         const { roomId, dispatch } = this.props
@@ -52,14 +61,14 @@ class Courseware extends PureComponent {
         dispatch({
             type: 'room/saveCourseWare',
             payload: data,
-            success: () => {
-                message.success('添加成功!');
-                // this.handleCancel()
-            },
-            fail: (res) => {
-                console.log("fail====", res)
-                message.error('添加失败！');
-            },
+            // success: () => {
+            //     message.success('添加成功!');
+            //     // this.handleCancel()
+            // },
+            // fail: (res) => {
+            //     console.log("fail====", res)
+            //     message.error('添加失败！');
+            // },
         });
     }
     onRemove = (courseWare) => {
@@ -72,14 +81,14 @@ class Courseware extends PureComponent {
         dispatch({
             type: 'room/removeCourseWare',
             payload: data,
-            success: () => {
-                message.success('删除成功！');
-                // this.handleCancel()
-            },
-            fail: (res) => {
-                console.log("fail====", res)
-                message.error('删除失败！');
-            },
+            // success: () => {
+            //     message.success('删除成功！');
+            //     // this.handleCancel()
+            // },
+            // fail: (res) => {
+            //     console.log("fail====", res)
+            //     message.error('删除失败！');
+            // },
         });
     }
     showModal = () => {
@@ -104,7 +113,7 @@ class Courseware extends PureComponent {
     };
     onSelectStu = (value) => {
         console.log("onSelectStu value==", value)
-        const {dispatch}= this.props
+        const { dispatch } = this.props
         dispatch({
             type: 'room/selectUsers',
             payload: value,
@@ -119,7 +128,7 @@ class Courseware extends PureComponent {
         return (
             <div>
                 <Col span={19} className="cardStyle">
-                    <div className="Courseware-upload" style={{display:(this.props.currentUser.role=="TEA"?'block':'block')}} >
+                    <div className="Courseware-upload" style={{ display: (this.props.currentUser.role == "TEA" ? 'block' : 'none') }} >
                         <Select
                             // mode="multiple"
                             style={{ width: '100%' }}

@@ -24,7 +24,7 @@ export default class SelectInput extends React.Component {
         super(props);
         const value = props.value || {};
         this.state = {
-            userModalVisible:false
+            userModalVisible: false
         };
     }
 
@@ -34,7 +34,7 @@ export default class SelectInput extends React.Component {
         })
         const onChange = this.props.onChange;
         if (onChange) {
-            onChange( user.user_id );
+            onChange(user.user_id);
         }
         this.onCancel()
     }
@@ -48,6 +48,7 @@ export default class SelectInput extends React.Component {
             userModalVisible: false
         })
     }
+
     render() {
         const { size, role,
             loading, } = this.props;
@@ -58,7 +59,7 @@ export default class SelectInput extends React.Component {
         var title = "选择用户"
         if (role == "STU") {
             title = "选择学生"
-        }else if (role == "TEA") {
+        } else if (role == "TEA") {
             title = "选择老师"
         }
         return (
@@ -77,7 +78,7 @@ export default class SelectInput extends React.Component {
                     onCancel={this.onCancel}
                     width="60%"
                 >
-                    <UserSelect role={this.props.role} onSelect={this.onSelect}  />
+                    <UserSelect role={this.props.role} onSelect={this.onSelect} />
                 </Modal >
             </span>
         );

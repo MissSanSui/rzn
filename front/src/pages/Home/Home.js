@@ -12,7 +12,6 @@ import getPageTitle from '@/utils/getPageTitle';
 
 const links =[]
 
-
 const copyright = (
   <Fragment>
     Copyright <Icon type="copyright" /> 2019 河北万卷书教育科技有限公司

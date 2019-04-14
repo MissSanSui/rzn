@@ -26,7 +26,10 @@ export async function fakeAccountLogin(params) {
     body: params,
   });
 }
-
+export async function logout(params) {
+  
+  return request(`/frame-web/logoutSso?${stringify(params)}`)
+}
 export async function addUser(params) {
   return request('/frame-web/user/saveUserInfo', {
     method: 'POST',

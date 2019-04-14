@@ -38,16 +38,18 @@ class MyRoomList extends PureComponent {
     componentDidMount() {
         console.log("componentDidMount==")
         this.handleSearch()
-        // this.timer = setInterval(() => this.handleSearch(), 5000);
+        const {  currentUser } = this.props;
+        if (currentUser.role == "STU") {
+            this.timer = setInterval(() => this.handleSearch(), 5000);
+        }
     }
     componentWillUnmount() {
-        // clearInterval(this.timer);
+        clearInterval(this.timer);
     }
     handleStandardTableChange = (pagination, filtersArg, sorter) => {
         console.log("pagination====", pagination);
         const { dispatch, currentUser } = this.props;
         const { formValues } = this.state;
-
         const filters = Object.keys(filtersArg).reduce((obj, key) => {
             const newObj = { ...obj };
             newObj[key] = getValue(filtersArg[key]);
@@ -64,6 +66,7 @@ class MyRoomList extends PureComponent {
         }
         switch (currentUser.role) {
             case "STU":
+                fieldsValue.user_id = currentUser.user_id
                 break;
             case "TEA":
                 params.room_owner = currentUser.user_id
@@ -80,7 +83,7 @@ class MyRoomList extends PureComponent {
     };
     joinRoom = (room) => {
         console.log("joinRoom  room===", room)
-        router.push({ pathname: '/join-room', query: { roomId: room.room_id} })
+        router.push({ pathname: '/join-room', query: { roomId: room.room_id } })
     }
     handleSearch = e => {
         console.log("handleSearch===")
@@ -93,6 +96,7 @@ class MyRoomList extends PureComponent {
 
             switch (currentUser.role) {
                 case "STU":
+                    fieldsValue.user_id = currentUser.user_id
                     break;
                 case "TEA":
                     fieldsValue.room_owner = currentUser.user_id
@@ -230,8 +234,9 @@ class MyRoomList extends PureComponent {
             dataIndex: 'user_ids',
             align: 'center',
             render: (text, room) => {
-                if ((room.room_start && text) || this.props.currentUser.role == "TEA") {
-                    // {this.props.currentUser.role}
+                var role = this.props.currentUser.role
+                var user_id = this.props.currentUser.user_id
+                if ((room.room_start == "Y" && role == "STU" && text == user_id) || role == "TEA") {
                     return (<a onClick={() => this.joinRoom(room)}>进入直播间</a>)
                 } else {
                     return ("-")

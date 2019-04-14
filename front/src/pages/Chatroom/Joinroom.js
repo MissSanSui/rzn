@@ -3,6 +3,7 @@ import { RoomWhiteboard } from "white-react-sdk";
 import { WhiteWebSdk } from "white-web-sdk";
 import * as serviceWorker from "./serviceWorker";
 import { Row, Col, Button, Icon, Modal, Tooltip, Drawer, Input, Select, message } from "antd";
+import router from 'umi/router';
 import "white-web-sdk/style/index.css";
 import Courseware from "./Courseware";
 import WhiteList from "./WhiteList";
@@ -88,13 +89,6 @@ class Chatroom extends PureComponent {
         })
         const { dispatch } = this.props
 
-        dispatch({
-            type: 'room/deleteCourseWareAndUser',
-            payload: { roomId: query.roomId },
-            success: (data) => {
-                console.log("componentDidMount data===", data)
-            }
-        });
         dispatch({
             type: 'room/fetchRoom',
             payload: { room_id: query.roomId },
@@ -216,13 +210,18 @@ class Chatroom extends PureComponent {
         });
     };
     onStart = () => {
-        const { userIds } = this.props.room
+        const { userIds, courseWareIds } = this.props.room
         const { dispatch } = this.props
         const { roomId, oldRoom } = this.state
-        if (userIds.length == 0) {
+        if (userIds == "" || userIds.length == 0) {
             message.warn("请选择学生！")
             return
         }
+        if (courseWareIds.length == 0) {
+            message.warn("请选择课件！")
+            return
+        }
+        var that = this
         Modal.confirm({
             title: '是否开始直播?',
             content: '请确认已经选择好学生和课件！',
@@ -233,13 +232,15 @@ class Chatroom extends PureComponent {
                         room_id: roomId,
                     },
                     success: () => {
-                        console.log(" oldRoom.uuid===", oldRoom.uuid)
                         oldRoom.room_start = "Y"
                         dispatch({
                             type: 'room/updateRoom',
                             payload: oldRoom,
                             success: (data) => {
                                 message.success("成功开播！")
+                                that.setState({
+                                    oldRoom:oldRoom
+                                })
                             }
                         });
                     },
@@ -249,11 +250,10 @@ class Chatroom extends PureComponent {
                 })
             },
             onCancel() {
-
             },
         });
     }
-    onClose=()=>{
+    onClose = () => {
         const { dispatch } = this.props
         const { roomId, oldRoom } = this.state
         Modal.confirm({
@@ -272,6 +272,7 @@ class Chatroom extends PureComponent {
                             payload: oldRoom,
                             success: (data) => {
                                 message.success("直播结束！")
+                                router.push({ pathname: '/my-chat-room/search' })
                             }
                         });
                     },
@@ -296,7 +297,7 @@ class Chatroom extends PureComponent {
         this.setState({
             confirmLoading: true,
         });
-        
+
         setTimeout(() => {
             this.setState({
                 modalVisible: false,
@@ -311,8 +312,9 @@ class Chatroom extends PureComponent {
     };
 
     render() {
-        const { modalVisible, confirmLoading, roomId, oldRoom } = this.state;
+        let { modalVisible, confirmLoading, roomId, oldRoom } = this.state;
         const { currentUser } = this.props
+        console.log("oldRoom===", oldRoom)
         return (
             this.state.room ?
                 <div className="joinRoomStyle">
@@ -337,12 +339,14 @@ class Chatroom extends PureComponent {
                         </ul>
 
                         <div className="video-icon">
-                            <Tooltip placement="topLeft" title="开启直播">
-                                <Icon type="play-circle" theme="filled" onClick={this.onStart} />
-                            </Tooltip>
-                            <Tooltip placement="topLeft" title="关闭直播">
-                                <Icon type="close-circle" theme="filled" onClick={this.onClose} />
-                            </Tooltip>
+                            <div style={{display:currentUser.role=="TEA"?"block":"none"}}>
+                                <Tooltip placement="topLeft" title="开启直播" >
+                                    <Icon type="play-circle" theme="filled" onClick={this.onStart} />
+                                </Tooltip>
+                                <Tooltip placement="topLeft" title="关闭直播">
+                                    <Icon type="close-circle" theme="filled" onClick={this.onClose} />
+                                </Tooltip>
+                            </div>
                             <Modal
                                 title="是否保存当前课程"
                                 visible={modalVisible}
