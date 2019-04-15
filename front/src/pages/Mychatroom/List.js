@@ -22,8 +22,8 @@ const getValue = obj =>
         .join(',');
 
 /* eslint react/no-multi-comp:0 */
-@connect(({ room, user }) => ({
-    myRoom: room.myRoom,
+@connect(({ mychatroom, user }) => ({
+    data: mychatroom.data,
     currentUser: user.currentUser
 }))
 @Form.create()
@@ -66,7 +66,7 @@ class MyRoomList extends PureComponent {
         }
         switch (currentUser.role) {
             case "STU":
-                fieldsValue.user_id = currentUser.user_id
+                fieldsValue.contract_stu = currentUser.user_id
                 break;
             case "TEA":
                 params.room_owner = currentUser.user_id
@@ -77,7 +77,7 @@ class MyRoomList extends PureComponent {
         // 分页查询
         console.log(params);
         dispatch({
-            type: 'room/fetchMyList',
+            type: 'mychatroom/fetchMyList',
             payload: params,
         });
     };
@@ -96,7 +96,7 @@ class MyRoomList extends PureComponent {
 
             switch (currentUser.role) {
                 case "STU":
-                    fieldsValue.user_id = currentUser.user_id
+                    fieldsValue.contract_stu = currentUser.user_id
                     break;
                 case "TEA":
                     fieldsValue.room_owner = currentUser.user_id
@@ -106,7 +106,7 @@ class MyRoomList extends PureComponent {
             }
             // 分页查询
             dispatch({
-                type: 'room/fetchMyList',
+                type: 'mychatroom/fetchMyList',
                 payload: fieldsValue,
             });
         });
@@ -247,7 +247,7 @@ class MyRoomList extends PureComponent {
     ];
     render() {
         // 数据来源
-        const { modifyContract, myRoom } = this.props;
+        const { modifyContract, data } = this.props;
         return (
             <PageHeaderWrapper title="查询直播间">
                 <Card bordered={false}>
@@ -256,11 +256,11 @@ class MyRoomList extends PureComponent {
                 <Card bordered={false} className={styles.tableList}>
                     <Table
                         // loading={loading}
-                        dataSource={myRoom.list}
+                        dataSource={data.list}
                         // key={item.id}
                         rowKey={record => record.room_id}
                         columns={this.columns}
-                        pagination={myRoom.pagination}
+                        pagination={data.pagination}
                         onChange={this.handleStandardTableChange}
                     // onRow={(record) => {
                     //     return {
