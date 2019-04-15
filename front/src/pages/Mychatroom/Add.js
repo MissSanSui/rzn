@@ -30,6 +30,7 @@ class BasicForms extends PureComponent {
                     success: () => {
                         form.resetFields();
                         message.success("添加成功！")
+                        this.onToList()
                     },
                     fail: () => {
                         message.warn("添加失败！")

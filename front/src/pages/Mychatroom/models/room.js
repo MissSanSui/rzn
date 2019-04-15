@@ -46,13 +46,9 @@ export default {
         payload: true,
       });
       let response = {}
-      var result = {
-        list: response.rows,
-        pagination: {
-          total: response.total
-        },
-      }
-      if (payload.contract_stu != "") {
+      console.log("fetchMyList  payload== ", payload)
+      console.log("fetchMyList  payload.contract_stu != == ", payload.contract_stu != "")
+      if (payload.contract_stu&&payload.contract_stu != "") {
         response = yield call(findContracts, payload);
       } else {
         payload.sortName = "room_id"
@@ -60,7 +56,12 @@ export default {
       }
       // console.log("room  fetch response===", response)
       if (!response.code) {
-        
+        var result = {
+          list: response.rows,
+          pagination: {
+            total: response.total
+          },
+        }
         yield put({
           type: 'save',
           payload: result,

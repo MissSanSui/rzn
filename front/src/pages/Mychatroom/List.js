@@ -66,7 +66,7 @@ class MyRoomList extends PureComponent {
         }
         switch (currentUser.role) {
             case "STU":
-                fieldsValue.contract_stu = currentUser.user_id
+                // fieldsValue.contract_stu = currentUser.user_id
                 break;
             case "TEA":
                 params.room_owner = currentUser.user_id
@@ -89,14 +89,12 @@ class MyRoomList extends PureComponent {
         console.log("handleSearch===")
         // e.preventDefault();
         const { dispatch, form, currentUser } = this.props;
-
         form.validateFields((err, fieldsValue) => {
             if (err) return;
             console.log("fieldsValue==", fieldsValue)
-
             switch (currentUser.role) {
                 case "STU":
-                    fieldsValue.contract_stu = currentUser.user_id
+                    // fieldsValue.contract_stu = currentUser.user_id
                     break;
                 case "TEA":
                     fieldsValue.room_owner = currentUser.user_id

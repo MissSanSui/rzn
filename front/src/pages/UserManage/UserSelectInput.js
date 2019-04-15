@@ -51,8 +51,8 @@ export default class SelectInput extends React.Component {
 
     render() {
         const { size, role,
-            loading, } = this.props;
-        const { empName, userModalVisible, placeholder } = this.state;
+            loading,placeholder } = this.props;
+        const { empName, userModalVisible,  } = this.state;
         const {
 
         } = this.props;

@@ -47,9 +47,10 @@ export default {
       // });
     },
     *updateRoom({ payload, success, fail }, { call, select }) {
-      console.log("room updateRoom payload==", payload)
       let { courseWareIds, userIds } = yield select(state => state.room)
       payload.user_ids = userIds
+      console.log("room updateRoom payload==", payload)
+      
       let formData = new FormData()
       Object.keys(payload).forEach((key) => {
         if (payload[key]) {

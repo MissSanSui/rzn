@@ -29,28 +29,28 @@ class Courseware extends PureComponent {
         console.log("componentDidMount== this.props.currentUser.role", this.props.currentUser)
         const { dispatch, roomId, currentUser } = this.props;
         if (currentUser.role == "TEA") {
-            dispatch({
-                type: 'room/deleteCourseWareAndUser',
-                payload: { roomId: roomId },
-                success: (data) => {
-                    console.log("componentDidMount data===", data)
-                }
-            });
+            // dispatch({
+            //     type: 'room/deleteCourseWareAndUser',
+            //     payload: { roomId: roomId },
+            //     success: (data) => {
+            //         console.log("componentDidMount data===", data)
+            //     }
+            // });
             dispatch({
                 type: 'room/fetchContracts',
                 payload: {
                     contract_room_id: roomId
                 }
             })
-        } else {
-            dispatch({
-                type: 'room/fetchImages',
-                payload: {
-                    room_id: roomId
-                }
-            })
-
         }
+        dispatch({
+            type: 'room/fetchImages',
+            payload: {
+                room_id: roomId
+            }
+        })
+
+
     }
     onSelect = (courseWare) => {
         const { roomId, dispatch } = this.props
@@ -121,6 +121,7 @@ class Courseware extends PureComponent {
     }
     render() {
         const { imageList, courseWareIds, contractList } = this.props.room
+        let oldRoom = this.props.oldRoom||{}
         const children = []
         contractList.forEach(contract => {
             children.push(<Option key={contract.contract_stu}>{contract.emp_name_fus}</Option>);
@@ -131,8 +132,10 @@ class Courseware extends PureComponent {
                     <div className="Courseware-upload" style={{ display: (this.props.currentUser.role == "TEA" ? 'block' : 'none') }} >
                         <Select
                             // mode="multiple"
+                            disabled={oldRoom.room_start=="Y"}
                             style={{ width: '100%' }}
                             placeholder="请选择学生"
+                            defaultValue={oldRoom.user_ids}
                             onChange={this.onSelectStu}
                         >
                             {children}
