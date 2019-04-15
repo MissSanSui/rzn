@@ -116,6 +116,9 @@ export async function deleteCourseWareImage(params) {
 export async function queryRoomList(params) {
   return request(`/frame-web/rooms/roomsList?${stringify(params)}`)
 }
+export async function queryRoomByUser(params) {
+  return request(`/frame-web/roomsUser/findRoomsByUser?${stringify(params)}`)
+}
 export async function queryRoom(params) {
   return request(`/frame-web/rooms/findRoomsByNo?${stringify(params)}`)
 }

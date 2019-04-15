@@ -1,5 +1,5 @@
 
-import { queryMyrooms, saveRoom, updateMyroom, deleteMyroom } from '@/services/api';
+import { queryMyrooms, saveRoom, updateMyroom, deleteMyroom, findContracts, queryRoomList } from '@/services/api';
 export default {
   namespace: 'mychatroom',
 
@@ -16,17 +16,17 @@ export default {
 
   effects: {
     *add({ payload, success, fail }, { call }) {
-        console.log("2222",payload)
-	payload.white_id=1
+      console.log("2222", payload)
+      payload.white_id = 1
       let formData = new FormData()
       Object.keys(payload).forEach((key) => {
         if (payload[key]) {
           formData.append(key, payload[key])
         }
       });
-      console.log("4444",formData)
+      console.log("4444", formData)
       let response = yield call(saveRoom, formData)
-      console.log("5555",response)
+      console.log("5555", response)
       if (response.code) {
         response = response || {}
         console.log(" saveRoom  fail==", response)
@@ -40,6 +40,41 @@ export default {
         }
       }
     },
+    *fetchMyList({ payload }, { call, put }) {
+      yield put({
+        type: 'changeLoading',
+        payload: true,
+      });
+      let response = {}
+      console.log("fetchMyList  payload== ", payload)
+      console.log("fetchMyList  payload.contract_stu != == ", payload.contract_stu != "")
+      if (payload.contract_stu&&payload.contract_stu != "") {
+        response = yield call(findContracts, payload);
+      } else {
+        payload.sortName = "room_id"
+        response = yield call(queryRoomList, payload);
+      }
+      // console.log("room  fetch response===", response)
+      if (!response.code) {
+        var result = {
+          list: response.rows,
+          pagination: {
+            total: response.total
+          },
+        }
+        yield put({
+          type: 'save',
+          payload: result,
+        });
+        yield put({
+          type: 'changeLoading',
+          payload: false,
+        });
+      }
+    },
+
+
+
   },
   reducers: {
     save(state, action) {

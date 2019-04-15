@@ -10,9 +10,6 @@ import WhiteList from "./WhiteList";
 import Camera from "./Camera";
 import { connect } from "dva";
 
-
-// let room = null;
-let miniToken = 'WHITEcGFydG5lcl9pZD1scGMxOEtuU3JaUlE3YWFmUm1wZFNFaEFhM3J3TzB5T01pOTYmc2lnPTM5ZWQxYWY3ZjE3OGE5MTU1ZThmNDFhNmMyNThiYWExNTU0MDA5MmE6YWRtaW5JZD0xMjQmcm9sZT1taW5pJmV4cGlyZV90aW1lPTE1ODI5NzQ5NTAmYWs9bHBjMThLblNyWlJRN2FhZlJtcGRTRWhBYTNyd08weU9NaTk2JmNyZWF0ZV90aW1lPTE1NTE0MTc5OTgmbm9uY2U9MTU1MTQxNzk5ODMxMDAw';
 @connect(({ room, user }) => ({
     room,
     currentUser: user.currentUser
@@ -31,35 +28,51 @@ class Chatroom extends PureComponent {
         }
     }
 
-
     joinRoom = async (oldRoom) => {
         console.log("joinRoom===oldRoom==", oldRoom)
         const { dispatch, currentUser } = this.props
         console.log("joinRoom===currentUser==", currentUser)
-        if (currentUser.role == "TEA") {
-            const url = 'https://cloudcapiv4.herewhite.com/room?token=' + oldRoom.miniToken;
-            const requestInit = {
-                method: 'POST',
-                headers: {
-                    "content-type": "application/json",
-                },
-                body: JSON.stringify({
-                    name: '我的第1个 White 房间',
-                    limit: 100, // 房间人数限制
-                    mode: 'historied'
-                }),
-            };
-            const res = await fetch(url, requestInit);
-            const json = await res.json();
-            console.log("joinRoom json==", json)
-            oldRoom.white_id = json.msg.room.uuid
-            oldRoom.white_token = json.msg.roomToken
-            oldRoom.created_date = ""
-            oldRoom.last_updated_date = ""
-            this.setState({
-                oldRoom: oldRoom
-            })
 
+        if (currentUser.role == "TEA") {
+            if (oldRoom.room_start == "Y") {
+                dispatch({
+                    type: 'room/selectUsers',
+                    payload: oldRoom.user_ids,
+                });
+            } else {
+                const url = 'https://cloudcapiv4.herewhite.com/room?token=' + oldRoom.miniToken;
+                const requestInit = {
+                    method: 'POST',
+                    headers: {
+                        "content-type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        name: '我的第1个 White 房间',
+                        limit: 100, // 房间人数限制
+                        mode: 'historied'
+                    }),
+                };
+                const res = await fetch(url, requestInit);
+                const json = await res.json();
+                console.log("joinRoom json==", json)
+                oldRoom.white_id = json.msg.room.uuid
+                oldRoom.white_token = json.msg.roomToken
+                oldRoom.created_date = ""
+                oldRoom.last_updated_date = ""
+                this.setState({
+                    oldRoom: oldRoom
+                })
+            }
+        } else {
+            if (oldRoom.room_start != "Y") {
+                message.warn("直播间未开播哦！")
+                router.push("/my-chat-room/search")
+                return
+            }else if(currentUser.user_id!=oldRoom.user_ids){
+                message.warn("直播间未开播哦！")
+                router.push("/my-chat-room/search")
+                return
+            }
         }
         const whiteWebSdk = new WhiteWebSdk();
 
@@ -204,7 +217,7 @@ class Chatroom extends PureComponent {
         this.classList();
     };
 
-    onClose = () => {
+    onHide = () => {
         this.setState({
             visible: false,
         });
@@ -213,6 +226,10 @@ class Chatroom extends PureComponent {
         const { userIds, courseWareIds } = this.props.room
         const { dispatch } = this.props
         const { roomId, oldRoom } = this.state
+        if(oldRoom.room_start=="Y"){
+            message.warn("已经开始直播了！")
+            return
+        }
         if (userIds == "" || userIds.length == 0) {
             message.warn("请选择学生！")
             return
@@ -239,7 +256,7 @@ class Chatroom extends PureComponent {
                             success: (data) => {
                                 message.success("成功开播！")
                                 that.setState({
-                                    oldRoom:oldRoom
+                                    oldRoom: oldRoom
                                 })
                             }
                         });
@@ -320,7 +337,7 @@ class Chatroom extends PureComponent {
                 <div className="joinRoomStyle">
                     <div className="room-left">
                         <Camera appleId={oldRoom.appleId} vedioId={oldRoom.video_id} userId={currentUser.user_id} />
-                        <Courseware roomId={roomId} />
+                        <Courseware roomId={roomId} oldRoom={oldRoom} />
                     </div>
                     <div className="room-middle">
                         <ul className="room-icon">
@@ -339,7 +356,7 @@ class Chatroom extends PureComponent {
                         </ul>
 
                         <div className="video-icon">
-                            <div style={{display:currentUser.role=="TEA"?"block":"none"}}>
+                            <div style={{ display: currentUser.role == "TEA" ? "block" : "none" }}>
                                 <Tooltip placement="topLeft" title="开启直播" >
                                     <Icon type="play-circle" theme="filled" onClick={this.onStart} />
                                 </Tooltip>
@@ -371,11 +388,11 @@ class Chatroom extends PureComponent {
                         placement="right"
                         width="200"
                         closable={true}
-                        onClose={this.onClose}
+                        onClose={this.onHide}
                         visible={this.state.visible}
                     >
 
-                        <div className="whiteBtn">
+                        <div className="whiteBtn" style={{ display: currentUser.role == "TEA" ? "block" : "none" }}>
                             <Button type="primary"
                                 disabled={this.state.creatWhiteLoading ? '' : 'disabled'}
                                 onClick={this.state.creatWhiteLoading ? this.add.bind(this) : null}

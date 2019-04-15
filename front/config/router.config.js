@@ -20,6 +20,7 @@ export default [
     path: '/',
     component: '../layouts/BasicLayout',
     Routes: ['src/pages/Authorized'],
+    authority:["TEA","STU","SYS","ASS"],
     routes: [
       // 系统配置页面
       { path: '/', redirect: '/home', },
