@@ -1,4 +1,4 @@
-﻿import React, { PureComponent } from "react";
+﻿import React, { PureComponent,Component } from "react";
 import { RoomWhiteboard } from "white-react-sdk";
 import { WhiteWebSdk } from "white-web-sdk";
 import * as serviceWorker from "./serviceWorker";
@@ -69,7 +69,7 @@ class Chatroom extends PureComponent {
                 router.push("/my-chat-room/search")
                 return
             }else if(currentUser.user_id!=oldRoom.user_ids){
-                message.warn("直播间未开播哦！")
+                message.warn("没权限进入直播间哦！")
                 router.push("/my-chat-room/search")
                 return
             }
@@ -255,8 +255,9 @@ class Chatroom extends PureComponent {
                             payload: oldRoom,
                             success: (data) => {
                                 message.success("成功开播！")
+                                oldRoom.room_start = "Y"
                                 that.setState({
-                                    oldRoom: oldRoom
+                                    oldRoom:{...oldRoom,...{room_start:"Y"}}
                                 })
                             }
                         });
@@ -284,6 +285,8 @@ class Chatroom extends PureComponent {
                     },
                     success: () => {
                         oldRoom.room_start = "N"
+                        oldRoom.created_date = ""
+                        oldRoom.last_updated_date = ""
                         dispatch({
                             type: 'room/updateRoom',
                             payload: oldRoom,

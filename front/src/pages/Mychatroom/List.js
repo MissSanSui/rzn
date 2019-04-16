@@ -66,7 +66,7 @@ class MyRoomList extends PureComponent {
         }
         switch (currentUser.role) {
             case "STU":
-                // fieldsValue.contract_stu = currentUser.user_id
+                fieldsValue.contract_stu = currentUser.user_id
                 break;
             case "TEA":
                 params.room_owner = currentUser.user_id
@@ -94,7 +94,7 @@ class MyRoomList extends PureComponent {
             console.log("fieldsValue==", fieldsValue)
             switch (currentUser.role) {
                 case "STU":
-                    // fieldsValue.contract_stu = currentUser.user_id
+                    fieldsValue.contract_stu = currentUser.user_id
                     break;
                 case "TEA":
                     fieldsValue.room_owner = currentUser.user_id
@@ -135,7 +135,7 @@ class MyRoomList extends PureComponent {
                     </Col> */}
                     <Col md={6} sm={24}>
                         <FormItem {...formItemLayout} label="直播间号">
-                            {getFieldDecorator('room_id', {
+                            {getFieldDecorator('contract_room_id', {
                             })(<Input placeholder="请输入直播间号" />)}
                         </FormItem>
                     </Col>
@@ -248,9 +248,9 @@ class MyRoomList extends PureComponent {
         const { modifyContract, data } = this.props;
         return (
             <PageHeaderWrapper title="查询直播间">
-                <Card bordered={false}>
+                {/* <Card bordered={false}>
                     <div className={styles.tableListForm}>{this.renderSimpleForm()}</div>
-                </Card>
+                </Card> */}
                 <Card bordered={false} className={styles.tableList}>
                     <Table
                         // loading={loading}

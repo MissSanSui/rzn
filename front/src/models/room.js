@@ -9,13 +9,6 @@ export default {
 
   state: {
     list: [],
-    myRoom: {
-      list: [],
-      pagination: {
-        current: 1,
-        pageSize: 10
-      },
-    },
     imageList: [],
     courseWareIds: [],
     userIds: "",
@@ -23,28 +16,13 @@ export default {
   },
 
   effects: {
-    *fetch({ payload }, { call, put }) {
-      // console.log("room  fetch payload===", payload)
-      const response = yield call(queryRoomList, payload);
-      // console.log("room  fetch response===", response)
-      yield put({
-        type: 'queryList',
-        payload: Array.isArray(response) ? response : [],
-      });
-    },
     *fetchRoom({ payload, success, fail }, { call, put }) {
-      // console.log("room  fetchRoom payload===", payload)
       const response = yield call(queryRoom, payload);
-      // console.log("room  fetchRoom response===", response)
       if (!response.code) {
         if (success && typeof success === 'function') {
           success(response.data);
         }
       }
-      // yield put({
-      //   type: 'queryList',
-      //   payload: Array.isArray(response) ? response : [],
-      // });
     },
     *updateRoom({ payload, success, fail }, { call, select }) {
       let { courseWareIds, userIds } = yield select(state => state.room)
@@ -73,44 +51,6 @@ export default {
           });
         }
       }
-    },
-    *fetchMyList({ payload }, { call, put }) {
-      // console.log("room  fetch payload===", payload)
-      payload.sortName = "room_id"
-      const response = yield call(queryRoomList, payload);
-      console.log("room  fetch response===", response)
-      if (!response.code) {
-        var result = {
-          list: response.rows,
-          pagination: {
-            total: response.total
-          },
-        }
-        yield put({
-          type: 'save',
-          payload: { myRoom: result },
-        });
-      }
-    },
-    *appendFetch({ payload }, { call, put }) {
-      const response = yield call(queryFakeList, payload);
-      yield put({
-        type: 'appendList',
-        payload: Array.isArray(response) ? response : [],
-      });
-    },
-    *submit({ payload }, { call, put }) {
-      let callback;
-      if (payload.id) {
-        callback = Object.keys(payload).length === 1 ? removeFakeList : updateFakeList;
-      } else {
-        callback = addFakeList;
-      }
-      const response = yield call(callback, payload); // post
-      yield put({
-        type: 'queryList',
-        payload: response,
-      });
     },
     *saveCourseWare({ payload, success, fail }, { call, put, select }) {
       console.log("room saveCourseWare payload==", payload)
@@ -220,14 +160,9 @@ export default {
       });
     },
     *saveCourseWareAndUser({ payload, success, fail }, { call, put, select }) {
-      console.log("room saveCourseWareAndUser payload==", payload)
       let { courseWareIds, userIds } = yield select(state => state.room)
-      console.log("room saveCourseWareAndUser courseWareIds==", courseWareIds)
-      console.log("room saveCourseWareAndUser userIds==", userIds)
       payload.coursewares_nos = courseWareIds.join(',')
-      // payload.user_ids = userIds.join(',')
       payload.user_ids = userIds
-      console.log("room saveCourseWareAndUser payload==", payload)
       let formData = new FormData()
       Object.keys(payload).forEach((key) => {
         if (payload[key]) {
@@ -235,8 +170,6 @@ export default {
         }
       });
       let response = yield call(saveRoomCourseWareAndUser, formData);
-      console.log("room saveCourseWareAndUser response==", response)
-
       if (!response.code) {
         if (success && typeof success === 'function') {
           success();
@@ -269,8 +202,6 @@ export default {
         }
       }
     },
-
-
   },
 
   reducers: {
