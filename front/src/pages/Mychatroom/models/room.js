@@ -48,12 +48,8 @@ export default {
       let response = {}
       console.log("fetchMyList  payload== ", payload)
       console.log("fetchMyList  payload.contract_stu != == ", payload.contract_stu != "")
-      if (payload.contract_stu&&payload.contract_stu != "") {
-        response = yield call(findContracts, payload);
-      } else {
-        payload.sortName = "room_id"
-        response = yield call(queryRoomList, payload);
-      }
+      payload.sortName = "room_id"
+      response = yield call(queryRoomList, payload);
       // console.log("room  fetch response===", response)
       if (!response.code) {
         var result = {

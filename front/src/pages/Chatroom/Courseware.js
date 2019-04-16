@@ -140,7 +140,7 @@ class Courseware extends PureComponent {
                         >
                             {children}
                         </Select>
-                        <Button type="primary" block icon="picture" style={{ marginTop: "10px" }}
+                        <Button type="primary" block icon="picture" style={{ marginTop: "10px" }} disabled={oldRoom.room_start=="Y"}
                             onClick={this.showModal.bind(this)}>上传课件</Button>
                     </div>
                     <List
