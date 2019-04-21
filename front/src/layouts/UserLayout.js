@@ -64,7 +64,7 @@ class UserLayout extends Component {
                   <span className={styles.title}>万卷书教育</span>
                 </Link>
               </div>
-              <div className={styles.desc}>万卷书是保定地区最有影响力的在线教育平台</div>
+              <div className={styles.desc}>万卷书是全国最有影响力的在线教育平台之一</div>
             </div>
             {children}
           </div>
