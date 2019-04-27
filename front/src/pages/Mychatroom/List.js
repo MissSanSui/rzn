@@ -10,6 +10,7 @@ import StandardTable from '@/components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import UserSelectInput from '@/pages/UserManage/UserSelectInput';
 import styles from './Index.less';
+import { getUserId, getUserInfo } from '@/utils/authority';
 
 const FormItem = Form.Item;
 const { Step } = Steps;
@@ -89,15 +90,16 @@ class MyRoomList extends PureComponent {
         console.log("handleSearch===")
         // e.preventDefault();
         const { dispatch, form, currentUser } = this.props;
+        let _currentUser = currentUser.role ? currentUser : getUserInfo()
         form.validateFields((err, fieldsValue) => {
             if (err) return;
             console.log("fieldsValue==", fieldsValue)
-            switch (currentUser.role) {
+            switch (_currentUser.role) {
                 case "STU":
-                    fieldsValue.contract_stu = currentUser.user_id
+                    fieldsValue.contract_stu = _currentUser.user_id || getUserId()
                     break;
                 case "TEA":
-                    fieldsValue.room_owner = currentUser.user_id
+                    fieldsValue.room_owner = _currentUser.user_id || getUserId()
                     break;
                 default:
                     break;

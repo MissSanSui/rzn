@@ -29,3 +29,11 @@ export function setUserId(id) {
 export function getUserId() {
   return sessionStorage.getItem('userId');
 }
+export function setUserInfo(info) {
+  // return 123
+
+  return sessionStorage.setItem('userInfo', JSON.stringify(info || {}));
+}
+export function getUserInfo() {
+  return JSON.parse(sessionStorage.getItem('userInfo') || {});
+}

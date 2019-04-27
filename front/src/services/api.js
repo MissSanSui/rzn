@@ -1,4 +1,5 @@
 import { stringify } from 'qs';
+import MD5 from 'crypto-js/md5';
 import request from '@/utils/request';
 const { NODE_ENV, APP_TYPE, TEST } = process.env;
 // const backendAddr = (() => {
@@ -20,6 +21,7 @@ const { NODE_ENV, APP_TYPE, TEST } = process.env;
 //   }
 // })();
 export async function fakeAccountLogin(params) {
+  // params.password = MD5(String(params.password)).toString()
   return request('/frame-web/sso', {
     // return request('api/entry/login', {
     method: 'POST',

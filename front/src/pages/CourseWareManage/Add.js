@@ -242,7 +242,8 @@ class BasicForms extends PureComponent {
                                             beforeUpload={this.beforeUpload}
                                             onRemove={this.onFileRemove}
                                         >
-                                            {fileList.length >= 5 ? null : uploadButton}
+                                            {/* {fileList.length >= 5 ? null : uploadButton} */}
+                                            {uploadButton}
                                         </Upload>
                                     </FormItem>
                                 </Form>

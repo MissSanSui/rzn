@@ -1,7 +1,7 @@
 import { routerRedux } from 'dva/router';
 import { stringify } from 'qs';
 import { fakeAccountLogin, getFakeCaptcha,logout } from '@/services/api';
-import { setAuthority, setUserId } from '@/utils/authority';
+import { setAuthority, setUserId, setUserInfo } from '@/utils/authority';
 import { getPageQuery } from '@/utils/utils';
 import { reloadAuthorized } from '@/utils/Authorized';
 
@@ -80,6 +80,7 @@ export default {
       console.log("payload==", payload);
       setAuthority(payload.role || "guest");
       setUserId(payload.user_id)
+      setUserInfo(payload)
       return {
         ...state,
         currentUser: payload,

@@ -333,6 +333,9 @@ class Chatroom extends PureComponent {
 
     render() {
         let { modalVisible, confirmLoading, roomId, oldRoom } = this.state;
+        // const MyIcon = Icon.createFromIconfontCN({
+        //     scriptUrl: './iconfont.js.js', // 在 iconfont.cn 上生成
+        // });
         const { currentUser } = this.props
         console.log("oldRoom===", oldRoom)
         return (
