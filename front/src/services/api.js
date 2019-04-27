@@ -21,7 +21,7 @@ const { NODE_ENV, APP_TYPE, TEST } = process.env;
 //   }
 // })();
 export async function fakeAccountLogin(params) {
-  // params.password = MD5(String(params.password)).toString()
+  params.password = MD5(String(params.password)).toString()
   return request('/frame-web/sso', {
     // return request('api/entry/login', {
     method: 'POST',
