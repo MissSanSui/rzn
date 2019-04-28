@@ -12,21 +12,29 @@ const { Tab, Password, Submit } = Login;
   resetPassword,
   submitting: loading.effects['resetPassword/reset'],
 }))
-class ForgotPassword extends Component {
+class ResetPassword extends Component {
   state = {
     type: 'account',
-    id: ''
+    same: true
   };
 
   handleSubmit = (err, values) => {
     const { type } = this.state;
+    const { password, passwordSub } = values
     if (!err) {
       const { dispatch } = this.props;
+      if (password !== passwordSub) {
+        this.setState({
+          same: false
+        })
+        return
+      }
       dispatch({
         type: 'resetPassword/reset',
         payload: {
-          ...values,
+          password,
           type,
+          user_Id: this.props.location.query.user_id
         },
       });
     }
@@ -37,19 +45,22 @@ class ForgotPassword extends Component {
   );
 
   render() {
-    const { submitting } = this.props;
-    const { type } = this.state;
+    const { resetPassword, submitting } = this.props;
+    const { type, same } = this.state;
     return (
       <div className={styles.main}>
         <Login
           defaultActiveKey={type}
           onSubmit={this.handleSubmit}
+          onChange={}
           ref={form => {
             this.loginForm = form;
           }}
         >
           <Tab key="account" tab={formatMessage({ id: 'form.resetPassword' })}>
-            {/* { !submitting && this.renderMessage(formatMessage({ id: 'app.result.error.title' })) } */}
+            {resetPassword.status === 'error' && 
+              !submitting && this.renderMessage(formatMessage({ id: 'app.result.error.title' })) }
+            {!same && this.renderMessage(formatMessage({ id: 'app.result.error.nosame' }))}
             <Password
               name="password"
               placeholder={`${formatMessage({ id: 'form.passwd' })}`}
@@ -67,7 +78,7 @@ class ForgotPassword extends Component {
                 {
                   required: true,
                   message: formatMessage({ id: 'validation.passwdSub.required' }),
-                },
+                }
               ]}
               onPressEnter={e => {
                 e.preventDefault();
@@ -84,4 +95,4 @@ class ForgotPassword extends Component {
   }
 }
 
-export default ForgotPassword;
+export default ResetPassword;
