@@ -281,3 +281,6 @@ export async function getFakeCaptcha(mobile) {
 }
 
 
+export async function resetPassword(params) {
+  return request(`/api/resetPassword?${stringify(params)}`);
+}

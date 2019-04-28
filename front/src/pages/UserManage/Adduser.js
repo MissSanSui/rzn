@@ -215,7 +215,7 @@ class AddUser extends PureComponent {
               </FormItem>
             </Col>
             {/* 密码 */}
-            <Col span={12}>
+            {/* <Col span={12}>
               <FormItem {...formItemLayout} label={<FormattedMessage id="form.passwd" />}>
                 {getFieldDecorator('password', {
                   initialValue: modifyUser.password,
@@ -227,7 +227,7 @@ class AddUser extends PureComponent {
                   ],
                 })(<Input placeholder={formatMessage({ id: 'form.passwd' })} />)}
               </FormItem>
-            </Col>
+            </Col> */}
             {/* 角色 */}
             <Col span={12}>
               <FormItem {...formItemLayout} label={<FormattedMessage id="form.role" />}>

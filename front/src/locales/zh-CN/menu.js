@@ -55,5 +55,6 @@ export default {
   'menu.sys.usersManage': '用户管理',
   'menu.userManage': '用户管理',
   'menu.userManage.addUser': '新增用户',
+  'menu.ResetPassword': '重置密码',
   
 };

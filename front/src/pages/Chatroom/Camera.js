@@ -103,6 +103,12 @@ class Camera extends PureComponent {
                 remoteStream.play('agora_remote');
             })
 
+            client.on('stream-removed', function (evt) {
+                var remoteStream = evt.stream;
+                console.log("removed remote stream successfully: " + remoteStream.getId());
+                remoteStream.close();
+            })
+
         }, function (err) {
             console.log("AgoraRTC client init failed", err);
         });

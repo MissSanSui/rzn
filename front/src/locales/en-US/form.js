@@ -35,4 +35,5 @@ export default {
   'form.publicUsers.option.A': 'Colleague A',
   'form.publicUsers.option.B': 'Colleague B',
   'form.publicUsers.option.C': 'Colleague C',
+  'form.resetPassword': 'Reset Password',
 };

@@ -6,6 +6,7 @@ import {
   Row, Col, Card, Form, Input, Select, Icon, Button, Dropdown, Menu, InputNumber, DatePicker, Modal,
   message, Badge, Divider, Steps, Radio, Table, Switch
 } from 'antd';
+import Link from 'umi/link';
 import StandardTable from '@/components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import AddUser from '@/pages/UserManage/Adduser';
@@ -169,10 +170,10 @@ class UserManage extends PureComponent {
       title: '登录名',
       dataIndex: 'user_name',
     },
-    {
-      title: '密码',
-      dataIndex: 'password',
-    },
+    // {
+    //   title: '密码',
+    //   dataIndex: 'password',
+    // },
     {
       title: '角色',
       dataIndex: 'role',
@@ -213,6 +214,15 @@ class UserManage extends PureComponent {
       render: (text, user) => {
         return (
           <Switch checked={text == "open"} loading={this.state[user.user_id + "_loading"]} onChange={(checked, e) => this.userStatusChange(user.user_id, checked, e)} />
+        )
+      }
+    },
+    {
+      title: '操作',
+      dataIndex: 'Action',
+      render: (text, user) => {
+        return (
+          <Link to={ `/user/reset-password?user_id=${user.user_id}` }>重置密码</Link>
         )
       }
     },
