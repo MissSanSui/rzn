@@ -9,6 +9,7 @@ import Courseware from "./Courseware";
 import WhiteList from "./WhiteList";
 import Camera from "./Camera";
 import { connect } from "dva";
+import iconfont from './iconfont.js'
 
 @connect(({ room, user }) => ({
     room,
@@ -83,6 +84,10 @@ class Chatroom extends PureComponent {
         const room = await whiteWebSdk.joinRoom({
             uuid: oldRoom.white_id,
             roomToken: oldRoom.white_token
+        });
+
+        room.setMemberState({
+            strokeColor: currentUser.role == "TEA" ? [255, 0, 0] : [0, 0 ,255],
         });
 
         function onWindowResize() {
@@ -338,9 +343,9 @@ class Chatroom extends PureComponent {
 
     render() {
         let { modalVisible, confirmLoading, roomId, oldRoom } = this.state;
-        // const MyIcon = Icon.createFromIconfontCN({
-        //     scriptUrl: './iconfont.js.js', // 在 iconfont.cn 上生成
-        // });
+        const MyIcon = Icon.createFromIconfontCN({
+            scriptUrl: './iconfont.js.js', // 在 iconfont.cn 上生成
+        });
         const { currentUser } = this.props
         console.log("oldRoom===", oldRoom)
         return (
@@ -353,7 +358,7 @@ class Chatroom extends PureComponent {
                     <div className="room-middle">
                         <ul className="room-icon">
                             <li>
-                                <Icon type="delete" theme="filled" onClick={this.eraser.bind(this)} />
+                                <MyIcon type="icon-xiangpica" onClick={this.eraser.bind(this)} />
                             </li>
                             <li>
                                 <Icon type="edit" theme="filled" onClick={this.pencil.bind(this)} />
