@@ -138,8 +138,8 @@ class UserManage extends PureComponent {
                   <Option value="STU">学生</Option>
                   <Option value="TEA">教师</Option>
                   <Option value="PAR">家长</Option>
-                  <Option value="SYS">负责人</Option>
-                  <Option value="LEA">管理员</Option>
+                  <Option value="ASS">助教</Option>
+                  <Option value="SYS">管理员</Option>
                 </Select>
               )}
             </FormItem>

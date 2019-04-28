@@ -74,12 +74,17 @@ class Chatroom extends PureComponent {
                 return
             }
         }
-        const whiteWebSdk = new WhiteWebSdk();
 
+        const whiteWebSdk = new WhiteWebSdk({
+            zoomMaxScale: 1,
+            zoomMinScale: 1,
+        });
+        
         const room = await whiteWebSdk.joinRoom({
             uuid: oldRoom.white_id,
             roomToken: oldRoom.white_token
         });
+
         function onWindowResize() {
             room.refreshViewSize();
         }
