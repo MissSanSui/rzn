@@ -8,6 +8,7 @@ import DocumentTitle from 'react-document-title';
 import SelectLang from '@/components/SelectLang';
 import styles from './Home.less';
 import logo from '@/assets/logo.png';
+import pic from '@/assets/pic.jpg';
 import getPageTitle from '@/utils/getPageTitle';
 
 const links =[]
@@ -44,6 +45,7 @@ export default class Home extends Component {
               </div>
               <div className={styles.desc}>万卷书是保定地区最有影响力的在线教育平台</div>
             </div>
+            <img className={styles.pic} src={pic} alt="图片"/>
             {children}
           </div>
           <GlobalFooter links={links} copyright={copyright} />

@@ -40,7 +40,8 @@ class MyRoomList extends PureComponent {
         console.log("componentDidMount==")
         this.handleSearch()
         const {  currentUser } = this.props;
-        if (currentUser.role == "STU") {
+        let _currentUser = currentUser.role ? currentUser : getUserInfo()
+        if (_currentUser.role == "STU") {
             this.timer = setInterval(() => this.handleSearch(), 5000);
         }
     }
