@@ -7,6 +7,7 @@ export default {
   'app.result.error.hint-text2': '您的賬戶還不具備申請資格',
   'app.result.error.hint-btn2': '立即升級',
   'app.result.error.btn-text': '返回修改',
+  'app.result.error.nosame': '輸入的密碼不一致',
   'app.result.success.title': '提交成功',
   'app.result.success.description':
     '提交結果頁用於反饋壹系列操作任務的處理結果， 如果僅是簡單操作，使用 Message 全局提示反饋即可。 本文字區域可以展示簡單的補充說明，如果有類似展示 “單據”的需求，下面這個灰色區域可以呈現比較復雜的內容。',

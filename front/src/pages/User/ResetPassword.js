@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'dva';
 import { formatMessage, FormattedMessage } from 'umi/locale';
 import Link from 'umi/link';
-import { Alert, Icon } from 'antd';
+import { message, Icon } from 'antd';
 import Login from '@/components/Login';
 import styles from './Login.less';
 
@@ -15,52 +15,62 @@ const { Tab, Password, Submit } = Login;
 class ResetPassword extends Component {
   state = {
     type: 'account',
-    same: true
+    confirmDirty: false
   };
 
   handleSubmit = (err, values) => {
     const { type } = this.state;
-    const { password, passwordSub } = values
+    const { password } = values
     if (!err) {
       const { dispatch } = this.props;
-      if (password !== passwordSub) {
-        this.setState({
-          same: false
-        })
-        return
-      }
       dispatch({
         type: 'resetPassword/reset',
         payload: {
           password,
           type,
-          user_Id: this.props.location.query.user_id
+          userId: this.props.location.query.user_id
         },
       });
     }
   };
 
-  renderMessage = content => (
-    <Alert style={{ marginBottom: 24 }} message={content} type="error" showIcon />
-  );
+  handleConfirmBlur = (e) => {
+    const value = e.target.value;
+    this.setState({ confirmDirty: this.state.confirmDirty || !!value });
+  }
+
+  validateToNextPassword = (rule, value, callback) => {
+    if (value && this.state.confirmDirty) {
+      this.resetForm.validateFields(['passwordSub'], { force: true });
+    }
+    callback();
+  }
+
+  compareToFirstPassword = (rule, value, callback) => {
+    if (value && value !== this.resetForm.getFieldValue('password')) {
+      callback(`${formatMessage({ id: 'app.result.error.nosame' })}`);
+    } else {
+      callback();
+    }
+  }
+
+  renderMessage = content => {
+    message.success(content);
+  }
 
   render() {
-    const { resetPassword, submitting } = this.props;
-    const { type, same } = this.state;
+    const { submitting } = this.props;
+    const { type } = this.state;
     return (
       <div className={styles.main}>
         <Login
           defaultActiveKey={type}
           onSubmit={this.handleSubmit}
-          onChange={}
           ref={form => {
-            this.loginForm = form;
+            this.resetForm = form;
           }}
         >
           <Tab key="account" tab={formatMessage({ id: 'form.resetPassword' })}>
-            {resetPassword.status === 'error' && 
-              !submitting && this.renderMessage(formatMessage({ id: 'app.result.error.title' })) }
-            {!same && this.renderMessage(formatMessage({ id: 'app.result.error.nosame' }))}
             <Password
               name="password"
               placeholder={`${formatMessage({ id: 'form.passwd' })}`}
@@ -69,6 +79,9 @@ class ResetPassword extends Component {
                   required: true,
                   message: formatMessage({ id: 'validation.password.required' }),
                 },
+                {
+                  validator: this.validateToNextPassword,
+                }
               ]}
             />
             <Password
@@ -78,8 +91,12 @@ class ResetPassword extends Component {
                 {
                   required: true,
                   message: formatMessage({ id: 'validation.passwdSub.required' }),
+                },
+                {
+                  validator: this.compareToFirstPassword,
                 }
               ]}
+              onBlur={this.handleConfirmBlur}
               onPressEnter={e => {
                 e.preventDefault();
                 this.loginForm.validateFields(this.handleSubmit);

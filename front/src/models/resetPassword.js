@@ -15,22 +15,22 @@ export default {
 
       // reset successfully
       console.log("response===", response)
-      if (response.data) {
+      if (response.flag == 0) {
         yield put({
           type: 'changeStatus',
           payload: {},
         });
         reloadAuthorized();
-        yield put(routerRedux.goBack());
-        
+        yield put(routerRedux.goBack())
       }
     }
   },
   reducers: {
-    changeStatus(state) {
-      console.log(state)
+    changeStatus(state, { payload }) {
+      console.log(state, payload)
       return {
-        ...state
+        ...state,
+        ...payload
       };
     },
   },

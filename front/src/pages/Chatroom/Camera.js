@@ -100,19 +100,33 @@ class Camera extends PureComponent {
             client.on('stream-subscribed', function (evt) {
                 var remoteStream = evt.stream;
                 console.log("Subscribe remote stream successfully: " + remoteStream.getId());
-                remoteStream.play('agora_remote');
+                let streamId = `remote_${remoteStream.getId()}`
+                that.addVideoStream(streamId)
+                remoteStream.play(streamId);
             })
 
-            client.on('stream-removed', function (evt) {
-                var remoteStream = evt.stream;
-                console.log("removed remote stream successfully: " + remoteStream.getId());
-                remoteStream.close();
-            })
+            client.on('peer-leave', that.removeVideoStream)
 
         }, function (err) {
             console.log("AgoraRTC client init failed", err);
         });
 
+    }
+
+    addVideoStream(streamId){
+        let streamDiv=document.createElement("div");
+        streamDiv.id= streamId;
+        streamDiv.style.transform="rotateY(180deg)";
+        streamDiv.style.height="100%";
+        this.refs.agora_remote.appendChild(streamDiv);
+    }
+
+    removeVideoStream (evt) {
+        let stream = evt.stream;
+        stream.stop();
+        let remDiv=document.getElementById(`remote_${stream.getId()}`);
+        remDiv.parentNode.removeChild(remDiv);
+        console.log("Remote stream is removed " + stream.getId());
     }
 
     // 开启或者关闭摄像头
@@ -126,7 +140,7 @@ class Camera extends PureComponent {
         return (
             <div className="camera">
                 <div id='agora_local' style={{width: '50%', height: '120px',float:'left'}}></div>
-                <div id='agora_remote' style={{width: '50%', height: '120px',float:'left'}}/>
+                <div id='agora_remote' style={{width: '50%', height: '120px',float:'left'}}  ref="agora_remote"/>
 
                 <Icon type="video-camera" theme="filled" onClick={() => this.leaveVideo()}/>
             </div>
