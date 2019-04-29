@@ -189,7 +189,7 @@ class AddUser extends PureComponent {
                       validator: this.resetHourValidate
                     }
                   ],
-                })(<InputNumber min={0} max={10} step={0.1} style={{ width: "100%" }} />)}
+                })(<InputNumber min={0} max={1000} step={1} style={{ width: "100%" }} />)}
               </FormItem>
             </Col>
             <Col span={12}>
