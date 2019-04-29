@@ -212,7 +212,7 @@ class Detail extends PureComponent {
               beforeUpload={this.beforeUpload}
               onRemove={this.onFileRemove}
             >
-              {fileList.length >= 3 ? null : uploadButton}
+              {uploadButton}
             </Upload>
           </FormItem>
           <FormItem {...submitFormLayout} style={{ marginTop: 32 }}>
