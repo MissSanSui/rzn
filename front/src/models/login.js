@@ -64,6 +64,10 @@ export default {
       let response = yield call(logout, {});
       console.log("logout response=",response)
       reloadAuthorized();
+      yield put({
+        type: 'user/saveCurrentUser',
+        payload: {},
+      });
       yield put(
         routerRedux.push({
           pathname: '/user/login',
