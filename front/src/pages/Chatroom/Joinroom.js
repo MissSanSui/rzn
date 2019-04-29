@@ -363,9 +363,9 @@ class Chatroom extends PureComponent {
                             <li>
                                 <Icon type="edit" theme="filled" onClick={this.pencil.bind(this)} />
                             </li>
-                            <li>
+                            {/* <li>
                                 <Icon type="font-size" onClick={this.text.bind(this)} />
-                            </li>
+                            </li> */}
                             <li>
                                 <Icon type="border" onClick={this.rectangle.bind(this)} />
                             </li>
