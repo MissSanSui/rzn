@@ -15,7 +15,7 @@ export default {
 
       // reset successfully
       console.log("response===", response)
-      if (response.flag == 0) {
+      if (response.flag == 0 || response.flag == 3) {
         yield put({
           type: 'changeStatus',
           payload: {},

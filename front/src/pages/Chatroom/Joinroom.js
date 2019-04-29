@@ -87,6 +87,7 @@ class Chatroom extends PureComponent {
         });
 
         room.setMemberState({
+            strokeWidth: 2,
             strokeColor: currentUser.role == "TEA" ? [255, 0, 0] : [0, 0 ,255],
         });
 
