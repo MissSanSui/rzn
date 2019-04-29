@@ -282,5 +282,6 @@ export async function getFakeCaptcha(mobile) {
 
 
 export async function resetPassword(params) {
-  return request(`/api/resetPassword?${stringify(params)}`);
+  params.password = MD5(String(params.password)).toString()
+  return request(`/frame-web/user/initUserPassword?${stringify(params)}`);
 }

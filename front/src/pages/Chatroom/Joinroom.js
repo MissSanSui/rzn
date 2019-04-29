@@ -137,7 +137,7 @@ class Chatroom extends PureComponent {
     pencil = () => {
         this.state.room.setMemberState({
             currentApplianceName: "pencil",
-            strokeColor: [255, 0, 0],
+            strokeColor: currentUser.role == "TEA" ? [255, 0, 0] : [0, 0, 255],
             strokeWidth: 2,
         });
     };

@@ -110,9 +110,9 @@ class LoginPage extends Component {
             <Checkbox checked={autoLogin} onChange={this.changeAutoLogin}>
               <FormattedMessage id="app.login.remember-me" />
             </Checkbox>
-            <Link style={{ float: 'right' }} to="/user/reset-password">
+            {/* <Link style={{ float: 'right' }} to="/user/reset-password">
               <FormattedMessage id="app.login.forgot-password" />
-            </Link>
+            </Link> */}
           </div>
           <Submit loading={submitting}>
             <FormattedMessage id="app.login.login" />

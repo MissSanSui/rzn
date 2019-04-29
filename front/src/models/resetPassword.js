@@ -6,7 +6,7 @@ export default {
   namespace: 'resetPassword',
 
   state: {
-    
+    status: undefined
   },
 
   effects: {
@@ -15,10 +15,23 @@ export default {
 
       // reset successfully
       console.log("response===", response)
-      if (response.data) {
+      if (response.flag == 0) {
+        yield put({
+          type: 'changeStatus',
+          payload: {},
+        });
         reloadAuthorized();
-        yield put(routerRedux.replace('/user/login'));
+        yield put(routerRedux.goBack())
       }
     }
-  }
+  },
+  reducers: {
+    changeStatus(state, { payload }) {
+      console.log(state, payload)
+      return {
+        ...state,
+        ...payload
+      };
+    },
+  },
 };
