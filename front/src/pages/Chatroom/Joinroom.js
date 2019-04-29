@@ -135,6 +135,7 @@ class Chatroom extends PureComponent {
         });
     };
     pencil = () => {
+        const { currentUser } = this.props
         this.state.room.setMemberState({
             currentApplianceName: "pencil",
             strokeColor: currentUser.role == "TEA" ? [255, 0, 0] : [0, 0, 255],
