@@ -3,8 +3,8 @@
 .container {
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  overflow: auto;
+  height: calc(100vh - 62px);
+  overflow: hidden;
   background: @layout-body-background;
 }
 
@@ -72,6 +72,8 @@
 
 .pic {
   display: block;
-  width: 60%;
-  margin: 10px auto;
+  width: 100%;
+  height: calc(100vh - 62px - 70px);
+  background: url('../../assets/pic.png') no-repeat center;
+  background-size: cover;
 }
