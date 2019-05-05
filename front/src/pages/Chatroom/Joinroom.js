@@ -87,7 +87,7 @@ class Chatroom extends PureComponent {
         });
 
         room.setMemberState({
-            strokeWidth: 2,
+            strokeWidth: 1,
             strokeColor: currentUser.role == "TEA" ? [255, 0, 0] : [0, 0 ,255],
         });
 
@@ -140,7 +140,7 @@ class Chatroom extends PureComponent {
         this.state.room.setMemberState({
             currentApplianceName: "pencil",
             strokeColor: currentUser.role == "TEA" ? [255, 0, 0] : [0, 0, 255],
-            strokeWidth: 2,
+            strokeWidth: 1,
         });
     };
     rectangle = () => {
