@@ -9,7 +9,8 @@ export default {
       list: [],
       pagination: {
         current: 1,
-        pageSize: 10
+        pageSize: 10,
+        defaultCurrent:1
       },
     },
   },
