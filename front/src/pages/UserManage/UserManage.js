@@ -80,7 +80,7 @@ class UserManage extends PureComponent {
 
   handleSearch = e => {
     console.log("handleSearch===")
-    // e.preventDefault();
+    e.preventDefault();
     const { dispatch, form } = this.props;
     form.validateFields((err, fieldsValue) => {
       if (err) return;
@@ -153,6 +153,7 @@ class UserManage extends PureComponent {
           </Col>
           <Col md={6} sm={24}>
             <span className={styles.submitButtons}>
+              {/* <Button type="primary" onClick={this.handleSearch}> */}
               <Button type="primary" htmlType="submit">
                 查询
               </Button>
