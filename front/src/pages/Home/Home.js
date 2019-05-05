@@ -8,7 +8,6 @@ import DocumentTitle from 'react-document-title';
 import SelectLang from '@/components/SelectLang';
 import styles from './Home.less';
 import logo from '@/assets/logo.png';
-import pic from '@/assets/pic.jpg';
 import getPageTitle from '@/utils/getPageTitle';
 
 const links =[]
@@ -35,7 +34,7 @@ export default class Home extends Component {
     } = this.props;
     return (
         <div className={styles.container}>
-          <div className={styles.content}>
+          {/* <div className={styles.content}>
             <div className={styles.top}>
               <div className={styles.header}>
                 <Link to="/">
@@ -45,9 +44,9 @@ export default class Home extends Component {
               </div>
               <div className={styles.desc}>万卷书是保定地区最有影响力的在线教育平台</div>
             </div>
-            <img className={styles.pic} src={pic} alt="图片"/>
             {children}
-          </div>
+          </div> */}
+          <div className={styles.pic}></div>
           <GlobalFooter links={links} copyright={copyright} />
         </div>
     );
