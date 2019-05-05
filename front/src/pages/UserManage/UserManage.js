@@ -33,10 +33,7 @@ class UserManage extends PureComponent {
     modalVisible: false,
     formValues: {},
     modalType: "add",
-    pagination: {
-      current: 1,
-      pageSize: 2
-    }
+    current:1
   };
   componentDidMount() {
     console.log("componentDidMount==")
@@ -50,7 +47,12 @@ class UserManage extends PureComponent {
     console.log("pagination====", pagination);
     const { dispatch } = this.props;
     const { formValues } = this.state;
+    // form.validateFields((err, fieldsValue) => {
+    //   if (err) return;
+    //   const values = {
+    //     ...fieldsValue,
 
+    //   };
     const filters = Object.keys(filtersArg).reduce((obj, key) => {
       const newObj = { ...obj };
       newObj[key] = getValue(filtersArg[key]);
@@ -62,6 +64,9 @@ class UserManage extends PureComponent {
       ...formValues,
       ...filters,
     };
+    this.setState({
+      current:pagination.current
+    })
     if (sorter.field) {
       params.sorter = `${sorter.field}_${sorter.order}`;
     }
@@ -83,9 +88,10 @@ class UserManage extends PureComponent {
         ...fieldsValue,
 
       };
-      // this.setState({
-      //   formValues: values,
-      // });
+      this.setState({
+        formValues: values,
+        current:1
+      });
       // 分页查询
       dispatch({
         type: 'userManage/fetch',
@@ -222,7 +228,7 @@ class UserManage extends PureComponent {
       dataIndex: 'Action',
       render: (text, user) => {
         return (
-          <Link to={ `/user/reset-password?user_id=${user.user_id}` }>重置密码</Link>
+          <Link to={`/user/reset-password?user_id=${user.user_id}`}>重置密码</Link>
         )
       }
     },
@@ -233,6 +239,7 @@ class UserManage extends PureComponent {
       userManage: { data },
       loading,
     } = this.props;
+    console.log("data.pagination==", data.pagination)
     // 数据来源
     const { modalVisible, modalType, modifyUser, pagination } = this.state;
     return (
@@ -252,7 +259,11 @@ class UserManage extends PureComponent {
             // key={item.id}
             rowKey={user => user.user_id}
             columns={this.columns}
-            pagination={data.pagination}
+            pagination={{
+              current: this.state.current,
+              total: data.pagination.total,
+              pageSize:data.pagination.pageSize
+            }}
             onChange={this.handleStandardTableChange}
             onRow={(record) => {
               return {

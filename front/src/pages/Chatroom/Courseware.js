@@ -3,6 +3,7 @@ import "./Joinroom.less";
 import { connect } from "dva";
 import { Col, Button, Modal, Checkbox, Card, List, Avatar, Popover, message, Select } from "antd";
 import CourseWareSelect from "./../CourseWareManage/CourseWareSelect"
+import CourseImage from "./CourseImage"
 
 const Option = Select.Option;
 
@@ -149,10 +150,11 @@ class Courseware extends PureComponent {
                         dataSource={imageList}
                         renderItem={item => (
                             <List.Item>
-                                <Popover placement="rightTop" title=''
+                                {/* <Popover placement="rightTop" title=''
                                     content={(<img src={item.coursewares_images} alt="" />)} trigger="click">
                                     <img src={item.coursewares_images} alt="" />
-                                </Popover>
+                                </Popover> */}
+                                <CourseImage src={item.coursewares_images} />
                             </List.Item>
                         )}
                     />
