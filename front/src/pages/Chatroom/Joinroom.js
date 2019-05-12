@@ -101,9 +101,16 @@ class Chatroom extends PureComponent {
             classNum: classNum
         });
 
-        // 插入场景，并切换到最新场景
-        this.state.room.putScenes("/record", [{ name: "class" + classNum }]);
-        this.state.room.setScenePath("/record/class" + classNum);
+        if (oldRoom.room_start == "Y") {
+            // console.log(this.state.room);
+            // this.state.room.setScenePath("/record/class" + classNum);
+        } else {
+            // 插入场景，并切换到最新场景
+            this.state.room.putScenes("/record", [{ name: "class" + classNum }]);
+            this.state.room.setScenePath("/record/class" + classNum);
+        }
+
+        
     }
     componentWillMount() {
         console.log("componentDidMount this.props==", this.props.location.query)
