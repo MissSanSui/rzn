@@ -16,8 +16,14 @@ class CourseImage extends PureComponent {
             visible: false,
         });
     }
+    show = () => {
+        this.setState({
+            visible: true,
+        });
+    }
+    
     handleVisibleChange = (visible) => {
-        this.setState({ visible });
+        // this.setState({ visible });
     }
 
     render() {
@@ -33,6 +39,7 @@ class CourseImage extends PureComponent {
             <Popover placement="rightTop" title=''
                 content={content} trigger="click"
                 visible={this.state.visible}
+                onClick={this.show}
                 onVisibleChange={this.handleVisibleChange}
             >
                 <img src={src} alt="" />
