@@ -11,6 +11,7 @@ import StandardTable from '@/components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import AddUser from '@/pages/UserManage/Adduser';
 import styles from './UserManage.less';
+import { timeout } from 'q';
 
 const FormItem = Form.Item;
 const { Step } = Steps;
@@ -80,7 +81,9 @@ class UserManage extends PureComponent {
 
   handleSearch = e => {
     console.log("handleSearch===")
-    e.preventDefault();
+    if(e){
+      e.preventDefault();
+    }
     const { dispatch, form } = this.props;
     form.validateFields((err, fieldsValue) => {
       if (err) return;
@@ -111,7 +114,7 @@ class UserManage extends PureComponent {
       },
       success: () => {
         message.success("成功")
-        this.handleSearch()
+        setTimeout(this.handleSearch,100)
       }
     });
   }
@@ -240,7 +243,7 @@ class UserManage extends PureComponent {
       userManage: { data },
       loading,
     } = this.props;
-    console.log("data.pagination==", data.pagination)
+    console.log("data==", data)
     // 数据来源
     const { modalVisible, modalType, modifyUser, pagination } = this.state;
     return (
