@@ -41,8 +41,8 @@ class AddUser extends PureComponent {
       success: () => {
         message.success('配置成功');
         console.log("this.props===", this.props)
-        this.props.onCancel();
-        this.props.onSearch()
+        this.props.onCancel()
+        setTimeout(this.props.onSearch, 100)
       },
       fail: (res) => {
         console.log("fail====", res)
@@ -345,50 +345,50 @@ class AddUser extends PureComponent {
               </FormItem>
             </Col>
             <Col span={12}>
-                <FormItem {...formItemLayout} label="兴趣">
-                  {getFieldDecorator('interests', {
-                    initialValue: modifyUser.interests,
-                    rules: [
-                      {
-                        required: false,
-                        message: "请输入兴趣",
-                      },
-                    ],
-                  })(<Input placeholder="兴趣" />)}
-                </FormItem>
-              </Col>
-              <Col span={12}>
-                <FormItem {...formItemLayout} label="擅长">
-                  {getFieldDecorator('good', {
-                    initialValue: modifyUser.good,
-                    rules: [
-                      {
-                        required: false,
-                        message: "请输入擅长",
-                      },
-                    ],
-                  })(<Input placeholder="擅长" />)}
-                </FormItem>
-              </Col>
-              <Col span={0}>
-                {/* 报名老师 */}
-                <FormItem {...formItemLayout} label={<FormattedMessage id="form.teachers" />}>
-                  <Select
-                    mode="multiple"
-                    size={size}
-                    placeholder="请选择老师"
-                    defaultValue={['a10', 'c12']}
-                    style={{ width: '100%' }}
-                  >
-                    {children}
-                  </Select>
-                </FormItem>
-              </Col>
+              <FormItem {...formItemLayout} label="兴趣">
+                {getFieldDecorator('interests', {
+                  initialValue: modifyUser.interests,
+                  rules: [
+                    {
+                      required: false,
+                      message: "请输入兴趣",
+                    },
+                  ],
+                })(<Input placeholder="兴趣" />)}
+              </FormItem>
+            </Col>
+            <Col span={12}>
+              <FormItem {...formItemLayout} label="擅长">
+                {getFieldDecorator('good', {
+                  initialValue: modifyUser.good,
+                  rules: [
+                    {
+                      required: false,
+                      message: "请输入擅长",
+                    },
+                  ],
+                })(<Input placeholder="擅长" />)}
+              </FormItem>
+            </Col>
+            <Col span={0}>
+              {/* 报名老师 */}
+              <FormItem {...formItemLayout} label={<FormattedMessage id="form.teachers" />}>
+                <Select
+                  mode="multiple"
+                  size={size}
+                  placeholder="请选择老师"
+                  defaultValue={['a10', 'c12']}
+                  style={{ width: '100%' }}
+                >
+                  {children}
+                </Select>
+              </FormItem>
+            </Col>
           </Row>
         </Form>
       </Modal >
-        )
-      }
-    }
-    
+    )
+  }
+}
+
 export default AddUser;
