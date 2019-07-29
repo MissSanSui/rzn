@@ -9,7 +9,10 @@ export default {
   state: {
     data: {
       list: [],
-      pagination: {},
+      pagination: {
+        current: 1,
+        pageSize: 10
+      },
       fileList: []
     },
   },
@@ -24,6 +27,9 @@ export default {
       if (response.rows && response.rows.length > 0) {
         result.list = response.rows
         result.total = response.total
+        result.pagination={
+          total: response.total
+        }
       }
       const data = yield select(state => state.courseWare.data)
       console.log("data==", data)
