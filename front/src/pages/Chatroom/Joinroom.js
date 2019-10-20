@@ -1,4 +1,4 @@
-﻿import React, { PureComponent,Component } from "react";
+﻿import React, { PureComponent, Component } from "react";
 import { RoomWhiteboard } from "white-react-sdk";
 import { WhiteWebSdk } from "white-web-sdk";
 import * as serviceWorker from "./serviceWorker";
@@ -69,7 +69,7 @@ class Chatroom extends PureComponent {
                 message.warn("直播间未开播哦！")
                 router.push("/my-chat-room/search")
                 return
-            }else if(currentUser.user_id!=oldRoom.user_ids){
+            } else if (currentUser.user_id != oldRoom.user_ids) {
                 message.warn("没权限进入直播间哦！")
                 router.push("/my-chat-room/search")
                 return
@@ -80,7 +80,7 @@ class Chatroom extends PureComponent {
             zoomMaxScale: 1,
             zoomMinScale: 1,
         });
-        
+
         const room = await whiteWebSdk.joinRoom({
             uuid: oldRoom.white_id,
             roomToken: oldRoom.white_token
@@ -88,7 +88,7 @@ class Chatroom extends PureComponent {
 
         room.setMemberState({
             strokeWidth: 1,
-            strokeColor: currentUser.role == "TEA" ? [255, 0, 0] : [0, 0 ,255],
+            strokeColor: currentUser.role == "TEA" ? [255, 0, 0] : [0, 0, 255],
         });
 
         function onWindowResize() {
@@ -98,7 +98,7 @@ class Chatroom extends PureComponent {
         const classNum = 1;
         this.setState({
             room: room,
-            classNum: classNum
+            classNum: classNum,
         });
 
         if (oldRoom.room_start == "Y") {
@@ -109,8 +109,6 @@ class Chatroom extends PureComponent {
             this.state.room.putScenes("/record", [{ name: "class" + classNum }]);
             this.state.room.setScenePath("/record/class" + classNum);
         }
-
-        
     }
     componentWillMount() {
         console.log("componentDidMount this.props==", this.props.location.query)
@@ -183,57 +181,37 @@ class Chatroom extends PureComponent {
             }),
         }).then(res => res.clone().json()).then(res => {
             const datetime = (new Date()).getTime();
-            res.msg.forEach((element, index) => {
-                res.msg[index].url = res.msg[index].url + '?_v=' + datetime;
-            });
-            this.setState({
-                whiteImgList: res.msg,
-                creatWhiteLoading: true
-            });
+            if (res.msg && res.msg.length) {
+                res.msg.forEach((element, index) => {
+                    res.msg[index].url = res.msg[index].url + '?_v=' + datetime;
+                });
+                this.setState({
+                    whiteImgList: res.msg,
+                    creatWhiteLoading: true
+                });
+            }
         });
     };
     add = () => {
         const classNum = this.state.classNum + 1;
         this.setState({
             creatWhiteLoading: false,
-            classNum: classNum
+            classNum: classNum,
+            showClassNum: classNum
         });
-        console.log(classNum)
+        console.log("classNum===", classNum)
         this.state.room.putScenes("/record", [{ name: "class" + classNum }]);
         this.state.room.setScenePath("/record/class" + classNum);
-
-        const url1 = 'https://cloudcapiv4.herewhite.com/handle/rooms/snapshots?roomToken=' +
-            this.state.room.roomToken;
-        fetch(url1, {
-            method: 'POST',
-            headers: {
-                "content-type": "application/json",
-            },
-            body: JSON.stringify({
-                width: '150px',
-                height: '120px',
-                scenePath: '/record',
-                uuid: this.state.room.uuid
-            }),
-        }).then(res => res.clone().json()).then(res => {
-            console.log(res.msg)
-            const datetime = (new Date()).getTime();
-            res.msg.forEach((element, index) => {
-                res.msg[index].url = res.msg[index].url + '?_v=' + datetime;
-            });
-            this.setState({
-                whiteImgList: res.msg,
-                creatWhiteLoading: true
-            });
+        // this.classList()
+        this.setState({
+            creatWhiteLoading: true
         });
     };
-
-
     showDrawer = () => {
         this.setState({
             visible: true,
         });
-        this.classList();
+        // this.classList();
     };
 
     onHide = () => {
@@ -245,7 +223,7 @@ class Chatroom extends PureComponent {
         const { userIds, courseWareIds } = this.props.room
         const { dispatch } = this.props
         const { roomId, oldRoom } = this.state
-        if(oldRoom.room_start=="Y"){
+        if (oldRoom.room_start == "Y") {
             message.warn("已经开始直播了！")
             return
         }
@@ -276,7 +254,7 @@ class Chatroom extends PureComponent {
                                 message.success("成功开播！")
                                 oldRoom.room_start = "Y"
                                 that.setState({
-                                    oldRoom:{...oldRoom,...{room_start:"Y"}}
+                                    oldRoom: { ...oldRoom, ...{ room_start: "Y" } }
                                 })
                             }
                         });
@@ -356,7 +334,7 @@ class Chatroom extends PureComponent {
             scriptUrl: './iconfont.js.js', // 在 iconfont.cn 上生成
         });
         const { currentUser } = this.props
-        console.log("oldRoom===", oldRoom)
+        // console.log("oldRoom===", oldRoom)
         return (
             this.state.room ?
                 <div className="joinRoomStyle">
@@ -423,11 +401,11 @@ class Chatroom extends PureComponent {
                                 onClick={this.state.creatWhiteLoading ? this.add.bind(this) : null}
                             >创建画板</Button>
                         </div>
-                        <WhiteList add={this.add.bind(this)} whiteList={this.state.whiteImgList} room={this.state.room} />
-
+                        <WhiteList  room={this.state.room} />
+                        {/* add={this.add.bind(this)} whiteList={this.state.whiteImgList} */}
                     </Drawer>
 
-
+                    <div  ></div>
                 </div>
                 : <div>Loading</div>
         )
